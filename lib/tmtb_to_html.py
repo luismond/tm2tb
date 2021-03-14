@@ -103,7 +103,7 @@ def tmtb_to_html(filename, tm, tb):
     
     #download div
     download_div = """<div class="download">
-		<a href="uploads/{}">
+		<a href="{}">
 			<h4 class="text-center">Download the term base as a .csv file</h4>
 		</a>
 	</div>""".format('{}_tb.csv'.format(filename))
