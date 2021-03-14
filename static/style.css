@@ -1,0 +1,369 @@
+/*names*/
+div.nav {}
+div.content{}
+div.logo{}
+div.slogan{}
+div.descriptions {}
+div.description {}
+div.icons {}
+div.icon {}
+div.upload {}
+div.upload_options {}
+div.tm_table {}
+div.tm_row {}
+div.tm_cell_1 {}
+div.tm_cell_2 {}
+div.tb_table {}
+div.download {}
+div.footer {}
+
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5 {}
+
+/*colors*/
+body {
+	background:#d9d9d9;
+	
+	}
+div {border: 0px solid red;}
+img {border: 0px}
+div.nav {
+	background-color: #ffffff;
+	border-bottom: 1px solid #f2f2f2;
+	}
+div.nav a {
+	color: #a6a6a6;
+	}
+
+div.content{background-color: #ffffff}
+div.logo{}
+div.slogan{}
+div.descriptions {
+	background-color:#39b4bb;
+	color:#ffffff;
+	}
+div.description {}
+div.icons {}
+div.icon {}
+div.upload_section {
+	border:1px solid #f2f2f2;
+}
+
+div.flex-parent_upload_options {
+
+padding:0 10%;
+
+}
+
+div.upload_options {
+	color:#7f7f7f;
+	border: 1px solid #bfbfbf;
+	margin-left:2%;
+	margin-right:2%;
+}
+
+input.browse{
+	background:#d9d9d9;
+	color:#7f7f7f;
+}
+
+input.upload_button {
+	background: #39b4bb;
+	color: #ffffff;
+}
+
+div.dots {color:#d9d9d9}
+
+div.results_section {
+	border: 1px solid #f2f2f2
+}
+div.tm_table {}
+div.tm_row {}
+div.tm_cell_1 {background:#f2f2f2;}
+div.tm_cell_2 {background:#dbeef4;}
+div.tb_table {}
+div.flex-child_tb p {
+	color:#7f7f7f;
+}
+
+div.tb_row {
+	color:#7f7f7f;
+}
+div.tb_cell {background:#f2f2f2;
+border:1px solid #bfbfbf;}
+
+div.download {
+	background:#39b4bb;
+	color:#ffffff;
+}
+div.download a {
+	color:#ffffff;
+}
+
+div.footer {
+	background:#d9d9d9;
+	color:#a6a6a6;
+	}
+
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5.tm_title {color:#a6a6a6;}
+
+p {
+	border: 0px solid red;
+}
+
+
+/*positioning*/
+body {
+	padding:0;
+	margin:0;
+	color:
+	}
+div {
+	padding:0px;
+	}
+div.nav {
+	padding: 5px 5px 0 0;
+	margin: 0
+	}
+div.nav a {
+	padding: 0 2px;
+	}
+div.content {
+	padding:0 1%;
+}
+
+div.flex-parent_logo {
+	padding:0 0 8px 0;
+	margin: 0;
+}
+div.logo{
+	padding: 1% 10px 0% 3%;
+}
+div.slogan{
+	padding: 3% 0 0% 5px;
+}
+div.descriptions {
+	padding:1% 1% 1% 1%;
+}
+div.description {
+	padding:1% 0 0 0;
+}
+div.icons {}
+div.flex-child_icon {padding:1%; margin-top:1%;}
+div.upload {}
+
+div.flex-parent_upload_options {
+padding:1% 0 2% 0}
+
+div.upload_options {
+	padding:1% 6%;
+}
+input.upload_button {
+	padding: 1% 4% 1% 4%;
+}
+
+div.upload_button {
+	padding:1%;
+	text-align:center;
+}
+
+div.dots p {
+margin:0;
+padding:0}
+
+div.results_section {
+	margin: 0 0 2% 0;
+}
+
+div.tm_table {}
+div.tm_row {}
+div.tm_cell_1 {padding: 1%}
+div.tm_cell_2 {padding: 1%}
+div.tb_table {padding: 3% 7%}
+div.tb_row {padding: 0;}
+div.tb_cell {padding:2%}
+div.download {
+	margin: 1% 0;
+	padding: 1%;
+	width:40%;
+}
+div.patreon {margin:1% 0 0% 0;
+padding: 1%;}
+div.footer {padding:1px;}
+p {
+	padding: 1%;
+	}
+
+h1 {margin:0;}
+h2 {}
+h3 {}
+h4 {}
+h5.tm_title {margin:1%;}
+h5.tb_title {margin:2%;}
+
+img.img_center {
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+
+
+
+/*fonts*/
+body {
+		font-family:"Arial";
+}
+div.nav {
+	text-align:right;
+	letter-spacing:2px;
+}
+
+div.nav a {
+	text-decoration:none;
+}
+
+div.content{}
+div.logo{}
+div.slogan {
+	font-size:110%;
+	font-weight:normal;
+	letter-spacing:1px;
+}
+div.descriptions {
+}
+div.description {
+	font-size:130%;
+	font-weight:normal;
+	letter-spacing:1px;
+}
+div.icons {}
+div.icon {}
+div.upload {}
+div.upload_options {}
+div.tm_table {}
+div.tm_row {}
+div.tm_cell_1 {}
+div.tm_cell_2 {}
+div.tb_table {}
+div.download {}
+div.footer {}
+
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5 {text-align:center;}
+
+.text-center {
+	text-align:center;
+}
+
+p.description_p {
+font-size:90%;
+margin:0 10% 0 0}
+
+/*flexes*/
+body {
+	}
+div.flex-parent {
+	display:flex;
+	}
+div.flex-parent_logo {
+	display:flex;
+	}
+div.descriptions {
+	display:flex;
+	}
+div.flex-child {
+	flex: 2;
+	}
+div.flex-child:first-child {
+	flex:1;
+	}
+div.logo {
+	flex:1;
+}
+
+div.slogan {
+	flex:5;
+}
+
+div.flex-child_icon {
+	flex:1
+}
+
+div.flex-child_icons {
+	flex:2
+}
+
+div.description {
+	flex:7;
+
+}
+
+div.upload_options {
+	flex:3
+}
+
+div.flex-parent_upload_options {
+	display:flex;
+
+}
+
+input.upload_button {
+	font-weight:bold;
+	border: 0px;
+}
+
+.center {
+display: block;
+margin-left: auto;
+margin-right: auto;
+width:50%;
+}
+
+div.flex-child_tm {
+	flex:5
+}
+
+
+div.flex-child_tb {
+	flex:2
+}
+
+div.tm_row {
+	display:flex
+}
+
+div.tb_row {
+	display:flex
+}
+
+div.tb_cell {
+flex:2
+}
+
+
+div.tm_cell_1 {
+flex:2
+}
+
+div.tm_cell_2 {
+flex:2
+}
+
+
+div.download {
+
+	margin-left: auto;
+	margin-right: auto;
+}	
+
