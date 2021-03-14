@@ -166,7 +166,7 @@ def tm2tb_main(filename):
     tb.columns=['src','trg']
     tb = tb[tb['src'].str.len()>3]
     tb = tb[tb['trg'].str.len()>3]
-    tb.to_csv('tmp/{}_tb.csv'.format(filename), encoding='utf8', index=False)
+    tb.to_csv('uploads/{}_tb.csv'.format(filename), encoding='utf8', index=False)
     tb.columns = ['src','trg']
     print('{} {}'.format('got tb', time()-start))
     # ANALYZE AND DETERMINE FINAL TB
