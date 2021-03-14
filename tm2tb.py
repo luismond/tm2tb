@@ -166,8 +166,6 @@ def tm2tb_main(filename):
     tb.columns=['src','trg']
     tb = tb[tb['src'].str.len()>3]
     tb = tb[tb['trg'].str.len()>3]
-    #fuck, drop trigrams like "a b c"
-    #drop fuckin roman numerals
     tb.to_csv('tmp/{}_tb.csv'.format(filename), encoding='utf8', index=False)
     tb.columns = ['src','trg']
     print('{} {}'.format('got tb', time()-start))
