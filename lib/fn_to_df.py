@@ -13,7 +13,7 @@ from lib.tmx_to_df import tmx_to_df
 
 def fn_to_df(filename):
     fileformat = filename.split('.')[-1:][0]
-    filepath = 'uploads/{}'.format(filename)
+    filepath = '{}'.format(filename)
     # READ
     if fileformat == 'csv':
         tm = csv_to_df(filepath)
