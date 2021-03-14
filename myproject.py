@@ -14,7 +14,7 @@ from flask import abort
 from flask import flash
 from flask import Markup
 from werkzeug.utils import secure_filename
-from myproject import tm2tb_main
+from tm2tb import tm2tb_main
 from flask import send_from_directory
 
 # App config.
