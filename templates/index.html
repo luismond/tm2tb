@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="static/style.css">
+	<title>TM2TB</title>
+<link rel="apple-touch-icon" sizes="57x57" href="static/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="static/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="static/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="static/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="static/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="static/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="static/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="static/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="static/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="static/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="static/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16x16.png">
+<link rel="manifest" href="static/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">	
+	
+	
+</head>
+
+<body>
+
+	<div class="nav">
+		<a href="#news">About&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</a> 
+		<a href="mailto:info@tm2tb.com">Contact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</a> 
+		<a href="#">Home</a> 
+	</div>
+
+	<div class="content">
+	
+		<div class="flex-parent_logo">
+			<div class="logo"> <a href="./"><h1><img src="static/LOGO.svg" width="250px" height="128px"></h1></a></div>
+			<div class="slogan"> 
+				<h2>Extract a term base from any bilingual document</h2>
+			</div>
+		</div>
+		
+		<div class="descriptions">
+			<div class="flex-child_phone"><img src="static/CELULAR LOGO_small.PNG"></div>
+			
+			<div class="flex-child_icons"> 
+				<div class="flex-parent">
+					<div class="flex-child_icon"> <img  class="img_center" src="static/ICONO EXTRACCIÓN BLANCO FONDO AZUL.svg" width="80" height="80"> </div>
+					<div class="description">
+						<h4>Extract terminology automatically from any bilingual document</h4>
+						<p class="description_p">Use your existing bilingual files in a variety of formats to extract a bilingual glossary in a few seconds. TM2TB works with .csv, .mqxliff, .mxliff and .tmx files.</p>						
+					</div>
+				</div>
+			
+				<div class="flex-parent">
+					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO CONEXIÓN BLANCO FONDO AZUL.svg"  width="80" height="80"> </div>
+					<div class="description">
+						<h4>Use the extracted terminology to customize MT engines</h4>
+						<p class="description_p">Leverage your translation memories and bilingual files to create term bases, which you can use to personalize MT engines.</p>		
+					</div>
+				</div>
+			
+				<div class="flex-parent">
+					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO BUSQUEDA BLANCO FONDO AZUL.svg" width="80" height="80"> </div>
+					<div class="description"> 
+						<h4>Find translation pairs hidden in your bilingual documents</h4>
+						<p class="description_p">Find translation pairs of single terms, multi-word nouns, short phrases and collocations, which you can reuse conveniently.</p>
+					</div>
+				</div>
+			
+				<div class="flex-parent">
+					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO TIEMPO BLANCO FONDO AZUL.svg" width="76" height="75"></div>
+					<div class="description"> 
+						<h4>Save time while translating or post-editing with automatic suggestions</h4> 
+						<p class="description_p">Use the automatically extracted glossary in your CAT tool of choice to get automatic suggestions, saving time and effort in the process.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="upload_section">
+			<h3 class="text-center">Upload your bilingual file</h3>
+			<p class='text-center'>Formats admitted: .tmx, .mqxliff, .xliff, or .csv with a source and a target column</p>
+			
+			
+			<form method="POST" action="" enctype="multipart/form-data">
+			<div class="text-center">
+				<input class="browse" type="file" name="file" accept=".csv">
+			</div>
+			<div class="upload_button">
+				<input class="upload_button" type="submit" value="Upload">
+			</div>
+			</form>	
+			
+			
+		</div>
+		
+		<div class="dots"><p class="text-center">• • •</p></div>
+		
+		<div class="results_section">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+
+{{ message }}
+{% endfor %}
+{% endif %}
+{% endwith %}
+		</div>
+		
+		<div class="patreon"> <img class="img_center" src="static/patreon.png" width="150px" height="52px"> </div>
+		
+		
+
+	</div>
+			<div class="footer">
+			<p class="text-center">Copyright © 2020-2021 Luis Mondragon</p>
+		</div>
+</body>
+
+
