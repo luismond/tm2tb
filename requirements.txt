@@ -8,4 +8,3 @@ beautifulsoup4==4.9.3
 nltk==3.5
 werkzeug==1.0.1
 langdetect==1.0.8
-spacy
