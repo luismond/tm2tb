@@ -41,7 +41,7 @@ def post_file():
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     return prev(filename)
     
-@app.route('/tmp/<filename>')
+@app.route('/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_PATH'], filename)
 
