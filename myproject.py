@@ -22,7 +22,7 @@ DEBUG = False
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.csv', '.mxliff','.mqxliff', '.tmx']
-app.config['UPLOAD_PATH'] = "tmp"
+app.config['UPLOAD_PATH'] = "uploads"
 app.config['SECRET_KEY'] = 'secret'
 
 @app.route('/')
