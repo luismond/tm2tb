@@ -56,4 +56,4 @@ def get_file(filename):
     return redirect(url_for('uploaded_file', filename=filename))
             
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port='5002')
+	app.run(host='0.0.0.0')
