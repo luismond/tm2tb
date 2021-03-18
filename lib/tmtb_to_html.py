@@ -108,7 +108,5 @@ def tmtb_to_html(filename, tm, tb):
 		</a>
 	</div>""".format('{}_tb.csv'.format(filename))
     # results div
-    results_div = '<div class="flex-parent">{}{}</div>{}'.format(tm_div, tb_div, download_div)
+    results_div = '<div class="flex-parent_tm_tb wrap">{}{}</div>{}'.format(tm_div, tb_div, download_div)
     return results_div
-
-
