@@ -13,6 +13,7 @@ from flask import url_for
 from flask import abort
 from flask import flash
 from flask import Markup
+from flask import after_this_request
 from werkzeug.utils import secure_filename
 from tm2tb import tm2tb_main
 from flask import send_from_directory
@@ -43,17 +44,28 @@ def post_file():
     
 @app.route('/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+    filepath = os.path.join(app.config['UPLOAD_PATH'], filename)
+    @after_this_request
+    def remove_file(response): 
+        os.remove(filepath)
+        return response
+    return send_from_directory(filepath)
 
 @app.route("/prev")
 def prev(filename):
-     result_html = Markup(tm2tb_main(filename))
-     flash(result_html)
-     return render_template('index.html')
+    result_html = Markup(tm2tb_main(filename))
+    flash(result_html)
+    @after_this_request
+    def remove_file(response):
+        filepath = os.path.join(app.config['UPLOAD_PATH'], filename)
+        os.remove(filepath)
+        return response
+    return render_template('index.html')
  
 @app.route("/<filename>")
 def get_file(filename):
-    return redirect(url_for('uploaded_file', filename=filename))
+    redirect(url_for('uploaded_file', filename=filename))
+    return 
             
 if __name__ == "__main__":
 	app.run(host='0.0.0.0')
