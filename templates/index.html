@@ -2,7 +2,12 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="static/style.css">
+
+	<link rel="stylesheet" href="static/style_colors.css">
+	<link rel="stylesheet" href="static/style_fonts.css">
+	<link rel="stylesheet" href="static/style_flexes.css">
+	<link rel="stylesheet" href="static/style_positions.css">
+	
 	<title>TM2TB</title>
 <link rel="apple-touch-icon" sizes="57x57" href="static/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="static/apple-icon-60x60.png">
@@ -22,7 +27,6 @@
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">	
 	
-	
 </head>
 
 <body>
@@ -35,46 +39,47 @@
 
 	<div class="content">
 	
-		<div class="flex-parent_logo">
-			<div class="logo"> <a href="./"><h1><img src="static/LOGO.svg" width="250px" height="128px"></h1></a></div>
+		<div class="flex-parent_logo wrap">
+			<div class="logo"> <a href="./"><h1><img src="static/LOGO.svg" width="110" height="110"></h1></a></div>
 			<div class="slogan"> 
 				<h2>Extract a term base from any bilingual document</h2>
 			</div>
 		</div>
 		
-		<div class="descriptions">
+		<div class="descriptions wrap">
 			<div class="flex-child_phone"><img src="static/CELULAR LOGO_small.PNG"></div>
 			
-			<div class="flex-child_icons"> 
-				<div class="flex-parent">
+			<div class="flex-child_descriptions"> 
+				<div class="flex-parent_icons wrap">
 					<div class="flex-child_icon"> <img  class="img_center" src="static/ICONO EXTRACCIÓN BLANCO FONDO AZUL.svg" width="80" height="80"> </div>
-					<div class="description">
+					<div class="flex-child_description_h">
 						<h4>Extract terminology automatically from any bilingual document</h4>
-						<p class="description_p">Use your existing bilingual files in a variety of formats to extract a bilingual glossary in a few seconds. TM2TB works with .csv, .mqxliff, .mxliff and .tmx files.</p>						
-					</div>
+						<p class="description_p">Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a bilingual term base in a few seconds.</p>
+						</div>
+				
 				</div>
 			
-				<div class="flex-parent">
+				<div class="flex-parent_icons wrap">
 					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO CONEXIÓN BLANCO FONDO AZUL.svg"  width="80" height="80"> </div>
-					<div class="description">
+					<div class="flex-child_description_h">
 						<h4>Use the extracted terminology to customize MT engines</h4>
-						<p class="description_p">Leverage your translation memories and bilingual files to create term bases, which you can use to personalize MT engines.</p>		
+						<p class="description_p">Leverage your translation memories to create terminology repositories, which can be used to customize machine translation systems.</p>		
 					</div>
 				</div>
 			
-				<div class="flex-parent">
+				<div class="flex-parent_icons wrap">
 					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO BUSQUEDA BLANCO FONDO AZUL.svg" width="80" height="80"> </div>
-					<div class="description"> 
+					<div class="flex-child_description_h"> 
 						<h4>Find translation pairs hidden in your bilingual documents</h4>
 						<p class="description_p">Find translation pairs of single terms, multi-word nouns, short phrases and collocations, which you can reuse conveniently.</p>
 					</div>
 				</div>
 			
-				<div class="flex-parent">
-					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO TIEMPO BLANCO FONDO AZUL.svg" width="76" height="75"></div>
-					<div class="description"> 
+				<div class="flex-parent_icons wrap">
+					<div class="flex-child_icon"> <img class="img_center" src="static/ICONO TIEMPO BLANCO FONDO AZUL.svg" width="80" height="80"></div>
+					<div class="flex-child_description_h"> 
 						<h4>Save time while translating or post-editing with automatic suggestions</h4> 
-						<p class="description_p">Use the automatically extracted glossary in your CAT tool of choice to get automatic suggestions, saving time and effort in the process.</p>
+						<p class="description_p">Extract term bases automatically and use them in your CAT tool of choice to get automatic suggestions, saving time and effort in the process.</p>
 					</div>
 				</div>
 			</div>
