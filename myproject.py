@@ -41,15 +41,16 @@ def post_file():
         else:
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     return prev(filename)
-    
+
+
 @app.route('/<filename>')
 def uploaded_file(filename):
-    filepath = os.path.join(app.config['UPLOAD_PATH'], filename)
     @after_this_request
-    def remove_file(response): 
-        os.remove(filepath)
+    def remove_file_tb(response):
+        os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
         return response
-    return send_from_directory(filepath)
+    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+
 
 @app.route("/prev")
 def prev(filename):
@@ -57,8 +58,7 @@ def prev(filename):
     flash(result_html)
     @after_this_request
     def remove_file(response):
-        filepath = os.path.join(app.config['UPLOAD_PATH'], filename)
-        os.remove(filepath)
+        os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
         return response
     return render_template('index.html')
  
