@@ -1,0 +1,92 @@
+/*colors*/
+body {
+	background:#d9d9d9;
+	
+	}
+div {border: 0px solid red}
+img {border: 0px}
+div.nav {
+	background-color: #ffffff;
+	border-bottom: 1px solid #f2f2f2;
+	}
+div.nav a {
+	color: #a6a6a6;
+	}
+
+div.content{background-color: #ffffff}
+div.logo{}
+div.slogan{}
+div.descriptions {
+	background-color:#39b4bb;
+	color:#ffffff;
+	}
+div.description {}
+div.icons {}
+div.icon {}
+div.upload_section {
+	border:1px solid #f2f2f2;
+}
+
+
+
+div.upload_options {
+	color:#7f7f7f;
+	border: 1px solid #bfbfbf;
+	margin-left:2%;
+	margin-right:2%;
+}
+
+input.browse{
+	background:#d9d9d9;
+	color:#7f7f7f;
+}
+
+input.upload_button {
+	background: #39b4bb;
+	color: #ffffff;
+}
+
+div.dots {color:#d9d9d9}
+
+div.results_section {
+	border: 1px solid #f2f2f2
+}
+div.tm_table {}
+div.tm_row {}
+div.tm_cell_1 {background:#f2f2f2;}
+div.tm_cell_2 {background:#dbeef4;}
+div.tb_table {}
+div.flex-child_tb p {
+	color:#7f7f7f;
+}
+
+div.tb_row {
+	color:#7f7f7f;
+	border:1px solid #bfbfbf;
+}
+div.tb_cell {background:#f2f2f2;
+border:1px solid #bfbfbf;}
+
+div.download {
+	background:#39b4bb;
+	color:#ffffff;
+}
+div.download a {
+	color:#ffffff;
+}
+
+div.footer {
+	background:#d9d9d9;
+	color:#a6a6a6;
+	}
+
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5.tm_title {color:#a6a6a6;}
+
+p {
+	border: 0px solid red;
+}
+
