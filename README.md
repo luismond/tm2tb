@@ -1,18 +1,21 @@
 # tm2tb
 TM2TB.com is an automatic terminology extraction Python web app, built upon Flask, Gensim, Pandas and Microsoft Azure's cognitive services. 
 
-As a translator, we know that, in practice, there is little time to create a TB after a translation is done.
+# Main features
+- Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a bilingual term base in a few seconds.
+- Leverage your translation memories to create terminology repositories, which can be used to customize machine translation systems.
+- Find translation pairs of single terms, multi-word nouns, short phrases and collocations, which you can reuse conveniently.
+- Extract term bases automatically and use them in your CAT tool of choice to get automatic suggestions.
 
-But TM2TB will help you to do that. Just load your bilingual file, and the app will analyze it and extract a nice bilingual glossary with your own translations, which you can conveniently use for future assignments.
+# File formats supported:
 
-File formats supported:
 - Bilingual .tmx files
 - Bilingual .csv (in two columns for source and target)
 - .xlsx (Excel file in two columns for source and target)
 - .mqxliff (memoQ)
 - .mxliff (memsource)
 
-Languages supported:
+# Languages supported:
 
 - English <> Spanish
 - English <> German
@@ -20,4 +23,6 @@ Languages supported:
 - Spanish <> German
 - Spanish <> French
 - French <> German
+
+
 
