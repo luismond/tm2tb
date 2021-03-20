@@ -42,13 +42,13 @@ def post_file():
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     return prev(filename)
 
-@app.route('/<filename>')
-def uploaded_file(filename):
+@app.route('/uploads/<filename_tb>')
+def uploaded_file(filename_tb):
     @after_this_request
     def remove_file_tb(response):
-        os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
+        os.remove(os.path.join(app.config['UPLOAD_PATH'], filename_tb))
         return response
-    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+    return send_from_directory(app.config['UPLOAD_PATH'], filename_tb)
 
 @app.route("/prev")
 def prev(filename):
