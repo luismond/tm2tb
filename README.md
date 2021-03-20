@@ -26,4 +26,4 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 
 # License
 
-TM2TB is released under the <a href="https://github.com/luismond/tm2tb/blob/main/LICENSE">GNU General Public License v3.0</a>
+TM2TB is released under the [https://github.com/luismond/tm2tb/blob/main/LICENSE](GNU General Public License v3.0)
