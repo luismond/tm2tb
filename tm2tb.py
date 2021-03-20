@@ -31,14 +31,12 @@ from lib.tb_to_azure import tb_to_azure
 
 #TODO: short segments, prune subterms, evaluate capitalization
 
-
 def tm2tb_main(filename):
     #try:
     start = time()
     # FILENAME TO DATAFRAME
-    #filename = filepath.split('/')[-1:][0]
-    #fileformat = filename.split('.')[-1:][0]
-    tm = fn_to_df(filename)
+    upload_path = 'uploads'
+    tm = fn_to_df(upload_path, filename)
     print('{}: {}'.format('tm len',len(tm)))
     print('{} {}'.format('fn to df',time()-start))
     # PREPROCESS. Handle html, punctuation and other dirty characters.
@@ -166,16 +164,13 @@ def tm2tb_main(filename):
     tb.columns=['src','trg']
     tb = tb[tb['src'].str.len()>3]
     tb = tb[tb['trg'].str.len()>3]
-    tb.to_csv('{}_tb.csv'.format(filename), encoding='utf8', index=False)
+    tb.to_csv('{}/{}_tb.csv'.format(upload_path, filename), encoding='utf8', index=False)
     tb.columns = ['src','trg']
     print('{} {}'.format('got tb', time()-start))
     # ANALYZE AND DETERMINE FINAL TB
     #drop shorts
-    tmtb_html = tmtb_to_html(filename, tm, tb)
+    tmtb_html = tmtb_to_html(upload_path, filename, tm, tb)
     print('{} {}'.format('total', time()-start))
     return tmtb_html
     # except:
     #     return '<p>There was an error processing your file</p>'
-
-
-
