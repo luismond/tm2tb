@@ -26,7 +26,7 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 
 # Tests
 
-In the test folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
+In the tests folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
 
 # License
 
