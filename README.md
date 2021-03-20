@@ -11,13 +11,13 @@ File formats supported:
 - .xlsx (Excel file in two columns for source and target)
 - .mqxliff (memoQ)
 - .mxliff (memsource)
-- 
+
 Languages supported:
 
-English <> Spanish
-English <> German
-English <> French
-Spanish <> German
-Spanish <> French
-French <> German
+- English <> Spanish
+- English <> German
+- English <> French
+- Spanish <> German
+- Spanish <> French
+- French <> German
 
