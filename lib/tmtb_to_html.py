@@ -104,7 +104,7 @@ def tmtb_to_html(upload_path, filename, tm, tb):
 		<a href="{}">
 			<h4 class="text-center">Download the term base as a .csv file</h4>
 		</a>
-	</div>""".format('{}_tb.csv'.format(filename))
+	</div>""".format('{}/{}_tb.csv'.format(upload_path, filename))
     # results div
     results_div = '<div class="flex-parent_tm_tb wrap">{}{}</div>{}'.format(tm_div, tb_div, download_div)
     return results_div
