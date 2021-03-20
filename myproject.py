@@ -21,10 +21,10 @@ from flask import send_from_directory
 # App config.
 DEBUG = False
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.csv', '.mxliff','.mqxliff', '.tmx']
-app.config['UPLOAD_PATH'] = ""
-app.config['SECRET_KEY'] = 'secret'
+app.config['UPLOAD_PATH'] = "uploads"
+app.config['SECRET_KEY'] = ''
 
 @app.route('/')
 def index():
@@ -42,7 +42,6 @@ def post_file():
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     return prev(filename)
 
-
 @app.route('/<filename>')
 def uploaded_file(filename):
     @after_this_request
@@ -50,7 +49,6 @@ def uploaded_file(filename):
         os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
         return response
     return send_from_directory(app.config['UPLOAD_PATH'], filename)
-
 
 @app.route("/prev")
 def prev(filename):
@@ -60,7 +58,7 @@ def prev(filename):
     def remove_file(response):
         os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
         return response
-    return render_template('index.html')
+    return render_template('index_results.html')
  
 @app.route("/<filename>")
 def get_file(filename):
