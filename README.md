@@ -1,5 +1,5 @@
 # tm2tb
-TM2TB.com is an automatic terminology extraction Python web app, built upon Flask, Gensim, Pandas and Microsoft Azure's cognitive services. 
+www.tm2tb.com is an automatic terminology extraction Python web app, built upon Flask, Gensim, Pandas and Microsoft Azure's cognitive services. 
 
 # Main features
 - Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a bilingual term base in a few seconds.
