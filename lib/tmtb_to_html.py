@@ -6,7 +6,7 @@ Created on Fri Mar  5 06:11:27 2021
 @author: user
 """
 import pandas as pd
-def tmtb_to_html(filename, tm, tb):
+def tmtb_to_html(upload_path, filename, tm, tb):
     tb_len = len(tb)
     #zip tb pairs
     tb['pair'] = list(zip(tb['src'],tb['trg']))
@@ -65,7 +65,7 @@ def tmtb_to_html(filename, tm, tb):
     
     #tmtb = tmtb.drop(columns=['src','trg'])
     
-    tmtb = tmtb.sample(10)
+    tmtb = tmtb.sample(5)
     
     # Hacky stuff to format tm content into html
     cells_half_len = int(len(tmtb)/2)
@@ -84,17 +84,15 @@ def tmtb_to_html(filename, tm, tb):
     
     #Add title, legend, format into TM div                
     tm_title_snippet = '<h5 class="tm_title">{}</h5>'.format(filename)
-    tm_results_legend = '<p class="text-center">Here you can see a preview of term results highlighted on your document</p>'
-    # tm_segment_par = '<div class="tm_cell_1">{}</div>'.format()
-    # tm_segment_non = '<div class="tm_cell_2">{}</div>'.format()
-    #tm_row = '<div class="tm_row">{}{}</div>'.format(src,trg)
+    #tm_results_legend = '<p class="text-center">Here you can see a preview of term results highlighted on your document</p>'
+
     tm_rows_div = '<div class="tm_table">{}</div>'.format(''.join(tmtb['tm_rows'].tolist()))
     # TM DIV
-    tm_div = '<div class="flex-child_tm">{}{}{}</div>'.format(tm_title_snippet, tm_results_legend, tm_rows_div)
+    tm_div = '<div class="flex-child_tm">{}{}</div>'.format(tm_title_snippet,  tm_rows_div)#tm_results_legend,
     
-    #tb
-    tb_title_snippet = '<h5 class="tm_title">Terminology results</h5>'
-    tb_results_legend = '<p class="text-center">Here is a preview of the {} term results extracted from your file:</p>'.format(tb_len)
+    # TB
+    tb_title_snippet = '<h5 class="tb_title">Terminology results</h5>'
+    tb_results_legend = '<div class="tb_legend"><p class="text-center">Here is a preview of the {} term results extracted from your file:</p></div>'.format(tb_len)
     tmtb['tbs'] = tmtb['tbs'].apply(lambda s:'<div class="tb_cell">{}</div>'.format(s))
     tmtb['tbt'] = tmtb['tbt'].apply(lambda s:'<div class="tb_cell">{}</div>'.format(s))
     tmtb['tb_row'] = ['<div class="tb_row">{}{}</div>'.format(t[0],t[1]) for t in list(zip(tmtb['tbs'],tmtb['tbt']))]
