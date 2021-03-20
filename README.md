@@ -24,6 +24,10 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 - Spanish <> French
 - French <> German
 
+# Tests
+
+In the test folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
+
 # License
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
