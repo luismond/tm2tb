@@ -34,13 +34,17 @@ def index():
 def post_file():
     uploaded_file = request.files['file']
     filename = secure_filename(uploaded_file.filename)
+    if filename == '':
+        flash(Markup('<p class="text-center error">Please select a file</p>'))
+        return redirect(url_for('index'))
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
+            flash(Markup('<p class="text-center error">File not supported!</p>'))
+            return redirect(url_for('index'))
         else:
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-    return prev(filename)
+            return prev(filename)
 
 @app.route('/uploads/<filename_tb>')
 def uploaded_file(filename_tb):
