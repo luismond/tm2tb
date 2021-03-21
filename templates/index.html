@@ -88,7 +88,7 @@
 			
 			<form method="POST" action="" enctype="multipart/form-data">
 			<div class="text-center">
-				<input class="browse" type="file" name="file" accept=".csv">
+				<input class="browse" type="file" name="file" accept=".csv, .tmx, .mqxliff, .mxliff">
 			</div>
 			<div class="upload_button">
 				<input class="upload_button" type="submit" value="Upload">
@@ -97,9 +97,8 @@
 			
 			
 		</div>
-		
-		<div class="dots"><p class="text-center">• • •</p></div>
-		
+	
+
 		<div class="results_section">
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
