@@ -36,7 +36,7 @@ div.nav a {
 	
 /*Content*/
 div.content {
-	padding:0 2%;
+	padding:0 2% 1% 0;
 	background-color: #ffffff;
 }
 
@@ -189,6 +189,10 @@ input.upload_button {
 	font-size:105%;
 	letter-spacing:1px;
 	border:0px;
+}
+
+input.upload_button:active {
+    background:#A1E4E6
 }
 
 div.upload_button {
@@ -348,4 +352,10 @@ flex-wrap: wrap;
 
 .text-center {
 	text-align:center;
+}
+
+.error {
+background-color: #F1B90B;
+padding:1%;
+margin: 0 40%;
 }
