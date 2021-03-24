@@ -13,7 +13,6 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 
 - Bilingual .tmx files
 - Bilingual .csv (in two columns for source and target)
-- .xlsx (Excel file in two columns for source and target)
 - .mqxliff (memoQ)
 - .mxliff (memsource)
 
