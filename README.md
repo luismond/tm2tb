@@ -31,7 +31,7 @@ In the tests folder you can find bilingual translation files in many languages, 
 
 # Installing locally
 
-If you want to build the application locally, clone the repository, install the requirements in a virtual environment and add your own [**Microsoft Azure Cognitive Services key**] (https://portal.azure.com/) to these two files: `get_azure_translation.py` and `get_azure_dict_lookup.py`.
+If you want to build the application locally, clone the repository, install the requirements in a virtual environment and add your own [Microsoft Azure Cognitive Services key] (https://portal.azure.com/) to these two files: `get_azure_translation.py` and `get_azure_dict_lookup.py`.
 
 
 # License
