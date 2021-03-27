@@ -29,6 +29,11 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 
 In the tests folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
 
+# Installing locally
+
+If you want to build the application locally, clone the repository, install the requirements in a virtual environment and add your own [**Microsoft Azure Cognitive Services key**] (https://portal.azure.com/) to these two files: `get_azure_translation.py` and `get_azure_dict_lookup.py`.
+
+
 # License
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
