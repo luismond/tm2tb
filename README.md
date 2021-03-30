@@ -18,12 +18,15 @@ www.tm2tb.com is an automatic terminology extraction Python web app, built upon 
 
 # Languages supported:
 
-- English <> Spanish
-- English <> German
-- English <> French
-- Spanish <> German
-- Spanish <> French
-- French <> German
+- Any combination of English, Spanish, German, Italian, Portuguese and French.
+
+# Adding more languages:
+
+- Adding more languages is easy: just add a .txt file with stop words to the folder data/stopwords
+
+# Language detection:
+
+- The app uses [langdetect](https://pypi.org/project/langdetect/) to detect the file's languages automatically
 
 # Tests
 
