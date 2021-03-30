@@ -11,7 +11,7 @@ from collections import OrderedDict
 
 # tmx to df 
 def tmx_to_df(filepath):
-    with open('{}'.format(filepath), encoding='utf16') as fd:
+    with open('{}'.format(filepath)) as fd:
         doc = xmltodict.parse(fd.read())
       
     sources = [t['tuv'][0]['seg'] for t in doc['tmx']['body']['tu']]
