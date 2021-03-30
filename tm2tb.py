@@ -44,8 +44,8 @@ def tm2tb_main(filename):
     tm = tm[tm['src'].str.len()>0]
     tm = tm[tm['trg'].str.len()>0]
     # KEEP MOSTLY ALPHA
-    # tm['src'] = tm['src'].apply(mostly_alpha)
-    # tm['trg'] = tm['trg'].apply(mostly_alpha)
+    tm['src'] = tm['src'].apply(mostly_alpha)
+    tm['trg'] = tm['trg'].apply(mostly_alpha)
     tm = tm.dropna()
     tm = tm.astype(str)
     #tm = tm.drop_duplicates()
@@ -76,7 +76,10 @@ def tm2tb_main(filename):
     tm = tm.dropna()
     print('{} {}'.format('preproc',time()-start))
     # DETECT LANGUAGE
-    tm_sample = tm.sample(40)
+    if len(tm)>50:
+        tm_sample = tm.sample(50)
+    if len(tm)<50:
+        tm_sample = tm
     tm_sample['srcdet'] = tm_sample['src'].apply(detect)
     tm_sample['trgdet'] = tm_sample['trg'].apply(detect)
     srcdet = cnt(tm_sample['srcdet']).most_common(1)[0][0]
