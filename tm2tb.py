@@ -15,7 +15,7 @@ from lib.preprocess import pad_punct
 from lib.preprocess import drop_double_spaces
 from lib.preprocess import strip_punct
 
-from lib.fn_to_df import fn_to_df
+from lib.read_bilingual_file import read_bilingual_file
 from lib.get_stopwords import get_stopwords
 from lib.get_grams import get_grams
 from lib.my_word_vectorizer import my_word_vectorizer
@@ -36,7 +36,7 @@ def tm2tb_main(filename):
     start = time()
     # FILENAME TO DATAFRAME
     upload_path = 'uploads'
-    tm = fn_to_df(upload_path, filename)
+    tm = read_bilingual_file(upload_path, filename)
     print('{}: {}'.format('tm len',len(tm)))
     print('{} {}'.format('fn to df',time()-start))
     # PREPROCESS. Handle html, punctuation and other dirty characters.
