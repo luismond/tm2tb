@@ -1,13 +1,81 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jan  7 07:24:59 2021
-@author: Luis Mondragon
 Preprocessing module. Drops empty segments, cleans html, makes lowercase,
 cleans \n, \t, \r symbols, word tokenizes and removes stop words.
 """
 import re
 from bs4 import BeautifulSoup
+from langdetect import detect
+from collections import Counter as cnt
+from lib.get_stopwords import get_stopwords
+from lib.get_grams import get_grams
+
+def preprocess(tm):
+# PREPROCESS. Handle html, punctuation and other dirty characters.
+    tm.columns = ['src','trg']
+    tm = tm[tm['src'].str.len()>0]
+    tm = tm[tm['trg'].str.len()>0]
+    # KEEP MOSTLY ALPHA. Keep segments with > 85% alphabetic characters
+    tm['src'] = tm['src'].apply(mostly_alpha)
+    tm['trg'] = tm['trg'].apply(mostly_alpha)
+    tm = tm.dropna()
+    # PRESERVE ORIGINAL STRINGS
+    tm['srcu'] = tm['src']
+    tm['trgu'] = tm['trg']
+    # CLEAN HTML
+    tm['src'] = tm['src'].apply(html_check)
+    tm['trg'] = tm['trg'].apply(html_check)
+    # FIX CAMELCASE like this: HelloWorld -> Hello World
+    tm['src'] = tm['src'].apply(pad_camels)
+    tm['trg'] = tm['trg'].apply(pad_camels)
+    # REPLACE newlines and tabs \n, \t, \r with space
+    tm['src'] = tm['src'].apply(clean_special_symbols)
+    tm['trg'] = tm['trg'].apply(clean_special_symbols)
+    # PAD PUNCT
+    tm['src'] = tm['src'].apply(pad_punct)
+    tm['trg'] = tm['trg'].apply(pad_punct)
+    # CLEAN DOUBLE SPACES
+    tm['src'] = tm['src'].apply(drop_double_spaces)
+    tm['trg'] = tm['trg'].apply(drop_double_spaces)
+    # DROP EMPTY
+    tm = tm[tm['src'].str.len()>0]
+    tm = tm[tm['trg'].str.len()>0]
+    tm = tm.dropna()
+    # DETECT LANGUAGE
+    if len(tm)>50:
+        tm_sample = tm.sample(50)
+    if len(tm)<50:
+        tm_sample = tm
+    tm_sample['srcdet'] = tm_sample['src'].apply(detect)
+    tm_sample['trgdet'] = tm_sample['trg'].apply(detect)
+    srcdet = cnt(tm_sample['srcdet']).most_common(1)[0][0]
+    trgdet = cnt(tm_sample['trgdet']).most_common(1)[0][0]
+    # SPLIT TOKENIZE
+    tm['src'] = tm['src'].str.split()
+    tm['trg'] = tm['trg'].str.split()
+    # DROP EMPTY SEGMENTS
+    tm = tm[tm['src'].str.len()>0]
+    tm = tm[tm['trg'].str.len()>0]
+    # GET STOPWORDS FROM DETECTED LANGUAGES
+    src_stops = get_stopwords(srcdet)
+    trg_stops = get_stopwords(trgdet)
+    # GET NGRAMS
+    tm['src'] = tm['src'].apply(lambda s: get_grams(s, src_stops))
+    tm['trg'] = tm['trg'].apply(lambda s: get_grams(s, trg_stops))      
+    # REMOVE STOP WORDS. Remove stop words AFTER ngram extraction.  
+    stops = src_stops + trg_stops
+    tm['src'] = tm['src'].apply(lambda s: [w for w in s if not w.lower() in stops])
+    tm['trg'] = tm['trg'].apply(lambda s: [w for w in s if not w.lower() in stops])
+    # DROP NON ALFANUMERIC TOKENS (replace-alpha check to consider space-separated ngrams)
+    tm['src'] = tm['src'].apply(lambda s: [w for w in s if w.replace(' ','').isalpha()])
+    tm['trg'] = tm['trg'].apply(lambda s: [w for w in s if w.replace(' ','').isalpha()])  
+    # DROP EMPTY SEGMENTS
+    tm = tm[tm['src'].str.len()>0]
+    tm = tm[tm['trg'].str.len()>0]
+    return tm, srcdet, trgdet
+
+
 
 def mostly_alpha(line):
     #alpha = [c for c in line if c.isalpha()]
@@ -67,9 +135,6 @@ def pad_punct(string):
     new_string = re.sub('\s{2,}', ' ', new_string)
     return new_string
 
-# def pad_punct(string):
-#     return ''.join([c if c.isalpha() or c == ' ' else ' {} '.format(c) for c in string])
-
 def drop_double_spaces(string):
     new_string = re.sub('\s{2,}', ' ', string)
     return new_string
@@ -101,4 +166,3 @@ def correct_ellipsis(string):
     new_string = re.sub('(\.\.\.)', '…', string)
     return new_string
    
-
