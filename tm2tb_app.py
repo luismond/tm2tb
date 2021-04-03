@@ -55,9 +55,12 @@ def post_file():
 
 @app.route("/")
 def preview(filename):
-    #After getting a filename from a validated file, run main tm2tb process, which will return an html table
+    '''
+    After getting a filename from a validated file, run main tm2tb process, 
+    which will return an html table showing the user's text and the terms extracted (or a file error message)
+    '''
     result_html = Markup(tm2tb_main(filename))
-    #Show the html table (the glossary's preview)
+    #Show the html result
     flash(result_html)
     @after_this_request
     #After this request, delete the user's file
@@ -65,6 +68,7 @@ def preview(filename):
         os.remove(os.path.join(app.config['UPLOAD_PATH'], filename))
         return response
     return render_template('index_results.html')
+
 
 @app.route('/uploads/<filename_tb>')
 def uploaded_file(filename_tb):
