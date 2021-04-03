@@ -355,10 +355,12 @@ flex-wrap: wrap;
 }
 
 .error {
-background-color: #F1B90B;
+color: #D8000C;
+background-color: #FFD2D2;
 padding:1%;
 margin: 0 40%;
 }
+
 
 mark {
 background-color: #F1B90B;
