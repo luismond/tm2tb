@@ -56,11 +56,11 @@ class Sentence:
         return spacy_model(self.sentence)
 
     def get_tokens(self):
-        'Get token and part-of-speech from each token in sentence'
+        'Get token text from each token in sentence'
         return [token.text for token in self.get_doc()]
 
     def get_pos_tagged_tokens(self):
-        'Get token and part-of-speech from each token in sentence'
+        'Get token text and part-of-speech from each token in sentence'
         return [(token.text, token.pos_) for token in self.get_doc()]
 
     def get_ngrams(self, seq):
