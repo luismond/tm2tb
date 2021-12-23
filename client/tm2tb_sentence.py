@@ -3,6 +3,7 @@
 """
 Sentence class
 """
+import re
 from langdetect import detect
 import pandas as pd
 
@@ -23,7 +24,7 @@ class Sentence:
     'Sentence class. Instantiates a sentence object from a string sentence'
     supported_languages = ['en', 'es', 'de', 'pt']
     def __init__(self, sentence, **kwargs):
-        self.sentence = self.normalize_space(sentence)
+        self.sentence = self.clean_sentence(sentence)
         'Get optional arguments or use default arguments'
         if 'ngrams_min' in kwargs.keys():
             self.ngrams_min = kwargs.get('ngrams_min')
@@ -42,12 +43,43 @@ class Sentence:
         else:
             self.good_tags = ['NOUN','PROPN']
 
-    def normalize_space(self, sentence):
-        'Normalizes whitespace'
-        ords = [9, 10, 13, 32, 160]
-        for char in sentence:
-            if ord(char) in ords:
-                sentence = sentence.replace(char, ' ')
+    def clean_sentence(self, sentence):
+        'Cleans sentence'
+        def normalize_space_chars(sentence):
+            'Replaces weird spaces with normal space'
+            ords = [9, 10, 13, 32, 160]
+            for char in sentence:
+                if ord(char) in ords:
+                    sentence = sentence.replace(char, ' ')
+            return sentence
+
+        def normalize_space_seqs(sentence):
+            'Finds sequences of more than one space, returns one space'
+            def repl(match):
+                return ' '
+            sentence = re.sub(r"(\s+)", repl, sentence)
+            return sentence
+
+        def normalize_apostrophe(sentence):
+            'Replace curved apostrophe with straight apostrophe'
+            def repl(sentence):
+                groups = sentence.groups()
+                return '{}{}{}'.format(groups[0],"'s", groups[2])
+            pattern = r"(.|\s)(’s)(.|\s)"
+            return re.sub(pattern, repl, sentence)
+
+        def normalize_newline(sentence):
+            'Replaces hard coded newlines with normal newline symbol'
+            def repl(sentence):
+                groups = sentence.groups()
+                return '{}{}{}'.format(groups[0],"\n", groups[2])
+            pattern = r"(.)(\n|\\n|\\\n|\\\\n|\\\\\n)(.)"
+            return re.sub(pattern, repl, sentence)
+
+        sentence = normalize_space_chars(sentence)
+        sentence = normalize_space_seqs(sentence)
+        sentence = normalize_apostrophe(sentence)
+        sentence = normalize_newline(sentence)
         return sentence
 
     def get_doc(self):
@@ -56,11 +88,11 @@ class Sentence:
         return spacy_model(self.sentence)
 
     def get_tokens(self):
-        'Get token text from each token in sentence'
+        'Get token and part-of-speech from each token in sentence'
         return [token.text for token in self.get_doc()]
 
     def get_pos_tagged_tokens(self):
-        'Get token text and part-of-speech from each token in sentence'
+        'Get token and part-of-speech from each token in sentence'
         return [(token.text, token.pos_) for token in self.get_doc()]
 
     def get_ngrams(self, seq):
@@ -87,8 +119,12 @@ class Sentence:
         ptn = list(filter(lambda tl: tl[0][1] in good_tags
                           and tl[-1:][0][1] in good_tags, ptn))
         #drop ngrams with punctuation
-        ptn = list(filter(lambda tl: any(t=='PUNCT' for t in
-                                         [t for (tk, t) in tl])==False, ptn))
+        ptn = list(filter(lambda tl: tl[0][0].isalpha()
+                          and tl[-1:][0][0].isalpha(), ptn))
+        # certain punctuation symbols not allowed in the term
+        bad_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
+               '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
+        ptn = list(filter(lambda tl: any(t[0] in bad_punct for t in tl) is False, ptn))
         return ptn
 
     def get_term_candidates(self):
@@ -96,7 +132,21 @@ class Sentence:
         fptn = self.filter_pos_tagged_ngrams()
         cands = [' '.join([token for (token, tag) in tuple_list])
                 for tuple_list in fptn]
-        cands = [t.replace(" 's", "'s") for t in cands]
+
+        def rejoin_split_punct(string):
+            'rejoin second position punct char to first position token'
+            def repl(match):
+                groups = match.groups()
+                return '{}{}{}'.format(groups[0],groups[2], groups[3])
+            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®)(.+)"
+            return re.sub(pattern, repl, string)
+
+        cands = [rejoin_split_punct(t) for t in cands]
+
+        if len(cands)==0:
+            raise ValueError('No term candidates found')
+        if len(cands)==1:
+            raise ValueError('Only one candidate found')
         return cands
 
     def get_ngrams_df(self, seq):
