@@ -5,12 +5,12 @@ Sentence class
 """
 import re
 from langdetect import detect
-import pandas as pd
-
 import es_core_news_sm
 import en_core_web_sm
 import de_core_news_sm
 import pt_core_news_sm
+from tm2tb_client.tm2tb_candidate_terms import CandidateTerms
+
 model_en = en_core_web_sm.load()
 model_es = es_core_news_sm.load()
 model_de = de_core_news_sm.load()
@@ -111,50 +111,10 @@ class Sentence:
         'Get n-grams from pos-tagged tokens'
         return self.get_ngrams(self.get_pos_tagged_tokens())
 
-    def filter_pos_tagged_ngrams(self):
+    def get_term_candidates(self):
         'Filter pos-tagged ngrams to get candidate terms'
         ptn = self.get_pos_tagged_ngrams()
-        good_tags = self.good_tags
-        #keep ngrams with good tags at start and end
-        ptn = list(filter(lambda tl: tl[0][1] in good_tags
-                          and tl[-1:][0][1] in good_tags, ptn))
-        #drop ngrams with punctuation
-        ptn = list(filter(lambda tl: tl[0][0].isalpha()
-                          and tl[-1:][0][0].isalpha(), ptn))
-        # certain punctuation symbols not allowed in the term
-        bad_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
-               '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
-        ptn = list(filter(lambda tl: any(t[0] in bad_punct for t in tl) is False, ptn))
-        return ptn
-
-    def get_term_candidates(self):
-        'Return candidates from the filtered pos-tagged ngrams as strings'
-        fptn = self.filter_pos_tagged_ngrams()
-        cands = [' '.join([token for (token, tag) in tuple_list])
-                for tuple_list in fptn]
-
-        def rejoin_split_punct(string):
-            'rejoin second position punct char to first position token'
-            def repl(match):
-                groups = match.groups()
-                return '{}{}{}'.format(groups[0],groups[2], groups[3])
-            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®)(.+)"
-            return re.sub(pattern, repl, string)
-
-        cands = [rejoin_split_punct(t) for t in cands]
-
-        if len(cands)==0:
-            raise ValueError('No term candidates found')
-        if len(cands)==1:
-            raise ValueError('Only one candidate found')
-        return cands
-
-    def get_ngrams_df(self, seq):
-        '''Create a pandas table from the tokens and their pos-tags.
-        For visualization purposes'''
-        tokens = [[token for (token, tag) in tup_list] for tup_list in seq]
-        tags = [[tag for (token, tag) in tup_list] for tup_list in seq]
-        ngrams_df = pd.DataFrame(list(zip(tokens, tags)))
-        ngrams_df.columns = ['tokens','tags']
-        return ngrams_df
+        terms = CandidateTerms(self.sentence,
+                               ptn, good_tags=self.good_tags).get_terms()
+        return terms
     
