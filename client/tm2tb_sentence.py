@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Sentence class
+TM2TB Sentence class
 """
 import re
 from langdetect import detect
@@ -9,20 +9,23 @@ import es_core_news_sm
 import en_core_web_sm
 import de_core_news_sm
 import pt_core_news_sm
+import fr_core_news_sm
 from tm2tb_client.tm2tb_candidate_terms import CandidateTerms
 
 model_en = en_core_web_sm.load()
 model_es = es_core_news_sm.load()
 model_de = de_core_news_sm.load()
 model_pt = pt_core_news_sm.load()
+model_fr = fr_core_news_sm.load()
 spacy_models = {'model_en':model_en,
                 'model_es':model_es,
                 'model_de':model_de,
-                'model_pt':model_pt}
+                'model_pt':model_pt,
+                'model_fr':model_fr}
 
 class Sentence:
     'Sentence class. Instantiates a sentence object from a string sentence'
-    supported_languages = ['en', 'es', 'de', 'pt']
+    supported_languages = ['en', 'es', 'de', 'pt', 'fr']
     def __init__(self, sentence, **kwargs):
         self.sentence = self.clean_sentence(sentence)
         'Get optional arguments or use default arguments'
@@ -42,6 +45,8 @@ class Sentence:
             self.good_tags = kwargs.get('good_tags')
         else:
             self.good_tags = ['NOUN','PROPN']
+        if self.lang not in self.supported_languages:
+            raise ValueError('Language not supported!')
 
     def clean_sentence(self, sentence):
         'Cleans sentence'
@@ -112,7 +117,7 @@ class Sentence:
         return self.get_ngrams(self.get_pos_tagged_tokens())
 
     def get_term_candidates(self):
-        'Filter pos-tagged ngrams to get candidate terms'
+        'Instantiate CandidateTerms class to get final term candidates from pos-tagged n-grams'
         ptn = self.get_pos_tagged_ngrams()
         terms = CandidateTerms(self.sentence,
                                ptn, good_tags=self.good_tags).get_terms()
