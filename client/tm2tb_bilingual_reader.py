@@ -13,7 +13,6 @@ class BilingualReader:
     'Reads parallel bilingual data files'
     extensions = ['.csv', '.mqxliff', '.mxliff', '.tmx', '.xlsx']
     def __init__(self, path, fn):
-        #todo: change 'path, fn' to 'file_path'
         self.file_path = os.path.join(path, fn)
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
@@ -44,7 +43,6 @@ class BilingualReader:
 
     def get_bitext(self):
         'Get bitext from file content'
-        #todo: add length validation. src and trg lengths cant be too disimilar
         bitext = self.get_file_content()
         bitext.columns = ['src', 'trg']
         bitext = bitext.dropna()
@@ -71,7 +69,7 @@ class CsvReader:
         return content
 
     def validate_csv_content(self, content):
-        'Validate nrows and ncols' 
+        'Validate nrows and ncols'
         content = content.dropna()
         n_cols = len(content.columns)
         n_rows = len(content)
@@ -204,6 +202,7 @@ class XlsxReader:
 
     def validate_sheet(self, sheet):
         'Validates nrows and ncolumns'
+        # Get all cells from all rows
         if sheet.max_column > self.max_col:
             max_col_e = '.xlsx file has {} columns. It must have 2 columns.'
             raise ValueError(max_col_e.format(sheet.max_column))
