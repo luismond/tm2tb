@@ -1,34 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-TM2TB Sentence class
+TM2TB Sentence class. Implements string cleaning and validation methods.
 """
 import re
 from langdetect import detect
-import es_core_news_sm
-import en_core_web_sm
-import de_core_news_sm
-import pt_core_news_sm
-import fr_core_news_sm
-from tm2tb_client.tm2tb_candidate_terms import CandidateTerms
-
-model_en = en_core_web_sm.load()
-model_es = es_core_news_sm.load()
-model_de = de_core_news_sm.load()
-model_pt = pt_core_news_sm.load()
-model_fr = fr_core_news_sm.load()
-spacy_models = {'model_en':model_en,
-                'model_es':model_es,
-                'model_de':model_de,
-                'model_pt':model_pt,
-                'model_fr':model_fr}
 
 class Sentence:
-    'Sentence class. Instantiates a sentence object from a string sentence'
+    """
+    Takes a string representing a sentence.
+    Instantiates a sentence object from a string representing a sentence.
+    Implements methods to minimally clean and validate a string representing a sentence.
+    Returns a minimally cleaned string representing a sentence.
+    """
     supported_languages = ['en', 'es', 'de', 'pt', 'fr']
     def __init__(self, sentence, **kwargs):
-        self.sentence = self.clean_sentence(sentence)
-        'Get optional arguments or use default arguments'
+        self.sentence = sentence
+        self.kwargs = kwargs
+        self.sentence_min_length = 40
+        self.sentence_max_length = 400
+        self.min_non_alpha_ratio = .25
+
+        #todo: find a better way to pass kwargs
         if 'ngrams_min' in kwargs.keys():
             self.ngrams_min = kwargs.get('ngrams_min')
         else:
@@ -37,21 +30,26 @@ class Sentence:
             self.ngrams_max = kwargs.get('ngrams_max')
         else:
             self.ngrams_max = 3
-        if 'lang' in kwargs.keys():
-            self.lang = kwargs.get('lang')
-        else:
-            self.lang = detect(self.sentence)
+       
         if 'good_tags' in kwargs.keys():
             self.good_tags = kwargs.get('good_tags')
         else:
             self.good_tags = ['NOUN','PROPN']
-        if self.lang not in self.supported_languages:
-            raise ValueError('Language not supported!')
+        if 'bad_tags' in kwargs.keys():
+            self.bad_tags = kwargs.get('bad_tags')
+        else:
+            self.bad_tags = ['X', 'SCONJ', 'CCONJ', 'VERB']
 
-    def clean_sentence(self, sentence):
-        'Cleans sentence'
+    def get_clean_sentence(self):
+        sentence = self.sentence
+        """
+        Performs cleaning and validation operations
+        before attempting to return string representing a sentence.
+        """
         def normalize_space_chars(sentence):
-            'Replaces weird spaces with normal space'
+            """
+            Replaces all spaces with normal spaces.
+            """
             ords = [9, 10, 13, 32, 160]
             for char in sentence:
                 if ord(char) in ords:
@@ -59,14 +57,18 @@ class Sentence:
             return sentence
 
         def normalize_space_seqs(sentence):
-            'Finds sequences of more than one space, returns one space'
+            """
+            Finds sequences of more than one space, returns one space.
+            """
             def repl(match):
                 return ' '
             sentence = re.sub(r"(\s+)", repl, sentence)
             return sentence
 
         def normalize_apostrophe(sentence):
-            'Replace curved apostrophe with straight apostrophe'
+            """
+            Replaces curved apostrophe with straight apostrophe.
+            """
             def repl(sentence):
                 groups = sentence.groups()
                 return '{}{}{}'.format(groups[0],"'s", groups[2])
@@ -74,52 +76,46 @@ class Sentence:
             return re.sub(pattern, repl, sentence)
 
         def normalize_newline(sentence):
-            'Replaces hard coded newlines with normal newline symbol'
+            """
+            Replaces hard coded newlines with normal newline symbol.
+            """
             def repl(sentence):
                 groups = sentence.groups()
                 return '{}{}{}'.format(groups[0],"\n", groups[2])
             pattern = r"(.)(\n|\\n|\\\n|\\\\n|\\\\\n)(.)"
             return re.sub(pattern, repl, sentence)
 
+        def validate_sentence(sentence):
+            """
+            Validates a sequence of characters representing a sentence.
+            """
+            alpha = len([char for char in sentence if char.isalpha()])
+            if alpha==0:
+                raise ValueError('No alphanumeric chars found!')
+            non_alpha = len([char for char in sentence
+                             if not char.isalpha() and not char==' '])
+            non_alpha_ratio = non_alpha/alpha
+            if non_alpha_ratio >= self.min_non_alpha_ratio:
+                raise ValueError('Too many non-alpha chars!')
+            if len(sentence) <= self.sentence_min_length:
+                raise ValueError('Sentence is too short!')
+            if len(sentence) >= self.sentence_max_length:
+                raise ValueError('Sentence is too long!')
+            if 'http' in sentence:
+                raise ValueError('Cannot process http addresses!')
+            if sentence.isdigit():
+                raise ValueError('Sentence contains only numbers!')
+            if 'lang' in self.kwargs.keys():
+                self.lang = self.kwargs.get('lang')
+            else:
+                self.lang = detect(sentence)
+            if self.lang not in self.supported_languages:
+                raise ValueError('Language not supported!')
+            return sentence
+        
         sentence = normalize_space_chars(sentence)
         sentence = normalize_space_seqs(sentence)
         sentence = normalize_apostrophe(sentence)
         sentence = normalize_newline(sentence)
+        sentence = validate_sentence(sentence)
         return sentence
-
-    def get_doc(self):
-        'Instantiate a spacy sentence object from raw text'
-        spacy_model = spacy_models['model_{}'.format(self.lang)]
-        return spacy_model(self.sentence)
-
-    def get_tokens(self):
-        'Get token and part-of-speech from each token in sentence'
-        return [token.text for token in self.get_doc()]
-
-    def get_pos_tagged_tokens(self):
-        'Get token and part-of-speech from each token in sentence'
-        return [(token.text, token.pos_) for token in self.get_doc()]
-
-    def get_ngrams(self, seq):
-        'Get n-grams from any sequence'
-        min_ = self.ngrams_min
-        max_ = self.ngrams_max
-        ngrams = [list(zip(*[seq[i:] for i in range(n)]))
-                  for n in range(min_, max_+1)]
-        return [ng for ngl in ngrams for ng in ngl]
-
-    def get_token_ngrams(self):
-        'Get n-grams from sentence tokens'
-        return self.get_ngrams(self.get_tokens())
-
-    def get_pos_tagged_ngrams(self):
-        'Get n-grams from pos-tagged tokens'
-        return self.get_ngrams(self.get_pos_tagged_tokens())
-
-    def get_term_candidates(self):
-        'Instantiate CandidateTerms class to get final term candidates from pos-tagged n-grams'
-        ptn = self.get_pos_tagged_ngrams()
-        terms = CandidateTerms(self.sentence,
-                               ptn, good_tags=self.good_tags).get_terms()
-        return terms
-    
