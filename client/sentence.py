@@ -64,9 +64,9 @@ Get a list of ngrams sorted by distance to the sentence:
 
 Optional: keep only non-overlapping n-grams:
 >>> print(sn.get_non_overlapping_ngrams())
-[('pandas', 1.4132797718048096), ('form of birds', 1.4417308568954468), 
- ('wild', 1.5934118032455444), ('rodents', 1.596575140953064), 
- ('meat', 1.750525951385498), ('grasses', 1.775187611579895), 
+[('pandas', 1.4132797718048096), ('form of birds', 1.4417308568954468),
+ ('wild', 1.5934118032455444), ('rodents', 1.596575140953064),
+ ('meat', 1.750525951385498), ('grasses', 1.775187611579895),
  ('carrion', 1.8042054176330566), ('tubers', 1.9135468006134033)]
 
 """
@@ -285,39 +285,6 @@ class Sentence:
         if len(fptn)==0:
             raise ValueError('No pos-tagged_ngrams after filtering!')
         return fptn
-
-    def join_pos_tagged_ngrams(self):
-        """
-        Joins ngrams from filtered pos-tagged ngrams.
-        """
-        fptn = self.filter_pos_tagged_ngrams()
-        ngrams = [[token for (token, tag) in tuple_list] for tuple_list in fptn]
-
-        def rejoin_split_punct(token):
-            """
-            Joins apostrophes and other special characters to their token.
-            """
-            def repl(match):
-                groups = match.groups()
-                return '{}{}{}'.format(groups[0],groups[2], groups[3])
-            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
-            return re.sub(pattern, repl, token)
-
-        def validate_ngram_length(joined_ngrams):
-            """
-            Validates ngram lengths.
-            """
-            joined_ngrams = list(filter(lambda jn: len(jn)>=2, joined_ngrams))
-            if len(joined_ngrams)==0:
-                raise ValueError('No ngrams longer than min_ngram_length found!')
-            joined_ngrams = list(filter(lambda jn: len(jn)<=30, joined_ngrams))
-            if len(joined_ngrams)==0:
-                raise ValueError('No ngrams shorter than max_ngram_length found!')
-            return joined_ngrams
-
-        joined_ngrams = set(rejoin_split_punct(' '.join(t)) for t in ngrams)
-        joined_ngrams = validate_ngram_length(joined_ngrams)
-        return joined_ngrams
 
     def get_ngrams_to_sentence_distances(self):
         """
