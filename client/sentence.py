@@ -9,9 +9,9 @@ from langdetect import detect
 class Sentence:
     """
     Takes a string representing a sentence.
-    Instantiates a sentence object from a string representing a sentence.
-    Implements methods to minimally clean and validate a string representing a sentence.
-    Returns a minimally cleaned string representing a sentence.
+    Instantiates a sentence object.
+    Implements methods to preprocess and validate a sentence.
+    Returns a clean sentence.
     """
     supported_languages = ['en', 'es', 'de', 'pt', 'fr']
     def __init__(self, sentence, **kwargs):
@@ -21,30 +21,10 @@ class Sentence:
         self.sentence_max_length = 400
         self.min_non_alpha_ratio = .25
 
-        #todo: find a better way to pass kwargs
-        if 'ngrams_min' in kwargs.keys():
-            self.ngrams_min = kwargs.get('ngrams_min')
-        else:
-            self.ngrams_min = 1
-        if 'ngrams_max' in kwargs.keys():
-            self.ngrams_max = kwargs.get('ngrams_max')
-        else:
-            self.ngrams_max = 3
-       
-        if 'good_tags' in kwargs.keys():
-            self.good_tags = kwargs.get('good_tags')
-        else:
-            self.good_tags = ['NOUN','PROPN']
-        if 'bad_tags' in kwargs.keys():
-            self.bad_tags = kwargs.get('bad_tags')
-        else:
-            self.bad_tags = ['X', 'SCONJ', 'CCONJ', 'VERB']
-
-    def get_clean_sentence(self):
-        sentence = self.sentence
+    def preprocess_sentence(self):
         """
-        Performs cleaning and validation operations
-        before attempting to return string representing a sentence.
+        Normalizes spaces, apostrophes and special characters.
+        Validates sentence alphabetic-ratio, length, and language.
         """
         def normalize_space_chars(sentence):
             """
@@ -85,9 +65,9 @@ class Sentence:
             pattern = r"(.)(\n|\\n|\\\n|\\\\n|\\\\\n)(.)"
             return re.sub(pattern, repl, sentence)
 
-        def validate_sentence(sentence):
+        def validate_if_mostly_alphabetic(sentence):
             """
-            Validates a sequence of characters representing a sentence.
+            Checks if most of the characters in sentence are alphabetic.
             """
             alpha = len([char for char in sentence if char.isalpha()])
             if alpha==0:
@@ -97,14 +77,26 @@ class Sentence:
             non_alpha_ratio = non_alpha/alpha
             if non_alpha_ratio >= self.min_non_alpha_ratio:
                 raise ValueError('Too many non-alpha chars!')
+            if sentence.startswith('http'):
+                raise ValueError('Cannot process http addresses!')
+            if sentence.isdigit():
+                raise ValueError('Sentence contains only numbers!')
+            return sentence
+
+        def validate_length(sentence):
+            """
+            Checks if sentence length is between min and max length values.
+            """
             if len(sentence) <= self.sentence_min_length:
                 raise ValueError('Sentence is too short!')
             if len(sentence) >= self.sentence_max_length:
                 raise ValueError('Sentence is too long!')
-            if 'http' in sentence:
-                raise ValueError('Cannot process http addresses!')
-            if sentence.isdigit():
-                raise ValueError('Sentence contains only numbers!')
+            return sentence
+
+        def validate_lang(sentence):
+            """
+            Checks if sentence language is supported.
+            """
             if 'lang' in self.kwargs.keys():
                 self.lang = self.kwargs.get('lang')
             else:
@@ -112,10 +104,12 @@ class Sentence:
             if self.lang not in self.supported_languages:
                 raise ValueError('Language not supported!')
             return sentence
-        
-        sentence = normalize_space_chars(sentence)
+
+        sentence = normalize_space_chars(self.sentence)
         sentence = normalize_space_seqs(sentence)
         sentence = normalize_apostrophe(sentence)
         sentence = normalize_newline(sentence)
-        sentence = validate_sentence(sentence)
+        sentence = validate_if_mostly_alphabetic(sentence)
+        sentence = validate_length(sentence)
+        sentence = validate_lang(sentence)
         return sentence
