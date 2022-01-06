@@ -75,22 +75,18 @@ import re
 import json
 from langdetect import detect
 import requests
-#from tm2tb import SimilarityApi
 
 import es_dep_news_trf
 import en_core_web_trf
 import de_dep_news_trf
 import fr_dep_news_trf
-print('loading spacy models...')
+
+from tm2tb import DistanceApi
 model_en = en_core_web_trf.load()
 model_es = es_dep_news_trf.load()
 model_de = de_dep_news_trf.load()
 model_fr = fr_dep_news_trf.load()
-spacy_models = {'model_en':model_en,
-                'model_es':model_es,
-                'model_de':model_de,
-                'model_fr':model_fr}
-#%%
+
 class Sentence:
     """
     Takes a string representing a sentence.
@@ -226,7 +222,15 @@ class Sentence:
         """
         Passes a language to instantiate a spAcy object representing a sentence.
         """
-        spacy_model = spacy_models['model_{}'.format(self.lang)]
+        if self.lang=='en':
+            spacy_model = model_en
+        if self.lang=='es':
+            spacy_model = model_es
+        if self.lang=='de':
+            spacy_model = model_de
+        if self.lang=='fr':
+            spacy_model = model_fr
+
         spacy_doc = spacy_model(self.clean_sentence)
         return spacy_doc
 
@@ -290,17 +294,10 @@ class Sentence:
             raise ValueError('No pos-tagged_ngrams after filtering!')
         return fptn
 
-    def get_ngrams_to_sentence_distances(self):
+    def get_joined_ngrams(self):
         """
         Joins and validates ngrams.
-        Sends joined ngrams and sentence to similarity server.
-        Gets a sorted list of tuples representing ngrams and their distances
-        to the sentence.
         """
-
-        fptn = self.filter_pos_tagged_ngrams()
-        ngrams = [[token for (token, tag) in tuple_list] for tuple_list in fptn]
-
         def rejoin_split_punct(token):
             """
             Joins apostrophes and other special characters to their token.
@@ -311,41 +308,79 @@ class Sentence:
             pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
             return re.sub(pattern, repl, token)
 
-        def validate_ngram_length(joined_ngrams):
-            """
-            Validates ngram lengths.
-            """
-            joined_ngrams = list(filter(lambda jn: len(jn)>=2, joined_ngrams))
-            if len(joined_ngrams)==0:
-                raise ValueError('No ngrams longer than min_ngram_length found!')
-            joined_ngrams = list(filter(lambda jn: len(jn)<=30, joined_ngrams))
-            if len(joined_ngrams)==0:
-                raise ValueError('No ngrams shorter than max_ngram_length found!')
-            return joined_ngrams
-
-        def get_best_ngrams_local(seq1, seq2):
-            params = json.dumps(
-                {'seq1':[seq1],
-                'seq2':seq2,
-                'diversity':self.diversity,
-                'top_n':self.top_n})
-            response = SimilarityApi(params).get_top_sentence_ngrams()
-            return response
-
-        def get_best_ngrams_remote(seq1, seq2):
-            params = json.dumps(
-                {'seq1':[seq1],
-                'seq2':seq2,
-                'diversity':self.diversity,
-                'top_n':self.top_n})
-            url = 'http://0.0.0.0:5000/sim_api'
-            response = requests.post(url=url, json=params).json()
-            data = json.loads(response)
-            return data
-        
+        fptn = self.filter_pos_tagged_ngrams()
+        ngrams = [[token for (token, tag) in tuple_list] for tuple_list in fptn]
         joined_ngrams = set(rejoin_split_punct(' '.join(t)) for t in ngrams)
-        joined_ngrams = validate_ngram_length(joined_ngrams)  
-        #if self.server_mode=='remote':
-        return get_best_ngrams_remote(self.sentence, joined_ngrams)
-        # if self.server_mode=='local':  
-        #     return get_best_ngrams_local(self.sentence, joined_ngrams)
+
+        # gets ngrams longer than min len
+        joined_ngrams = list(filter(lambda jn: len(jn)>=self.ngrams_chars_min, joined_ngrams))
+        if len(joined_ngrams)==0:
+            raise ValueError('No ngrams longer than min_ngram_length found!')
+
+        # gets ngrams shorter than max len
+        joined_ngrams = list(filter(lambda jn: len(jn)<=self.ngrams_chars_max, joined_ngrams))
+        if len(joined_ngrams)==0:
+            raise ValueError('No ngrams shorter than max_ngram_length found!')
+
+        return joined_ngrams
+
+    def get_ngrams_to_sentence_distances(self):
+        """
+        Sends joined ngrams and sentence to distance server.
+        Gets a sorted list of tuples representing ngrams and their distances
+        to the sentence.
+        """
+        def get_best_ngrams_local():
+            params = json.dumps(
+               {'seq1':[self.sentence],
+                'seq2':self.get_joined_ngrams(),
+                'diversity':self.diversity,
+                'top_n':self.top_n})
+            best_ngrams = DistanceApi(params).get_top_sentence_ngrams()
+            return best_ngrams
+
+        def get_best_ngrams_remote():
+            params = json.dumps(
+                {'seq1':[self.sentence],
+                 'seq2':self.get_joined_ngrams(),
+                 'diversity':self.diversity,
+                 'top_n':self.top_n,
+                 'query_type':'ngrams_to_sentence'})
+            url = 'http://0.0.0.0:5000/distance_api'
+            response = requests.post(url=url, json=params).json()
+            best_ngrams = json.loads(response)
+            return best_ngrams
+
+        if self.server_mode=='remote':
+            best_ngrams = get_best_ngrams_remote()
+        if self.server_mode=='local':
+            best_ngrams = get_best_ngrams_local()
+        return best_ngrams
+
+    def get_non_overlapping_ngrams(self):
+        """
+        Takes sorted list of tuples (ngram, distance_to_sentence),
+        from closest to farthest and the sentence.
+        Returns closest ngrams that do not overlap with farther ngrams.
+        Sentence: 'Race to the finish line!'
+        Filtered ngrams: [('finish line', 0.1), ('finish', 0.2), ('line', 0.22)]
+        'Finish line' is the closest ngram to the sentence.
+        We want to avoid having also 'finish' and 'line'.
+        """
+        nsd = self.get_ngrams_to_sentence_distances()
+        sentence = self.clean_sentence
+        nsd_new = []
+        for tup in nsd:
+            ngram = tup[0]
+            def repl(match):
+                return ' '
+            pattern = r"(^|\s|\W)({})($|\s|\W)".format(ngram)
+            matches = re.findall(pattern, sentence)
+            sentence = re.sub(pattern, repl, sentence)
+            if len(matches)==0:
+                pass
+            else:
+                nsd_new.append(tup)
+        if len(nsd_new)==0:
+            raise ValueError('No ngrams left after removing overlapping ngrams!')
+        return nsd_new
