@@ -75,12 +75,13 @@ import re
 import json
 from langdetect import detect
 import requests
+#from tm2tb import SimilarityApi
 
 import es_dep_news_trf
 import en_core_web_trf
 import de_dep_news_trf
 import fr_dep_news_trf
-
+print('loading spacy models...')
 model_en = en_core_web_trf.load()
 model_es = es_dep_news_trf.load()
 model_de = de_dep_news_trf.load()
@@ -89,7 +90,7 @@ spacy_models = {'model_en':model_en,
                 'model_es':model_es,
                 'model_de':model_de,
                 'model_fr':model_fr}
-
+#%%
 class Sentence:
     """
     Takes a string representing a sentence.
@@ -104,6 +105,9 @@ class Sentence:
         self.sentence_min_length = 40
         self.sentence_max_length = 400
         self.min_non_alpha_ratio = .25
+        self.diversity = kwargs.get('diversity')
+        self.top_n = kwargs.get('top_n')
+        self.server_mode = kwargs.get('server_mode')
         if 'ngrams_min' in kwargs.keys():
             self.ngrams_min = kwargs.get('ngrams_min')
         else:
@@ -319,46 +323,29 @@ class Sentence:
                 raise ValueError('No ngrams shorter than max_ngram_length found!')
             return joined_ngrams
 
+        def get_best_ngrams_local(seq1, seq2):
+            params = json.dumps(
+                {'seq1':[seq1],
+                'seq2':seq2,
+                'diversity':self.diversity,
+                'top_n':self.top_n})
+            response = SimilarityApi(params).get_top_sentence_ngrams()
+            return response
+
+        def get_best_ngrams_remote(seq1, seq2):
+            params = json.dumps(
+                {'seq1':[seq1],
+                'seq2':seq2,
+                'diversity':self.diversity,
+                'top_n':self.top_n})
+            url = 'http://0.0.0.0:5000/sim_api'
+            response = requests.post(url=url, json=params).json()
+            data = json.loads(response)
+            return data
+        
         joined_ngrams = set(rejoin_split_punct(' '.join(t)) for t in ngrams)
-        joined_ngrams = validate_ngram_length(joined_ngrams)
-
-        url = 'http://0.0.0.0:5000/sim_api'
-        params = json.dumps(
-            {'seq1':joined_ngrams,
-            'seq2':[self.clean_sentence]})
-        response = requests.post(url=url, json=params).json()
-        ngram_to_sentence_distances = json.loads(response)
-        ngram_to_sentence_distances = [(a, c) for (a, b, c) in ngram_to_sentence_distances]
-        ngram_to_sentence_distances = sorted(ngram_to_sentence_distances, key=lambda t: t[1])
-        return ngram_to_sentence_distances
-
-    def get_non_overlapping_ngrams(self):
-        """
-        Takes sorted list of tuples (ngram, distance_to_sentence),
-        from closest to farthest and the sentence.
-
-        Returns closest ngrams that do not overlap with farther ngrams.
-
-        Sentence: 'Race to the finish line!'
-        Filtered ngrams: [('finish line', 0.1), ('finish', 0.2), ('line', 0.22)]
-
-        'Finish line' is the closest ngram to the sentence.
-        We want to avoid having also 'finish' and 'line'.
-        """
-        nsd = self.get_ngrams_to_sentence_distances()
-        sentence = self.clean_sentence
-        nsd_new = []
-        for tup in nsd:
-            ngram = tup[0]
-            def repl(match):
-                return ' '
-            pattern = r"(^|\s|\W)({})($|\s|\W)".format(ngram)
-            matches = re.findall(pattern, sentence)
-            sentence = re.sub(pattern, repl, sentence)
-            if len(matches)==0:
-                pass
-            else:
-                nsd_new.append(tup)
-        if len(nsd_new)==0:
-            raise ValueError('No ngrams left after removing overlapping ngrams!')
-        return nsd_new
+        joined_ngrams = validate_ngram_length(joined_ngrams)  
+        #if self.server_mode=='remote':
+        return get_best_ngrams_remote(self.sentence, joined_ngrams)
+        # if self.server_mode=='local':  
+        #     return get_best_ngrams_local(self.sentence, joined_ngrams)
