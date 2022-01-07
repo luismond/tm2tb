@@ -81,12 +81,13 @@ import en_core_web_trf
 import de_dep_news_trf
 import fr_dep_news_trf
 
-from tm2tb import DistanceApi
+#from tm2tb import DistanceApi
 model_en = en_core_web_trf.load()
 model_es = es_dep_news_trf.load()
 model_de = de_dep_news_trf.load()
 model_fr = fr_dep_news_trf.load()
 
+#%%
 class Sentence:
     """
     Takes a string representing a sentence.
