@@ -5,7 +5,7 @@ tm2tb is an automatic bilingual terminology extraction Python module.
 
 # Basic example
 
-Extract bilingual n-grams from a source and a target sentence
+Extract bilingual n-grams from a source sentence and a target sentence (or short paragraph).
 
 
     from tm2tb import BiSentence
