@@ -64,6 +64,20 @@ bilingual_ngrams = BiSentence(src_sentence, trg_sentence).get_bilingual_ngrams()
 ('tubers', 'tubérculos', 0.2779)]
 ```
 
+Select the range of ngrams
+
+```python
+
+bn = bisentence.get_bilingual_ngrams(ngrams_min=2, ngrams_max=3)
+```
+```python
+>>> print(bn)
+
+[('shrub leaves', 'hojas de arbustos', 0.1677)
+('panda bear', 'oso panda', 0.2348)
+('bamboo shoots', 'hojas de bambú', 0.4259)]
+```
+
 Extract bilingual n-grams from a bilingual document:
 
 ```python
