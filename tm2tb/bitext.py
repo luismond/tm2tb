@@ -58,18 +58,17 @@ class BiText:
             try:
                 src_row = self.bitext.iloc[i]['src']
                 trg_row = self.bitext.iloc[i]['trg']
-                bisentence = BiSentence(src_row,
-                            trg_row,
-                            ngrams_min=self.ngrams_min,
-                            ngrams_max=self.ngrams_max,
-                            good_tags=self.good_tags)
-                row_biterms = bisentence.get_terms_similarity()
+                bs = BiSentence(src_row, trg_row)
+                row_biterms = bs.filter_bilingual_ngrams()
+                print(row_biterms)
                 all_biterms.append(row_biterms)
             except:
                 pass
-        # Flatten list of lists
-        all_biterms = [tup for tup_list in all_biterms for tup in tup_list]
-        return all_biterms
+
+        bitext_bilingual_ngrams = pd.concat(all_biterms)
+        bitext_bilingual_ngrams = bitext_bilingual_ngrams.reset_index()
+        #all_biterms = [tup for tup_list in all_biterms for tup in tup_list]
+        return bitext_bilingual_ngrams
 
     def get_bitext_biterms_fast(self):
         'Get biterms from document. Faster, but less precise'
@@ -103,19 +102,20 @@ class BiText:
             'Compare src and trg cands, get similarities'
             url = 'http://0.0.0.0:5000/model'
             params = json.dumps({
-                'src_cands':src_cands,
-                'trg_cands':trg_cands})
+                'seq1':src_cands,
+                'seq2':trg_cands})
             response = requests.post(url=url, json=params).json()
             data = json.loads(response)
             return data
 
         return get_terms_similarity(top_src_c, top_trg_c)
 
-    def get_closest_biterms(self, biterms):
+    def get_closest_biterms(self):
         'Get top candidates in both directions'
         # Make dataframe
-        biterms = pd.DataFrame(biterms)
-        biterms.columns = ['src','trg','distance']
+        biterms = self.get_bitext_biterms_precise()
+        #biterms = pd.DataFrame(biterms)
+        #biterms.columns = ['src','trg','distance']
         # Group by source, get the closest target candidate
         btg = pd.DataFrame([df.loc[df['distance'].idxmin()]
                             for (src_cand, df) in list(biterms.groupby('src'))])
@@ -124,16 +124,16 @@ class BiText:
                             for (trg_cand, df) in list(btg.groupby('trg'))])
         return btg
 
-    def filter_biterms(self, biterms):
-        'Filtering conditions'
-        # Filter by length
-        biterms = biterms[biterms['src'].str.len() >= self.chars_min]
-        biterms = biterms[biterms['trg'].str.len() >= self.chars_min]
-        biterms = biterms[biterms['src'].str.len() <= self.chars_max]
-        biterms = biterms[biterms['trg'].str.len() <= self.chars_max]
-        # Filter by distance
-        biterms = biterms[biterms['distance'] <= self.sim_min]
-        return biterms
+    # def filter_biterms(self, biterms):
+    #     'Filtering conditions'
+    #     # Filter by length
+    #     biterms = biterms[biterms['src'].str.len() >= self.chars_min]
+    #     biterms = biterms[biterms['trg'].str.len() >= self.chars_min]
+    #     biterms = biterms[biterms['src'].str.len() <= self.chars_max]
+    #     biterms = biterms[biterms['trg'].str.len() <= self.chars_max]
+    #     # Filter by distance
+    #     biterms = biterms[biterms['distance'] <= self.sim_min]
+    #     return biterms
 
     def save_biterms(self, biterms):
         'Save extracted biterms'
@@ -141,14 +141,14 @@ class BiText:
         biterms_path = os.path.join(self.path, '{}_tb.csv'.format(self.file_name))
         biterms.to_csv(biterms_path, encoding='utf-8-sig', index=False)
 
-    def get_biterms(self):
-        'Get biterms from bitext'
-        if self.pref == 'fast':
-            biterms = self.get_bitext_biterms_fast()
-        if self.pref == 'precise':
-            biterms = self.get_bitext_biterms_precise()
-        biterms = self.get_closest_biterms(biterms)
-        biterms = self.filter_biterms(biterms)
-        self.save_biterms(biterms)
-        return biterms
+    # def get_biterms(self):
+    #     'Get biterms from bitext'
+    #     if self.pref == 'fast':
+    #         biterms = self.get_bitext_biterms_fast()
+    #     if self.pref == 'precise':
+    #         biterms = self.get_bitext_biterms_precise()
+    #     biterms = self.get_closest_biterms(biterms)
+    #     biterms = self.filter_biterms(biterms)
+    #     self.save_biterms(biterms)
+    #     return biterms
         
