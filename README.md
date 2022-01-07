@@ -1,4 +1,4 @@
-# TM2TB
+# tm2tb
 tm2tb is a bilingual terminology extraction Python module.
 
 ## Basic examples
@@ -100,7 +100,7 @@ In the tests folder you can find bilingual translation files in many languages, 
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
-# TM2TB.com
+# tm2tb.com
 For bilingual documents, the functionality of tm2tb is also available through the web app: www.tm2tb.com
 
 ![](https://github.com/luismond/tm2tb_web_app/blob/main/static/tm2tb_example_en_es.png?raw=true)
