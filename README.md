@@ -35,7 +35,9 @@ trg_sentence = """
 
 
 bilingual_ngrams = BiSentence(src_sentence, trg_sentence).get_bilingual_ngrams()
+```
 
+```python
 >>> print(bilingual_ngrams)
 
 [('China', 'China', 0.0
