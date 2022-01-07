@@ -64,7 +64,7 @@ bilingual_ngrams = BiSentence(src_sentence, trg_sentence).get_bilingual_ngrams()
 ('tubers', 'tubérculos', 0.2779)]
 ```
 
-Select the range of ngrams
+Select the range of ngrams:
 
 ```python
 
@@ -77,6 +77,42 @@ bilingual_ngrams = bisentence.get_bilingual_ngrams(ngrams_min=2, ngrams_max=3)
 ('panda bear', 'oso panda', 0.2348)
 ('bamboo shoots', 'hojas de bambú', 0.4259)]
 ```
+Use Parts-of-Speech tags to select ngrams. For example, we can get only nouns:
+
+```python
+
+bilingual_ngrams = bisentence.get_bilingual_ngrams(good_tags = ['NOUN'])
+```
+
+```python
+print(bilingual_ngrams)
+
+[('panda', 'panda', 0.0)
+('body', 'cuerpo', 0.0289)
+('diet', 'dieta', 0.0554)
+('name', 'nombre', 0.0596)
+('order', 'orden', 0.0817)
+('eggs', 'huevos', 0.0999)
+('meat', 'carne', 0.1013)
+('birds', 'aves', 0.1198)
+('oranges', 'naranjas', 0.1226)]
+```
+
+Or, for example, we can get adjectives:
+
+```python
+bilingual_ngrams = bisentence.get_bilingual_ngrams(good_tags = ['ADJ'])
+```
+
+```python
+print(bilingual_ngrams)
+
+[('red', 'rojo', 0.0605)
+('white', 'blanco', 0.0925)
+('giant', 'gigante', 0.128)
+('black', 'negro', 0.1802)
+('native', 'originario', 0.3153)]
+```
 
 Extract bilingual n-grams from a bilingual document:
 
@@ -88,6 +124,9 @@ filename = 'translation.csv'
 
 bilingual_ngrams = BiText(path, filename).get_bilingual_ngrams()
 ```
+
+
+
 
 # Main features
 
