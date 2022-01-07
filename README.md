@@ -70,37 +70,32 @@ Extract bilingual n-grams from a source sentence and a target sentence (or short
 - Find translation pairs of single terms, multi-word nouns, short phrases and collocations, which you can reuse conveniently.
 - Extract term bases automatically and use them in your CAT tool of choice to get automatic suggestions.
 
-# File formats supported:
+# Bilingual file formats supported:
 
-- Bilingual .tmx files
-- Bilingual .csv (in two columns for source and target)
-- .mqxliff (memoQ)
-- .mxliff (memsource)
+- .tmx
+- .mqxliff
+- .mxliff
+- .csv (with two columns for source and target)
+- .xlsx (with two columns for source and target)
 
 # Languages supported:
 
-- Any combination of English, Spanish, German, Italian, Portuguese and French.
+- Any combination of English, Spanish, German, and French.
 
 # Adding more languages:
 
 - Adding more languages is easy: just add a .txt file with stop words to the folder data/stopwords
-
-# Language detection:
-
-- The app uses [langdetect](https://pypi.org/project/langdetect/) to detect the file's languages automatically
-
+- 
 # Tests
 
 In the tests folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
-
-# Installing locally
-
-If you want to build the application locally, clone the repository, install the requirements in a virtual environment and add your own [Microsoft Azure Cognitive Services key](https://portal.azure.com/) to these two files: `get_azure_translation.py` and `get_azure_dict_lookup.py`.
-
 
 # License
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
+
 # TM2TB.com
 The functionality of tm2tb is available also through the web app www.tm2tb.com
+
+![](https://github.com/luismond/tm2tb/blob/main/static/tm2tb_example_en_es.png?raw=true)
