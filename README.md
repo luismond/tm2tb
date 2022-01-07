@@ -3,7 +3,7 @@ tm2tb is a bilingual terminology extraction Python module.
 
 ## Basic examples
 
-Extract bilingual n-grams from a source sentence and a target sentence (or short paragraphs).
+Extract bilingual n-grams from a source sentence and a target sentence (or short paragraphs):
 
 ```python
 from tm2tb import BiSentence
@@ -64,7 +64,7 @@ bilingual_ngrams = BiSentence(src_sentence, trg_sentence).get_bilingual_ngrams()
 ('tubers', 'tubérculos', 0.2779)]
 ```
 
-Extract bilingual n-grams from a bilingual document.
+Extract bilingual n-grams from a bilingual document:
 
 ```python
 from tm2tb import BiText
