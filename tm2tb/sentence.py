@@ -4,73 +4,7 @@
 TM2TB Sentence class.
 Implements methods for string cleaning, validation, tokenization,
 ngram generation and ngram selection.
-
-Take a raw string and instantiate a Sentence object:
->>> string = 'Giant pandas in the wild will occasionally eat other grasses,
-wild tubers, or even meat in the form of birds, rodents, or carrion.'
->>> sn = Sentence(string)
-
-Inspect the Sentence language:
->>> print(sn.lang)
-'en'
-
-Get the sentence tokens:
->>> print(sn.get_tokens())
-['Giant', 'pandas', 'in', 'the', 'wild', 'will', 'occasionally', 'eat',
- 'other', 'grasses', ',', 'wild', 'tubers', ',', 'or', 'even', 'meat',
- 'in', 'the', 'form', 'of', 'birds', ',', 'rodents', ',', 'or', 'carrion', '.']
-
-
-Get POS-tagged tokens:
->>> print(sn.get_pos_tagged_tokens())
-[('Giant', 'ADJ'), ('pandas', 'NOUN'), ('in', 'ADP'), ('the', 'DET'),
- ('wild', 'NOUN'), ('will', 'AUX'), ('occasionally', 'ADV'), ('eat', 'VERB'),
- ('other', 'ADJ'), ('grasses', 'NOUN'), (',', 'PUNCT'), ('wild', 'ADJ'),
- ('tubers', 'NOUN'), (',', 'PUNCT'), ('or', 'CCONJ'), ('even', 'ADV'),
- ('meat', 'NOUN'), ('in', 'ADP'), ('the', 'DET'), ('form', 'NOUN'),
- ('of', 'ADP'), ('birds', 'NOUN'), (',', 'PUNCT'), ('rodents', 'NOUN'),
- (',', 'PUNCT'), ('or', 'CCONJ'), ('carrion', 'NOUN'), ('.', 'PUNCT')]
-
-
-Get token ngrams (default length: 1-3):
->>> print(sn.get_token_ngrams())
-[('Giant',), ('pandas',), ('in',), ('the',)...
- ('Giant', 'pandas'), ('pandas', 'in'), ('in', 'the'), ('the', 'wild')...
- ('Giant', 'pandas', 'in'), ('pandas', 'in', 'the'), ('in', 'the', 'wild')...]
-
-
-Get n-grams of POS-tagged tokens:
->>> print(sn.get_pos_tagged_ngrams())
-[(('Giant', 'ADJ'),), (('pandas', 'NOUN'),), (('in', 'ADP'),)...
- (('Giant', 'ADJ'), ('pandas', 'NOUN')), (('pandas', 'NOUN'), ('in', 'ADP'))...]
-
-
-Allow tags at the start, middle or end of ngram to filter POS-tagged tokens.
-(default: NOUN and PROPN allowed at the start and end):
->>> print(sn.filter_pos_tagged_ngrams())
-[(('pandas', 'NOUN'),), (('wild', 'NOUN'),), (('grasses', 'NOUN'),),
- (('tubers', 'NOUN'),), (('meat', 'NOUN'),), (('form', 'NOUN'),),
- (('birds', 'NOUN'),), (('rodents', 'NOUN'),), (('carrion', 'NOUN'),),
- (('form', 'NOUN'), ('of', 'ADP'), ('birds', 'NOUN'))]
-
-
-Get a list of ngrams sorted by distance to the sentence:
->>> print(sn.get_ngrams_to_sentence_distances())
-[('pandas', 1.4132797718048096), ('form of birds', 1.4417308568954468),
- ('birds', 1.4918220043182373), ('wild', 1.5934118032455444),
- ('rodents', 1.596575140953064), ('meat', 1.750525951385498),
- ('form', 1.7685511112213135), ('grasses', 1.775187611579895),
- ('carrion', 1.8042054176330566), ('tubers', 1.9135468006134033)]
-
-Optional: keep only non-overlapping n-grams:
->>> print(sn.get_non_overlapping_ngrams())
-[('pandas', 1.4132797718048096), ('form of birds', 1.4417308568954468),
- ('wild', 1.5934118032455444), ('rodents', 1.596575140953064),
- ('meat', 1.750525951385498), ('grasses', 1.775187611579895),
- ('carrion', 1.8042054176330566), ('tubers', 1.9135468006134033)]
-
 """
-
 import re
 import json
 from langdetect import detect
@@ -78,16 +12,18 @@ import requests
 
 import es_dep_news_trf
 import en_core_web_trf
+#import en_core_web_sm
 import de_dep_news_trf
 import fr_dep_news_trf
 
-#from tm2tb import DistanceApi
+# #from tm2tb import DistanceApi
 model_en = en_core_web_trf.load()
+#model_en = en_core_web_sm.load()
 model_es = es_dep_news_trf.load()
 model_de = de_dep_news_trf.load()
 model_fr = fr_dep_news_trf.load()
 
-#%%
+
 class Sentence:
     """
     Takes a string representing a sentence.
@@ -96,37 +32,16 @@ class Sentence:
     Returns a clean sentence.
     """
     supported_languages = ['en', 'es', 'de', 'fr']
+
     def __init__(self, sentence, **kwargs):
         self.sentence = sentence
         self.kwargs = kwargs
-        self.sentence_min_length = 40
-        self.sentence_max_length = 400
-        self.min_non_alpha_ratio = .25
-        self.diversity = kwargs.get('diversity')
-        self.top_n = kwargs.get('top_n')
-        self.server_mode = kwargs.get('server_mode')
-        if 'ngrams_min' in kwargs.keys():
-            self.ngrams_min = kwargs.get('ngrams_min')
-        else:
-            self.ngrams_min = 1
-        if 'ngrams_max' in kwargs.keys():
-            self.ngrams_max = kwargs.get('ngrams_max')
-        else:
-            self.ngrams_max = 3
-        self.ngrams_chars_min = 2
-        self.ngrams_chars_max = 30
-        if 'good_tags' in kwargs.keys():
-            self.good_tags = kwargs.get('good_tags')
-        else:
-            self.good_tags = ['NOUN','PROPN']
-        if 'bad_tags' in kwargs.keys():
-            self.bad_tags = kwargs.get('bad_tags')
-        else:
-            self.bad_tags = ['X', 'SCONJ', 'CCONJ', 'AUX']
-
         self.clean_sentence = self.preprocess()
 
-    def preprocess(self):
+    def preprocess(self,
+                   min_non_alpha_ratio = .25,
+                   sentence_min_length = 40,
+                   sentence_max_length = 600):
         """
         Normalizes spaces, apostrophes and special characters.
         Validates sentence alphabetic-ratio, length, and language.
@@ -180,7 +95,7 @@ class Sentence:
             non_alpha = len([char for char in sentence
                              if not char.isalpha() and not char==' '])
             non_alpha_ratio = non_alpha/alpha
-            if non_alpha_ratio >= self.min_non_alpha_ratio:
+            if non_alpha_ratio >= min_non_alpha_ratio:
                 raise ValueError('Too many non-alpha chars!')
             if sentence.startswith('http'):
                 raise ValueError('Cannot process http addresses!')
@@ -192,9 +107,9 @@ class Sentence:
             """
             Checks if sentence length is between min and max length values.
             """
-            if len(sentence) <= self.sentence_min_length:
+            if len(sentence) <= sentence_min_length:
                 raise ValueError('Sentence is too short!')
-            if len(sentence) >= self.sentence_max_length:
+            if len(sentence) >= sentence_max_length:
                 raise ValueError('Sentence is too long!')
             return sentence
 
@@ -247,7 +162,10 @@ class Sentence:
         """
         return [(token.text, token.pos_) for token in self.get_spacy_doc()]
 
-    def get_ngrams(self, seq):
+    def get_ngrams(self,
+                   seq,
+                   ngrams_min = 1,
+                   ngrams_max = 3):
         """
         Generates a list of ngrams from a list, from ngrams_min to ngrams_max:
 
@@ -255,31 +173,44 @@ class Sentence:
         [(a), (b), (c), (d), (a,b), (b,c), (c,d), (a, b, c), (b, c, d)]
         """
         ngrams = [list(zip(*[seq[i:] for i in range(n)]))
-                  for n in range(self.ngrams_min, self.ngrams_max+1)]
+                  for n in range(ngrams_min, ngrams_max+1)]
         return [ng for ngl in ngrams for ng in ngl]
 
-    def get_token_ngrams(self):
+    def get_token_ngrams(self, **kwargs):
         """
         Generates a list of ngrams from a list of spAcy tokens.
         """
-        return self.get_ngrams(self.get_tokens())
+        return self.get_ngrams(self.get_tokens(), **kwargs)
 
-    def get_pos_tagged_ngrams(self):
+    def get_pos_tagged_ngrams(self, **kwargs):
         """
          Generates a list of ngrams from a list of pos-tagged tokens.
         """
-        return self.get_ngrams(self.get_pos_tagged_tokens())
+        return self.get_ngrams(self.get_pos_tagged_tokens(), **kwargs)
 
-    def filter_pos_tagged_ngrams(self):
+    def filter_pos_tagged_ngrams(self,
+                                 good_tags = ['NOUN','PROPN'],
+                                 bad_tags = ['X', 'SCONJ', 'CCONJ', 'AUX'],
+                                 ngrams_chars_min = 2,
+                                 ngrams_chars_max = 50):
         """
         Filters pos-tagged ngrams.
         """
         ptn = self.get_pos_tagged_ngrams()
 
-        #good_tags = self.good_tags
+        # get ngrams longer than ngrams_chars_min
+        fptn = list(filter(lambda tl: len(tl[0][0])>ngrams_chars_min, ptn))
+        if len(fptn)==0:
+            raise ValueError('No ngrams longer than min_ngram_length found!')
+
+        # gets ngrams shorter than ngrams_chars_max
+        fptn = list(filter(lambda tl: len(tl[0][0])<ngrams_chars_max, fptn))
+        if len(fptn)==0:
+            raise ValueError('No ngrams shorter than max_ngram_length found!')
+
         #keep ngrams with good tags at start and end
-        fptn = list(filter(lambda tl: tl[0][1] in self.good_tags
-                          and tl[-1:][0][1] in self.good_tags, ptn))
+        fptn = list(filter(lambda tl: tl[0][1] in good_tags
+                          and tl[-1:][0][1] in good_tags, fptn))
         #drop ngrams with punctuation
         fptn = list(filter(lambda tl: tl[0][0].isalpha()
                           and tl[-1:][0][0].isalpha(), fptn))
@@ -290,14 +221,14 @@ class Sentence:
                           any(t[0] in npa for t in tl) is False, fptn))
 
         fptn = list(filter(lambda tl:
-                          any(t[1] in self.bad_tags for t in tl) is False, fptn))
+                          any(t[1] in bad_tags for t in tl) is False, fptn))
         if len(fptn)==0:
             raise ValueError('No pos-tagged_ngrams after filtering!')
         return fptn
 
     def get_joined_ngrams(self):
         """
-        Joins and validates ngrams.
+        Joins ngrams.
         """
         def rejoin_split_punct(token):
             """
@@ -311,54 +242,36 @@ class Sentence:
 
         fptn = self.filter_pos_tagged_ngrams()
         ngrams = [[token for (token, tag) in tuple_list] for tuple_list in fptn]
-        joined_ngrams = set(rejoin_split_punct(' '.join(t)) for t in ngrams)
-
-        # gets ngrams longer than min len
-        joined_ngrams = list(filter(lambda jn: len(jn)>=self.ngrams_chars_min, joined_ngrams))
-        if len(joined_ngrams)==0:
-            raise ValueError('No ngrams longer than min_ngram_length found!')
-
-        # gets ngrams shorter than max len
-        joined_ngrams = list(filter(lambda jn: len(jn)<=self.ngrams_chars_max, joined_ngrams))
-        if len(joined_ngrams)==0:
-            raise ValueError('No ngrams shorter than max_ngram_length found!')
-
+        joined_ngrams = list(set(rejoin_split_punct(' '.join(t)) for t in ngrams))
         return joined_ngrams
 
-    def get_ngrams_to_sentence_distances(self):
+    def get_ngrams_to_sentence_distances(self,
+                                         server_mode='remote',
+                                         diversity=.5,
+                                         top_n=10):
         """
         Sends joined ngrams and sentence to distance server.
         Gets a sorted list of tuples representing ngrams and their distances
         to the sentence.
         """
-        def get_best_ngrams_local():
-            params = json.dumps(
-               {'seq1':[self.sentence],
-                'seq2':self.get_joined_ngrams(),
-                'diversity':self.diversity,
-                'top_n':self.top_n})
-            best_ngrams = DistanceApi(params).get_top_sentence_ngrams()
-            return best_ngrams
+        params = json.dumps(
+            {'seq1':[self.sentence],
+             'seq2':self.get_joined_ngrams(),
+             'diversity':diversity,
+             'top_n':top_n,
+             'query_type':'ngrams_to_sentence'})
 
-        def get_best_ngrams_remote():
-            params = json.dumps(
-                {'seq1':[self.sentence],
-                 'seq2':self.get_joined_ngrams(),
-                 'diversity':self.diversity,
-                 'top_n':self.top_n,
-                 'query_type':'ngrams_to_sentence'})
+        if server_mode=='remote':
             url = 'http://0.0.0.0:5000/distance_api'
             response = requests.post(url=url, json=params).json()
             best_ngrams = json.loads(response)
-            return best_ngrams
 
-        if self.server_mode=='remote':
-            best_ngrams = get_best_ngrams_remote()
-        if self.server_mode=='local':
-            best_ngrams = get_best_ngrams_local()
+        if server_mode=='local':
+            best_ngrams = DistanceApi(params).get_top_sentence_ngrams()
+
         return best_ngrams
 
-    def get_non_overlapping_ngrams(self):
+    def get_non_overlapping_ngrams(self, **kwargs):
         """
         Takes sorted list of tuples (ngram, distance_to_sentence),
         from closest to farthest and the sentence.
@@ -368,7 +281,7 @@ class Sentence:
         'Finish line' is the closest ngram to the sentence.
         We want to avoid having also 'finish' and 'line'.
         """
-        nsd = self.get_ngrams_to_sentence_distances()
+        nsd = self.get_ngrams_to_sentence_distances(**kwargs)
         sentence = self.clean_sentence
         nsd_new = []
         for tup in nsd:
