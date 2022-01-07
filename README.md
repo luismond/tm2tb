@@ -1,5 +1,5 @@
 # TM2TB
-www.tm2tb.com is an automatic terminology extraction Python web app, built upon Flask, Gensim, Pandas and Microsoft Azure's cognitive services. 
+tm2tb is an automatic bilingual terminology extraction Python module.
 
 ![](https://github.com/luismond/tm2tb/blob/main/static/tm2tb_example_en_es.png?raw=true)
 
@@ -40,3 +40,6 @@ If you want to build the application locally, clone the repository, install the 
 # License
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
+
+# TM2TB.com
+The functionality of tm2tb is available also through the web app www.tm2tb.com
