@@ -9,4 +9,3 @@ from tm2tb.ngrams import Ngrams
 from tm2tb.bisentence import BiSentence
 from tm2tb.bilingual_reader import BilingualReader
 from tm2tb.bitext import BiText
-
