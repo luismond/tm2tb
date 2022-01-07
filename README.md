@@ -5,9 +5,9 @@ tm2tb is a bilingual terminology extraction Python module.
 
 Extract bilingual n-grams from a source sentence and a target sentence (or short paragraphs).
 
-
-    from tm2tb import BiSentence
-
+```
+from tm2tb import BiSentence
+```
     src_sentence = """ 
                     The giant panda, also known as the panda bear (or simply the panda), 
                     is a bear native to South Central China. It is characterised 
