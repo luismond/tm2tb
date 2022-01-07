@@ -103,7 +103,7 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 # TM2TB.com
 For bilingual documents, the functionality of tm2tb is also available through the web app: www.tm2tb.com
 
-![](https://github.com/luismond/tm2tb/blob/main/static/tm2tb_example_en_es.png?raw=true)
+![](https://github.com/luismond/tm2tb_web_app/blob/main/static/tm2tb_example_en_es.png?raw=true)
 
 # Credits
 ## Libraries
