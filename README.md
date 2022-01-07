@@ -76,12 +76,11 @@ bilingual_ngrams = BiText(path, filename).get_bilingual_ngrams()
 ```
 
 # Main features
-- Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a bilingual term base in a few seconds.
-- Leverage your translation memories to create terminology repositories, which can be used to customize machine translation systems.
-- Find translation pairs of single terms, multi-word nouns, short phrases and collocations, which you can reuse conveniently.
-- Extract term bases automatically and use them in your CAT tool of choice to get automatic suggestions.
 
-# Bilingual file formats supported:
+- Find translation pairs of single terms, multi-word nouns, short phrases and collocations from short paragraphs or bilingual documents.
+- Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a list of bilingual terms.
+
+# Bilingual file formats supported
 
 - .tmx
 - .mqxliff
@@ -89,9 +88,9 @@ bilingual_ngrams = BiText(path, filename).get_bilingual_ngrams()
 - .csv (with two columns for source and target)
 - .xlsx (with two columns for source and target)
 
-# Languages supported:
+# Languages supported
 
-- Any combination of English, Spanish, German, and French.
+English, Spanish, German, and French.
 
 # Tests
 
@@ -101,8 +100,20 @@ In the tests folder you can find bilingual translation files in many languages, 
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
-
 # TM2TB.com
 For bilingual documents, the functionality of tm2tb is also available through the web app: www.tm2tb.com
 
 ![](https://github.com/luismond/tm2tb/blob/main/static/tm2tb_example_en_es.png?raw=true)
+
+# Credits
+## Libraries
+- `spAcy`: Tokenization, POS-tagging
+- `sentence-transformers`: Sentence and n-gram embeddings
+- `faiss`: fast similarity search
+- `xmltodict`: parsing of XML file formats (.xliff, .tmx, etc.)
+
+## Embedding models
+- [LaBSE](https://huggingface.co/sentence-transformers/LaBSE) (Language-agnostic Bert Sentence Embeddings)
+
+## Other credits:
+- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and Maximal Marginal Relevance
