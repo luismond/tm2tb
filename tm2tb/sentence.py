@@ -11,17 +11,17 @@ from langdetect import detect
 import requests
 
 import es_dep_news_trf
-import en_core_web_trf
-#import en_core_web_sm
-import de_dep_news_trf
-import fr_dep_news_trf
+# import en_core_web_trf
+import en_core_web_sm
+# import de_dep_news_trf
+# import fr_dep_news_trf
 
 # #from tm2tb import DistanceApi
-model_en = en_core_web_trf.load()
-#model_en = en_core_web_sm.load()
+#model_en = en_core_web_trf.load()
+model_en = en_core_web_sm.load()
 model_es = es_dep_news_trf.load()
-model_de = de_dep_news_trf.load()
-model_fr = fr_dep_news_trf.load()
+# model_de = de_dep_news_trf.load()
+# model_fr = fr_dep_news_trf.load()
 
 
 class Sentence:
@@ -40,8 +40,8 @@ class Sentence:
 
     def preprocess(self,
                    min_non_alpha_ratio = .25,
-                   sentence_min_length = 40,
-                   sentence_max_length = 600):
+                   sentence_min_length = 100,
+                   sentence_max_length = 900):
         """
         Normalizes spaces, apostrophes and special characters.
         Validates sentence alphabetic-ratio, length, and language.
@@ -134,9 +134,9 @@ class Sentence:
         sentence = validate_lang(sentence)
         return sentence
 
-    def get_spacy_doc(self):
+    def get_pos_tagged_tokens(self):
         """
-        Passes a language to instantiate a spAcy object representing a sentence.
+        Gets a list of tuples [(token, part-of-speech)] from a spAcy doc.
         """
         if self.lang=='en':
             spacy_model = model_en
@@ -148,55 +148,36 @@ class Sentence:
             spacy_model = model_fr
 
         spacy_doc = spacy_model(self.clean_sentence)
-        return spacy_doc
+        return [(token.text, token.pos_) for token in spacy_doc]
 
-    def get_tokens(self):
-        """
-        Gets a list of tokens from a spAcy object representing a sentence.
-        """
-        return [token.text for token in self.get_spacy_doc()]
 
-    def get_pos_tagged_tokens(self):
-        """
-        Gets a list of tuples [(token, part-of-speech)] from a spAcy doc.
-        """
-        return [(token.text, token.pos_) for token in self.get_spacy_doc()]
-
-    def get_ngrams(self,
-                   seq,
-                   ngrams_min = 1,
-                   ngrams_max = 3):
-        """
-        Generates a list of ngrams from a list, from ngrams_min to ngrams_max:
-
-        print(get_ngrams([a, b, c, d], 1, 3))
-        [(a), (b), (c), (d), (a,b), (b,c), (c,d), (a, b, c), (b, c, d)]
-        """
-        ngrams = [list(zip(*[seq[i:] for i in range(n)]))
-                  for n in range(ngrams_min, ngrams_max+1)]
-        return [ng for ngl in ngrams for ng in ngl]
-
-    def get_token_ngrams(self, **kwargs):
-        """
-        Generates a list of ngrams from a list of spAcy tokens.
-        """
-        return self.get_ngrams(self.get_tokens(), **kwargs)
-
-    def get_pos_tagged_ngrams(self, **kwargs):
+    def get_pos_tagged_ngrams(self, good_tags = ['NOUN','PROPN'],
+                              bad_tags = ['X', 'SCONJ', 'CCONJ', 'AUX'],
+                              ngrams_chars_min = 2,
+                              ngrams_chars_max = 50,
+                              **kwargs):
         """
          Generates a list of ngrams from a list of pos-tagged tokens.
         """
-        return self.get_ngrams(self.get_pos_tagged_tokens(), **kwargs)
+        def get_ngrams(
+                       seq,
+                       ngrams_min = 1,
+                       ngrams_max = 3):
+            """
+            Generates a list of ngrams from a list, from ngrams_min to ngrams_max:
 
-    def filter_pos_tagged_ngrams(self,
-                                 good_tags = ['NOUN','PROPN'],
-                                 bad_tags = ['X', 'SCONJ', 'CCONJ', 'AUX'],
-                                 ngrams_chars_min = 2,
-                                 ngrams_chars_max = 50):
+            print(get_ngrams([a, b, c, d], 1, 3))
+            [(a), (b), (c), (d), (a,b), (b,c), (c,d), (a, b, c), (b, c, d)]
+            """
+            ngrams = [list(zip(*[seq[i:] for i in range(n)]))
+                      for n in range(ngrams_min, ngrams_max+1)]
+            return [ng for ngl in ngrams for ng in ngl]
+        
+        ptn = get_ngrams(self.get_pos_tagged_tokens(), **kwargs)
+
         """
         Filters pos-tagged ngrams.
         """
-        ptn = self.get_pos_tagged_ngrams()
 
         # get ngrams longer than ngrams_chars_min
         fptn = list(filter(lambda tl: len(tl[0][0])>ngrams_chars_min, ptn))
@@ -222,41 +203,48 @@ class Sentence:
 
         fptn = list(filter(lambda tl:
                           any(t[1] in bad_tags for t in tl) is False, fptn))
+        
+        
+        def get_joined_ngram(tup):
+            def rejoin_split_punct(token):
+                """
+                Joins apostrophes and other special characters to their token.
+                """
+                def repl(match):
+                    groups = match.groups()
+                    return '{}{}{}'.format(groups[0],groups[2], groups[3])
+                pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
+                return re.sub(pattern, repl, token)
+            
+            jn = ' '.join([t[0] for t in tup])
+            jn = rejoin_split_punct(jn)
+            return jn
+        
+        fptn = [(tup, get_joined_ngram(tup)) for tup in fptn]    
         if len(fptn)==0:
             raise ValueError('No pos-tagged_ngrams after filtering!')
+                    
         return fptn
 
-    def get_joined_ngrams(self):
-        """
-        Joins ngrams.
-        """
-        def rejoin_split_punct(token):
-            """
-            Joins apostrophes and other special characters to their token.
-            """
-            def repl(match):
-                groups = match.groups()
-                return '{}{}{}'.format(groups[0],groups[2], groups[3])
-            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
-            return re.sub(pattern, repl, token)
-
-        fptn = self.filter_pos_tagged_ngrams()
-        ngrams = [[token for (token, tag) in tuple_list] for tuple_list in fptn]
-        joined_ngrams = list(set(rejoin_split_punct(' '.join(t)) for t in ngrams))
-        return joined_ngrams
 
     def get_ngrams_to_sentence_distances(self,
                                          server_mode='remote',
-                                         diversity=.5,
-                                         top_n=10):
+                                         diversity=.7,
+                                         top_n=35,
+                                         **kwargs):
         """
         Sends joined ngrams and sentence to distance server.
         Gets a sorted list of tuples representing ngrams and their distances
         to the sentence.
         """
+        ptn = self.get_pos_tagged_ngrams(**kwargs)
+        joined_ngrams = [b for (a,b) in ptn]
+        seq1 = self.clean_sentence
+        seq2 = joined_ngrams
+        
         params = json.dumps(
-            {'seq1':[self.sentence],
-             'seq2':self.get_joined_ngrams(),
+            {'seq1':[seq1],
+             'seq2':seq2,
              'diversity':diversity,
              'top_n':top_n,
              'query_type':'ngrams_to_sentence'})
