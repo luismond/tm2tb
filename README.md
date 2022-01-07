@@ -68,10 +68,10 @@ Select the range of ngrams
 
 ```python
 
-bn = bisentence.get_bilingual_ngrams(ngrams_min=2, ngrams_max=3)
+bilingual_ngrams = bisentence.get_bilingual_ngrams(ngrams_min=2, ngrams_max=3)
 ```
 ```python
->>> print(bn)
+>>> print(bilingual_ngrams)
 
 [('shrub leaves', 'hojas de arbustos', 0.1677)
 ('panda bear', 'oso panda', 0.2348)
