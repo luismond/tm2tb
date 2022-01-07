@@ -82,10 +82,6 @@ Extract bilingual n-grams from a source sentence and a target sentence (or short
 
 - Any combination of English, Spanish, German, and French.
 
-# Adding more languages:
-
-- Adding more languages is easy: just add a .txt file with stop words to the folder data/stopwords
-- 
 # Tests
 
 In the tests folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
@@ -96,6 +92,6 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 
 
 # TM2TB.com
-The functionality of tm2tb is available also through the web app www.tm2tb.com
+For bilingual documents, the functionality of tm2tb is also available through the web app: www.tm2tb.com
 
 ![](https://github.com/luismond/tm2tb/blob/main/static/tm2tb_example_en_es.png?raw=true)
