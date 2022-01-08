@@ -16,7 +16,8 @@ import en_core_web_trf
 import de_dep_news_trf
 import fr_dep_news_trf
 
-# #from tm2tb import DistanceApi
+#from tm2tb import DistanceApi
+#model_en = en_core_web_sm.load()
 model_en = en_core_web_trf.load()
 model_es = es_dep_news_trf.load()
 model_de = de_dep_news_trf.load()
@@ -133,7 +134,6 @@ class Sentence:
         sentence = validate_lang(sentence)
         return sentence
 
-
     def get_spacy_model(self):
         'Gets spacy model'
         if self.lang=='en':
@@ -182,7 +182,7 @@ class Sentence:
         pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
                                                       for token in pos_ngram), pos_ngrams)
 
-        # Keep ngrams where any of the middle elements' text is not in exclude punct
+        # Keep ngrams where any of the middle elements' text is in exclude punct
         pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
                                                        for token in pos_ngram[1:-1])), pos_ngrams)
 
@@ -212,15 +212,17 @@ class Sentence:
                    server_mode='remote',
                    diversity=.8,
                    top_n=50,
-                   overlap=True):
+                   overlap=True,
+                   **kwargs):
         'Get those ngrams that are most similar to the sentence'
 
         sentence = self.clean_sentence
-        result = self.get_ngrams()
+        ngrams = self.get_ngrams(**kwargs)
+        ngrams = list(set(ngrams['joined_ngrams']))
 
         params = json.dumps(
             {'seq1':[sentence],
-             'seq2':result['joined_ngrams'],
+             'seq2':ngrams,
              'diversity':diversity,
              'top_n':top_n,
              'query_type':'ngrams_to_sentence'})
