@@ -26,7 +26,7 @@ class BiText:
         return bitext
 
     def get_bitext_biterms_precise(self):
-        'Get biterms from each bisentence (slower, but more precise)'
+        'Get biterms from each bisentence (slower, but more precise'
         all_biterms = []
         for i in range(len(self.bitext)):
             try:
@@ -36,7 +36,6 @@ class BiText:
                 row_biterms = bs.get_bilingual_ngrams(diversity=.5,
                                                       top_n=25,
                                                       min_distance=.4)
-                print(row_biterms)
                 all_biterms.append(row_biterms)
             except:
                 pass
@@ -54,10 +53,12 @@ class BiText:
         for i in range(len(bitext)):
             try:
                 src_sn = Sentence(bitext.iloc[i]['src'])
-                all_src_c.append(src_sn.get_joined_ngrams())
+                src_ngrams, _ = zip(*src_sn.get_top_ngrams())
+                all_src_c.append(src_ngrams)
 
                 trg_sn = Sentence(bitext.iloc[i]['trg'])
-                all_trg_c.append(trg_sn.get_joined_ngrams())
+                trg_ngrams, _ = zip(*trg_sn.get_top_ngrams())
+                all_trg_c.append(trg_ngrams)
             except:
                 pass
         all_src_c = [c for cl in all_src_c for c in cl]
@@ -101,7 +102,7 @@ class BiText:
                             for (trg_ngram, df) in list(bilingual_ngrams.groupby('trg'))])
 
         # Filter by distance
-        #bilingual_ngrams = bilingual_ngrams[bilingual_ngrams['distance'] <= min_distance]
+        bilingual_ngrams = bilingual_ngrams[bilingual_ngrams['distance'] <= min_distance]
         return bilingual_ngrams
 
     def save_biterms(self, biterms):
