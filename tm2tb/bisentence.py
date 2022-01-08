@@ -22,13 +22,16 @@ class BiSentence:
     def get_src_ngrams(self, **kwargs):
         'Gets best ngrams from source sentence'
         sn = Sentence(self.src_sentence)
-        src_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
+        src_ngrams = sn.get_top_ngrams(**kwargs)
+        #src_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
         return [a for (a,b) in src_ngrams]
 
     def get_trg_ngrams(self, **kwargs):
         'Gets best ngrams from target sentence'
         sn = Sentence(self.trg_sentence)
-        trg_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
+        trg_ngrams = sn.get_top_ngrams(**kwargs)
+
+        #trg_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
         return [a for (a,b) in trg_ngrams]
 
     def get_bilingual_ngrams(self,
@@ -72,7 +75,7 @@ class BiSentence:
 
         # Filter by distance
         bilingual_ngrams = bilingual_ngrams[bilingual_ngrams['distance'] <= min_distance]
-
+        bilingual_ngrams = bilingual_ngrams.sort_values(by='distance')
         # Validate bisentence
         if len(bilingual_ngrams)==0:
             raise ValueError('No similar bilingual_ngrams found!')
