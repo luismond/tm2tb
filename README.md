@@ -81,7 +81,7 @@ Use Parts-of-Speech tags to select ngrams. For example, we can get only nouns:
 
 ```python
 
-bilingual_ngrams = bisentence.get_bilingual_ngrams(good_tags = ['NOUN'])
+bilingual_ngrams = bisentence.get_bilingual_ngrams(include_pos = ['NOUN'])
 ```
 
 ```python
@@ -101,7 +101,7 @@ print(bilingual_ngrams)
 Or, for example, we can get adjectives:
 
 ```python
-bilingual_ngrams = bisentence.get_bilingual_ngrams(good_tags = ['ADJ'])
+bilingual_ngrams = bisentence.get_bilingual_ngrams(include_pos = ['ADJ'])
 ```
 
 ```python
