@@ -182,7 +182,7 @@ class Sentence:
         pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
                                                       for token in pos_ngram), pos_ngrams)
 
-        # Keep ngrams where any of the middle elements' text is in exclude punct
+        # Keep ngrams where any of the middle elements' text is not in exclude punct
         pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
                                                        for token in pos_ngram[1:-1])), pos_ngrams)
 
