@@ -23,16 +23,13 @@ class BiSentence:
         'Gets best ngrams from source sentence'
         sn = Sentence(self.src_sentence)
         src_ngrams = sn.get_top_ngrams(**kwargs)
-        #src_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
-        return [a for (a,b) in src_ngrams]
+        return src_ngrams
 
     def get_trg_ngrams(self, **kwargs):
         'Gets best ngrams from target sentence'
         sn = Sentence(self.trg_sentence)
         trg_ngrams = sn.get_top_ngrams(**kwargs)
-
-        #trg_ngrams = sn.get_non_overlapping_ngrams(**kwargs)
-        return [a for (a,b) in trg_ngrams]
+        return trg_ngrams
 
     def get_bilingual_ngrams(self,
                              min_distance=.44,
@@ -41,8 +38,8 @@ class BiSentence:
         'Aligns source and target ngrams'
 
         #Get src & trg ngrams
-        src_ngrams = self.get_src_ngrams(**kwargs)
-        trg_ngrams = self.get_trg_ngrams(**kwargs)
+        src_ngrams, _ = zip(*self.get_src_ngrams(**kwargs))
+        trg_ngrams, _ = zip(*self.get_trg_ngrams(**kwargs))
 
         # Sends src & trg ngrams to distance api
         params = json.dumps(
