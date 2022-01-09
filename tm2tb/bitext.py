@@ -12,97 +12,137 @@ import requests
 from tm2tb import Sentence
 from tm2tb import BiSentence
 from tm2tb import BilingualReader
+from tm2tb import DistanceApi
 
 class BiText:
-    'Represents a collection of BiSentence objects'
+    """
+    Implements methods for extracting bilingual ngrams from a bilingual text.
+    """
     def __init__(self, path, file_name):
         self.path = path
         self.file_name = file_name
-        self.bitext = self.get_bitext()
+        self.bitext = self.get_bitext_doc()
 
-    def get_bitext(self):
-        'Get bitext'
+    def get_bitext_doc(self):
+        """
+        Returns
+        -------
+        bitext : Pandas dataframe
+            Two column dataframe.
+                Column 1: "src". Represents a collection of sentences.
+                Column 2: "trg". Represents a collection of translated sentences.
+        """
         bitext = BilingualReader(self.path, self.file_name).get_bitext()
         return bitext
 
-    def get_bitext_biterms_precise(self):
-        'Get biterms from each bisentence (slower, but more precise'
-        all_biterms = []
+    def get_bitext_bilingual_ngrams_precise(self,
+                                         server_mode="local",
+                                         diversity=.5,
+                                         top_n=8,
+                                         min_seq_to_seq_sim=.8):
+        'Get biterms from each bisentence (slower, but more precise).'
+        all_bilingual_ngrams = []
         for i in range(len(self.bitext)):
             try:
                 src_row = self.bitext.iloc[i]['src']
                 trg_row = self.bitext.iloc[i]['trg']
-                bs = BiSentence(src_row, trg_row)
-                row_biterms = bs.get_bilingual_ngrams(diversity=.5,
-                                                      top_n=25,
-                                                      min_distance=.4)
-                all_biterms.append(row_biterms)
+                bisentence = BiSentence(src_row, trg_row)
+                bilingual_ngrams = bisentence.get_bilingual_ngrams(
+                                                        server_mode=server_mode,
+                                                        diversity=diversity,
+                                                        top_n=top_n)
+                all_bilingual_ngrams.append(bilingual_ngrams)
             except:
                 pass
-        bitext_bilingual_ngrams = pd.concat(all_biterms)
+        if len(all_bilingual_ngrams)==0:
+            raise ValueError("No bitext_bilingual_ngrams from get_bitext_bilingual_ngrams_precise")
+
+        bitext_bilingual_ngrams = pd.concat(all_bilingual_ngrams)
         bitext_bilingual_ngrams = bitext_bilingual_ngrams.drop_duplicates(subset='src')
         bitext_bilingual_ngrams = bitext_bilingual_ngrams.reset_index()
-        bitext_bilingual_ngrams = self.filter_bilingual_ngrams(bitext_bilingual_ngrams)
+        bitext_bilingual_ngrams = self.filter_bilingual_ngrams(bitext_bilingual_ngrams,
+                                                               min_seq_to_seq_sim)
         return bitext_bilingual_ngrams
 
-    def get_bitext_biterms_fast(self):
-        'Get biterms from document. Faster, but less precise'
-        bitext = self.bitext
-        all_src_c = []
-        all_trg_c = []
-        for i in range(len(bitext)):
-            try:
-                src_sn = Sentence(bitext.iloc[i]['src'])
-                src_ngrams, _ = zip(*src_sn.get_top_ngrams())
-                all_src_c.append(src_ngrams)
+    def get_bitext_bilingual_ngrams_fast(self,
+                                         server_mode="local",
+                                         diversity=.5,
+                                         top_n=8,
+                                         min_seq_to_seq_sim=.8):
+        """
+        Get biterms from document. Faster, but less precise.
+        Instead of extracting bilingual ngrams from each sentence pair,
+        get all source ngrams and all trg ngrams, and query their similarity.
+        """
 
-                trg_sn = Sentence(bitext.iloc[i]['trg'])
-                trg_ngrams, _ = zip(*trg_sn.get_top_ngrams())
-                all_trg_c.append(trg_ngrams)
-            except:
-                pass
-        all_src_c = [c for cl in all_src_c for c in cl]
-        all_trg_c = [c for cl in all_trg_c for c in cl]
-        top_src_c = [a for (a,b) in cnt(all_src_c).most_common(1000)]
-        top_trg_c = [a for (a,b) in cnt(all_trg_c).most_common(1000)]
-        distance_api_mode = 'remote'
+        # get all src & trg ngrams
+        def get_src_trg_top_ngrams():
+            bitext_src_top_ngrams = []
+            bitext_trg_top_ngrams = []
+            for i in range(len(self.bitext)):
+                try:
+                    src_sentence = Sentence(self.bitext.iloc[i]['src'])
+                    src_top_ngrams, _ = zip(*src_sentence.get_top_ngrams(server_mode="local"))
+                    for ngram in src_top_ngrams:
+                        if not ngram in bitext_src_top_ngrams:
+                            bitext_src_top_ngrams.append(ngram)
 
-        # Sends src & trg ngrams to distance api
-        params = json.dumps(
-                {'seq1':top_trg_c,
-                'seq2':top_src_c,
-                'diversity':.5,
-                'top_n':8,#todo: remove
-                'query_type':'src_ngrams_to_trg_ngrams'})
+                    trg_sentence = Sentence(self.bitext.iloc[i]['trg'])
+                    trg_top_ngrams, _ = zip(*trg_sentence.get_top_ngrams(server_mode="local"))
+                    for ngram in trg_top_ngrams:
+                        if not ngram in bitext_trg_top_ngrams:
+                            bitext_trg_top_ngrams.append(ngram)
+                except:
+                    pass
+            if len(bitext_src_top_ngrams) == 0 or len(bitext_trg_top_ngrams)==0:
+                raise ValueError('No ngrams found, aborting.')
+            return bitext_src_top_ngrams, bitext_trg_top_ngrams
 
-        url = 'http://0.0.0.0:5000/distance_api'
-        response = requests.post(url=url, json=params).json()
+        bitext_src_top_ngrams, bitext_trg_top_ngrams = get_src_trg_top_ngrams()
 
-        if distance_api_mode=='remote':
-            bilingual_ngrams_distances = json.loads(response)
+        # Get src ngrams & trg ngrams similarity
+        def query_similarities(seq1, seq2, diversity, top_n):
+            params = json.dumps(
+                    {
+                        'seq1':seq1,
+                        'seq2':seq2,
+                        'diversity':diversity,#todo: remove
+                        'top_n':top_n,
+                        'query_type':'src_ngrams_to_trg_ngrams'
+                    })
+            if server_mode=='remote':
+                url = 'http://0.0.0.0:5000/distance_api'
+                response = requests.post(url=url, json=params).json()
+            if server_mode=='local':
+                response = DistanceApi(params).post()
+            max_seq_similarities = json.loads(response)
+            return max_seq_similarities
 
-        if distance_api_mode=='local':
-            bilingual_ngrams_distances = SimilarityApi(params).get_closest_sequence_elements()
+        bitext_bilingual_ngrams = query_similarities(bitext_src_top_ngrams,
+                                                     bitext_trg_top_ngrams,
+                                                     diversity,
+                                                     top_n)
+   
+        # filter by similarity and return best bilingual_ngrams
+        bitext_bilingual_ngrams = pd.DataFrame(bitext_bilingual_ngrams)
+        bitext_bilingual_ngrams.columns = ['src', 'trg', 'distance']
+        bitext_bilingual_ngrams = self.filter_bilingual_ngrams(bitext_bilingual_ngrams,
+                                                               min_seq_to_seq_sim)
+        return bitext_bilingual_ngrams
 
-        #Make bilingual_ngrams dataframe
-        bilingual_ngrams = pd.DataFrame(bilingual_ngrams_distances)
-        bilingual_ngrams.columns = ['src', 'trg', 'distance']
-        bilingual_ngrams = self.filter_bilingual_ngrams(bilingual_ngrams)
-        return bilingual_ngrams
-
-    def filter_bilingual_ngrams(self, bilingual_ngrams):
-        'Filter bilingual ngrams'
-        #min_distance = .5
-        # Group by source, get closest target ngram
+    def filter_bilingual_ngrams(self, bilingual_ngrams, min_seq_to_seq_sim):
+        'Filters bilingual ngrams'
+        #todo: change distance to similarity
+        # Group by source ngram, get most similar target ngram
         bilingual_ngrams = pd.DataFrame([df.loc[df['distance'].idxmin()]
                             for (src_ngram, df) in list(bilingual_ngrams.groupby('src'))])
 
-        # Group by target, get closest source ngram
+        # Group by target ngram, get most similar source ngram
         bilingual_ngrams = pd.DataFrame([df.loc[df['distance'].idxmin()]
                             for (trg_ngram, df) in list(bilingual_ngrams.groupby('trg'))])
 
-        # Filter by distance
-        bilingual_ngrams = bilingual_ngrams[bilingual_ngrams['distance'] <= min_distance]
+        # Filter by similarity
+        bilingual_ngrams = bilingual_ngrams[bilingual_ngrams['distance'] >= min_seq_to_seq_sim]
         return bilingual_ngrams
 
     def save_biterms(self, biterms):
