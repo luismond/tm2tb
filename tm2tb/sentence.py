@@ -10,32 +10,63 @@ import json
 from langdetect import detect
 import requests
 
+# import es_dep_news_trf
+# import en_core_web_trf
+# import de_dep_news_trf
+# import fr_dep_news_trf
+
+# model_en = en_core_web_trf.load()
+# model_es = es_dep_news_trf.load()
+# model_de = de_dep_news_trf.load()
+# model_fr = fr_dep_news_trf.load()
+
+#fast load
 import es_dep_news_trf
-import en_core_web_trf
-#import en_core_web_sm
-import de_dep_news_trf
-import fr_dep_news_trf
+import en_core_web_sm
+model_en = en_core_web_sm.load()
+model_es = es_dep_news_trf.load()
 
 #from tm2tb import DistanceApi
-#model_en = en_core_web_sm.load()
-model_en = en_core_web_trf.load()
-model_es = es_dep_news_trf.load()
-model_de = de_dep_news_trf.load()
-model_fr = fr_dep_news_trf.load()
 
 
 class Sentence:
+
     """
-    Takes a string representing a sentence.
-    Instantiates a sentence object.
-    Implements methods to preprocess and validate a sentence.
-    Returns a clean sentence.
+    A class to represent a sentence and its ngrams.
+
+    Attributes
+    ----------
+    sentence : str
+        Raw Unicode sentence, short text or paragraph.
+
+    lang : str
+        Detected language of the sentence.
+
+    clean_sentence : str
+        Preprocessed and cleaned sentence.
+
+    supported_languages : list
+        List of supported languages.
+
+    Methods
+    -------
+    preprocess():
+        Cleans and validates the sentence.
+
+    get_spacy_model():
+        Gets the the spaCy model corresponding to the sentence language.
+
+    get_ngrams(ngrams_min=, ngrams_max=, include_pos=, exclude_pos=)
+        Gets ngrams from the sentence.
+
+    get_top_ngrams(server_mode=, diversity=, top_n=, overlap=, **kwargs)
+        Gets the top_n ngrams that are most similar to the sentence.
     """
     supported_languages = ['en', 'es', 'de', 'fr']
 
-    def __init__(self, sentence, **kwargs):
+    def __init__(self, sentence):
         self.sentence = sentence
-        self.kwargs = kwargs
+        self.lang = detect(self.sentence)
         self.clean_sentence = self.preprocess()
 
     def preprocess(self,
@@ -45,7 +76,24 @@ class Sentence:
         """
         Normalizes spaces, apostrophes and special characters.
         Validates sentence alphabetic-ratio, length, and language.
+
+        Parameters
+        ----------
+        min_non_alpha_ratio : float, optional
+            DESCRIPTION. Minimum alphabetical characters ratio of sentence.
+        sentence_min_length : int, optional
+            DESCRIPTION. Sentence minimum length.
+        sentence_max_length : int, optional
+            DESCRIPTION. Sentence maximum length.
+
+
+        Returns
+        -------
+        str
+            String representing a preprocessed sentence.
+
         """
+
         def normalize_space_chars(sentence):
             """
             Replaces all spaces with normal spaces.
@@ -60,9 +108,9 @@ class Sentence:
             """
             Finds sequences of more than one space, returns one space.
             """
-            def repl(match):
-                return ' '
-            sentence = re.sub(r"(\s+)", repl, sentence)
+            # def repl(match):
+            #     return ' '
+            sentence = re.sub(r"(\s+)", ' ', sentence)
             return sentence
 
         def normalize_apostrophe(sentence):
@@ -117,10 +165,6 @@ class Sentence:
             """
             Checks if sentence language is supported.
             """
-            if 'lang' in self.kwargs.keys():
-                self.lang = self.kwargs.get('lang')
-            else:
-                self.lang = detect(sentence)
             if self.lang not in self.supported_languages:
                 raise ValueError('Language not supported!')
             return sentence
@@ -149,15 +193,47 @@ class Sentence:
     def get_ngrams(self,
                    ngrams_min = 1,
                    ngrams_max = 3,
-                   include_pos = ['NOUN','PROPN'],
-                   exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX']):
-        'Get ngrams with filtering options'
+                   include_pos = None,
+                   exclude_pos = None
+                   ):
+        """
+        Get ngrams from the sentence.
+
+        Parameters
+        ----------
+        ngrams_min : int, optional
+            DESCRIPTION. Minimum ngram sequence length.
+        ngrams_max : int, optional
+            DESCRIPTION. Maximum ngram sequence length.
+        include_pos : List, optional
+            DESCRIPTION. A list of POS-tags to delimit the ngrams.
+                        If None, the default value is ['NOUN', 'PROPN']
+        exclude_pos : List, optional
+            DESCRIPTION. A list of POS-tags to exclude from the ngrams.
+                        If None, the default value is ['X', 'SCONJ', 'CCONJ', 'AUX']
+
+        Returns
+        -------
+        dict
+            Dictionary representing ngrams, pos-tags and joined ngrams:
+                {
+                ngrams: ["red", "panda"],
+                tags: ["ADJ", "NOUN"],
+                joined_ngrams: ["red panda"]
+                }
+        """
+
         #include_punct = ["'", ":", "’", "’", "'", "™", "®", "%"]
         exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
                 '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
 
-        spacy_model = self.get_spacy_model()
-        doc = spacy_model(self.clean_sentence)
+        if include_pos is None:
+            include_pos = ['NOUN','PROPN']
+
+        if exclude_pos is None:
+            exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX']
+
+        doc = self.get_spacy_model()(self.clean_sentence)
 
         # Get text and part-of-speech tag for each token in document
         pos_tokens = [(token.text, token.pos_) for token in doc]
@@ -165,7 +241,6 @@ class Sentence:
         # Get ngrams from pos_tokens
         pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
                   for n in range(ngrams_min, ngrams_max+1))
-
         pos_ngrams = (ng for ngl in pos_ngrams for ng in ngl)
 
         # Keep ngrams where the first element's pos-tag
@@ -182,7 +257,7 @@ class Sentence:
         pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
                                                       for token in pos_ngram), pos_ngrams)
 
-        # Keep ngrams where any of the middle elements' text is in exclude punct
+        # Keep ngrams where none of the middle elements' text is in exclude punct
         pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
                                                        for token in pos_ngram[1:-1])), pos_ngrams)
 
@@ -194,9 +269,9 @@ class Sentence:
             pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
             return re.sub(pattern, repl, ngram)
 
-        result = {'ngrams':[],
-                  'tags':[],
-                  'joined_ngrams':[]}
+        result = {'ngrams':[], 
+                 'joined_ngrams':[],
+                 'tags':[],}
 
         for pos_ngram in pos_ngrams:
             ngram, tag = zip(*pos_ngram)
@@ -207,14 +282,33 @@ class Sentence:
 
         return result
 
-
     def get_top_ngrams(self,
-                   server_mode='remote',
-                   diversity=.8,
-                   top_n=50,
-                   overlap=True,
-                   **kwargs):
-        'Get those ngrams that are most similar to the sentence'
+                       server_mode='remote',
+                       diversity=.8,
+                       top_n=20,
+                       overlap=True,
+                       **kwargs):
+        """
+        Get the ngrams that are most similar to the sentence.
+
+        Parameters
+        ----------
+        server_mode : string, optional
+            DESCRIPTION. Defines if the similarity queries are done locally or remotely.
+        diversity : int, optional
+            DESCRIPTION. Diversity value for Maximal Marginal Relevance. The default is .8.
+        top_n : int, optional
+            DESCRIPTION. Number of best ngrams to return. The default is 20.
+        overlap : string, optional
+            DESCRIPTION. Defines if overlapping ngrams should be kept or dropped.
+        **kwargs : dict
+            DESCRIPTION. Same optional parameters as Sentence.get_ngrams()
+
+        Returns
+        -------
+        top_ngrams : List of tuples (ngram, value).
+            List of top_n ngrams that are most similar to the sentence.
+        """
 
         sentence = self.clean_sentence
         ngrams = self.get_ngrams(**kwargs)
@@ -227,12 +321,15 @@ class Sentence:
              'top_n':top_n,
              'query_type':'ngrams_to_sentence'})
 
-        url = 'http://0.0.0.0:5000/distance_api'
-        response = requests.post(url=url, json=params).json()
-        top_ngrams = [tuple(el) for el in json.loads(response)]
+        if server_mode=='remote':
+            url = 'http://0.0.0.0:5000/distance_api'
+            response = requests.post(url=url, json=params).json()
+            top_ngrams = [tuple(el) for el in json.loads(response)]
 
-        # if server_mode=='local':
-        #     top_ngrams = DistanceApi(params).get_top_ngrams()
+        if server_mode=='local':
+            response = DistanceApi(params).post()
+            top_ngrams = json.loads(response)
+            top_ngrams = [tuple(el) for el in json.loads(response)]
 
         # Look for top_ngrams in sentence, remove them from sentence.
         # If top_ngram not present in sentence, remove it from top_ngrams.
