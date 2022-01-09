@@ -13,7 +13,7 @@ from tm2tb import Sentence
 class BiSentence:
     """
     A class to represent a source sentence, a target sentence, and their ngrams.
-    Extracts from both sentences.
+    Extracts ngrams from both sentences.
     Aligns extracted ngrams (returning "bilingual ngrams").
 
     Attributes
