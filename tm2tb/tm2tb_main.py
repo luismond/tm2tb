@@ -28,7 +28,8 @@ class Tm2Tb:
                             ngrams_min=None,
                             ngrams_max=None,
                             include_pos=None,
-                            exclude_pos=None):
+                            exclude_pos=None,
+                            querier=None):
         """
         Get top_n most similar ngrams from a sentence.
 
@@ -75,7 +76,9 @@ class Tm2Tb:
         seq1_embeddings = model.encode([sn.clean_sentence])
         seq2_embeddings = model.encode(ngrams)
 
-        ngram_sentence_dists = cosine_similarity(seq2_embeddings, seq1_embeddings)
+        ngram_sentence_dists = cosine_similarity(seq2_embeddings,
+                                                 seq1_embeddings)
+        
         ngram_dists = cosine_similarity(seq2_embeddings)
 
         # Initialize candidates and choose best ngram
@@ -90,7 +93,6 @@ class Tm2Tb:
         for _ in range(min(top_n - 1, len(ngrams) - 1)):
             # Get distances within candidates and between candidates and selected ngrams
             candidate_similarities = ngram_sentence_dists[candidates_idx, :]
-
             target_similarities = np.max(ngram_dists[candidates_idx][:, best_ngrams_idx], axis=1)
 
             # Calculate MMR
@@ -104,33 +106,46 @@ class Tm2Tb:
             candidates_idx.remove(mmr_idx)
 
         # Get best ngrams
-        top_sentence_ngrams = [(ngrams[idx],
-                                round(float(ngram_sentence_dists.reshape(1, -1)[0][idx]), 4))
-                               for idx in best_ngrams_idx]
+        best_ngrams = [(ngrams[idx],
+                        round(float(ngram_sentence_dists.reshape(1, -1)[0][idx]), 4),
+                        seq2_embeddings[idx])
+                        for idx in best_ngrams_idx]
+        
+        best_ngrams = sorted(best_ngrams, key=lambda tup: tup[1], reverse=True)
+        
+        # best_ngrams = {n:{"ngram":ngrams[idx],
+        #                 "ngram_sent_sim":round(float(ngram_sentence_dists.reshape(1, -1)[0][idx]), 4),
+        #                 "ngram_emb":seq2_embeddings[idx]}
+        #                 for n, idx in enumerate(best_ngrams_idx)}
+        if querier is None:
+            best_ngrams = [(a,b) for (a,b,c) in best_ngrams]
+        
+        return best_ngrams
 
-        return sorted(top_sentence_ngrams, key=lambda tup: tup[1], reverse=True)
 
-    @classmethod
-    def get_max_sim(self, src_ngrams, trg_ngrams):
-        seq1_embeddings = model.encode(src_ngrams)
-        seq2_embeddings = model.encode(trg_ngrams)
-        seq_similarities = cosine_similarity(seq1_embeddings,
-                                             seq2_embeddings)
-        # get seq1 & seq2 indexes
-        seq1_idx = list(range(len(src_ngrams))) #[i for i in range(len(src_ngrams))]
-        seq2_idx = list(range(len(trg_ngrams)))
+    # @classmethod
+    # def get_max_sim(self, src_ngrams, trg_ngrams, src_nge, trg_nge):
+        
+    #     seq1_embeddings = src_nge
+    #     seq2_embeddings = trg_nge
 
-        # get max seq2 values and indexes
-        max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
-        max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+    #     seq_similarities = cosine_similarity(seq1_embeddings,
+    #                                          seq2_embeddings)
+    #     # get seq1 & seq2 indexes
+    #     seq1_idx = list(range(len(src_ngrams)))
+    #     seq2_idx = list(range(len(trg_ngrams)))
 
-        # get max seq similarities
-        max_seq_similarities = [(src_ngrams[idx], trg_ngrams[max_seq2_idx[idx]],
-                                  float(round(max_seq2_values[idx], 4))) for idx in seq1_idx]
+    #     # get max seq2 values and indexes
+    #     max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+    #     max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
 
-        # sort max seq similarities
-        max_seq_similarities = sorted(max_seq_similarities, key=lambda tup: tup[2], reverse=True)
-        return max_seq_similarities
+    #     # get max seq similarities
+    #     max_seq_similarities = [(src_ngrams[idx], trg_ngrams[max_seq2_idx[idx]],
+    #                               float(round(max_seq2_values[idx], 4))) for idx in seq1_idx]
+
+    #     # sort max seq similarities
+    #     #max_seq_similarities = sorted(max_seq_similarities, key=lambda tup: tup[2], reverse=True)
+    #     return max_seq_similarities
 
     def get_bi_ngrams(self,
                       docs: Union[str, Tuple[tuple]],
@@ -140,8 +155,8 @@ class Tm2Tb:
         if isinstance(docs, tuple):
             src_sentence, trg_sentence = docs
             bi_ngrams = self.get_bi_ngrams_from_bisentence(src_sentence,
-                                                                  trg_sentence,
-                                                                  **kwargs)
+                                                           trg_sentence,
+                                                           **kwargs)
         elif isinstance(docs, str):
             file_path = docs
             bi_ngrams = self.get_bi_ngrams_from_bitext(file_path,
@@ -168,26 +183,38 @@ class Tm2Tb:
         return bi_ngrams
 
     def get_bi_ngrams_from_bisentence(self,
-                              src_sentence,
-                              trg_sentence,
-                              **kwargs):
+                                      src_sentence,
+                                      trg_sentence,
+                                      **kwargs):
 
-        src_ngrams, src_ngrams_to_sent_sims = zip(*self.get_sentence_ngrams(src_sentence,
-                                                       **kwargs))
-        trg_ngrams, trg_ngrams_to_sent_sims = zip(*self.get_sentence_ngrams(trg_sentence,
-                                                       **kwargs))
+        src_ngrams, src_ngv, seq1_embeddings = zip(*self.get_sentence_ngrams(src_sentence,
+                                                                             querier='bi',
+                                                                             **kwargs))
+        
+        trg_ngrams, trg_ngv, seq2_embeddings = zip(*self.get_sentence_ngrams(trg_sentence,
+                                                                             querier='bi',
+                                                                             **kwargs))
 
-        sd = dict(zip(src_ngrams,src_ngrams_to_sent_sims))
-        td = dict(zip(trg_ngrams,trg_ngrams_to_sent_sims))
+        seq_similarities = cosine_similarity(seq1_embeddings,
+                                             seq2_embeddings)
+        # get seq1 & seq2 indexes
+        seq1_idx = list(range(len(src_ngrams)))
+        seq2_idx = list(range(len(trg_ngrams)))
 
-        max_seq_similarities = self.get_max_sim(src_ngrams, trg_ngrams)
+        # get max seq2 values and indexes
+        max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+        max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+
+        # get max seq similarities
+        max_seq_similarities = [(src_ngrams[idx],
+                                 src_ngv[idx],
+                                 trg_ngrams[max_seq2_idx[idx]],
+                                 trg_ngv[max_seq2_idx[idx]],
+                                 float(round(max_seq2_values[idx], 4))) for idx in seq1_idx]
 
         #Make bi_ngrams dataframe
         bi_ngrams = pd.DataFrame(max_seq_similarities)
-        bi_ngrams.columns = ['src', 'trg', 'similarity']
-
-        bi_ngrams['src_s'] = bi_ngrams['src'].apply(lambda x: sd[x])
-        bi_ngrams['trg_s'] = bi_ngrams['trg'].apply(lambda x: td[x])
+        bi_ngrams.columns = ['src', 'src_s', 'trg', 'trg_s', 'similarity']
         return bi_ngrams
 
 
@@ -221,31 +248,45 @@ class Tm2Tb:
                     src_sentence = bitext.iloc[i]['src']
                     trg_sentence = bitext.iloc[i]['trg']
                     src_ngrams = self.get_sentence_ngrams(src_sentence,
+                                                          querier='bt',
                                                           **kwargs)
                     for ng in src_ngrams:
                         if not ng in all_sng:
                             all_sng.append(ng)
 
                     trg_ngrams = self.get_sentence_ngrams(trg_sentence,
+                                                          querier='bt',
                                                            **kwargs)
                     for ng in trg_ngrams:
                         if not ng in all_tng:
                             all_tng.append(ng)
                 except:
                     pass
-            src_ngrams, src_ngrams_to_sent_sims = zip(*all_sng)
-            trg_ngrams, trg_ngrams_to_sent_sims = zip(*all_tng)
+                
+            src_ngrams, src_ngv, se = zip(*all_sng)
+            trg_ngrams, trg_ngv, te = zip(*all_tng)
 
-            sd = dict(zip(src_ngrams,src_ngrams_to_sent_sims))
-            td = dict(zip(trg_ngrams,trg_ngrams_to_sent_sims))
+            #sd = dict(zip(src_ngrams,src_ngrams_to_sent_sims))
+            #td = dict(zip(trg_ngrams,trg_ngrams_to_sent_sims))
 
-            max_seq_similarities = self.get_max_sim(src_ngrams, trg_ngrams)
+            seq_similarities = cosine_similarity(se, te)
+            # get seq1 & seq2 indexes
+            seq1_idx = list(range(len(src_ngrams)))
+            seq2_idx = list(range(len(trg_ngrams)))
+
+            # get max seq2 values and indexes
+            max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+            max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
+
+            # get max seq similarities
+            max_seq_similarities = [(src_ngrams[idx],
+                                     src_ngv[idx],
+                                     trg_ngrams[max_seq2_idx[idx]],
+                                     trg_ngv[max_seq2_idx[idx]],
+                                     float(round(max_seq2_values[idx], 4))) for idx in seq1_idx]
 
             #Make bi_ngrams dataframe
             bi_ngrams = pd.DataFrame(max_seq_similarities)
-            bi_ngrams.columns = ['src', 'trg', 'similarity']
-
-            bi_ngrams['src_s'] = bi_ngrams['src'].apply(lambda x: sd[x])
-            bi_ngrams['trg_s'] = bi_ngrams['trg'].apply(lambda x: td[x])
-
+            bi_ngrams.columns = ['src', 'src_s', 'trg', 'trg_s', 'similarity']
+            
         return bi_ngrams
