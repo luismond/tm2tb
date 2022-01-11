@@ -146,14 +146,6 @@ print(tt.get_ngrams((src_sentence, trg_sentence))
 
 The values represent the similarities between the source terms and the target terms.
 
-### Using Part-of-Speech tags
-
-You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
-```python
-```
-
-
-
 ### Extracting terms from bilingual documents
 
 Furthermore, tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
@@ -204,6 +196,56 @@ print(tt.get_ngrams(bitext))
 ('captivity', 'cautiverio', 0.7633)]
 ```
 In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
+
+
+## More examples with options
+
+### Selecting the n-gram range
+
+You can select the minimum and maximum length of the n-grams: 
+
+```python
+print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+('South Central China', 'centro sur de China', 0.899)
+('form of birds', 'forma de aves', 0.9635)
+('order Carnivora', 'orden Carnivora', 0.9223)
+('result of farming', 'resultado de la agricultura', 0.9365)
+('meat in the form', 'carne en forma', 0.9325)
+('bear species', 'especies de osos', 0.8191)
+('bamboo leaves', 'hojas de bambú', 0.9245)
+('lowland areas', 'zonas de baja altitud', 0.8583)
+```
+
+### Using Part-of-Speech tags
+
+You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives and adverbs:
+```python
+
+print(tt.get_ngrams((sentence, translated_sentence), include_pos=['ADJ'])
+
+('giant', 'gigante', 0.936)
+('native', 'originario', 0.8423)
+('white', 'blanco', 0.9537)
+('red', 'rojo', 0.9698)
+('black', 'negro', 0.9099)
+```
+
+### Selecting the n-gram range
+You can select the minimum and maximum n-gram lengths:
+
+```python
+tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4)
+
+('South Central China', 'centro sur de China', 0.899)
+('form of birds', 'forma de aves', 0.9635)
+('order Carnivora', 'orden Carnivora', 0.9223)
+('result of farming', 'resultado de la agricultura', 0.9365)
+('meat in the form', 'carne en forma', 0.9325)
+('bear species', 'especies de osos', 0.8191)
+('bamboo leaves', 'hojas de bambú', 0.9245)
+('lowland areas', 'zonas de baja altitud', 0.8583)
+
+```
 
 <hr/>
 
