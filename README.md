@@ -58,9 +58,8 @@ src_sentence = """
 ```
 
 ```python
-print(tt.get_ngrams(src_sentence))
-```
-```python
+>>> print(tt.get_ngrams(src_sentence))
+
 [('panda', 0.4116),
  ('Carnivora', 0.2499),
  ('bear', 0.2271),
@@ -100,9 +99,8 @@ trg_sentence = """
 ```
 
 ```python
-print(tt.get_ngrams(trg_sentence))
-```
-```python
+>>> print(tt.get_ngrams(trg_sentence))
+
 [('panda', 0.4639),
  ('carne de aves', 0.2894),
  ('dieta', 0.2824),
@@ -174,9 +172,8 @@ bitext = tt.read_bitext(file_path)
 ```
 
 ```python
-print(tt.get_ngrams(bitext))
-```
-```python
+>>> print(tt.get_ngrams(bitext))
+
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
 ('Gansu', 'Gansu', 1.0)
@@ -208,9 +205,8 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 You can select the minimum and maximum length of the n-grams: 
 
 ```python
-print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
-```
-```python
+>>> print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+
 ('South Central China', 'centro sur de China', 0.899)
 ('form of birds', 'forma de aves', 0.9635)
 ('order Carnivora', 'orden Carnivora', 0.9223)
@@ -226,9 +222,8 @@ print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
 
 ```python
-print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
-```
-```python
+>>> print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
+
 ('giant', 'gigante', 0.936)
 ('native', 'originario', 0.8423)
 ('white', 'blanco', 0.9537)
