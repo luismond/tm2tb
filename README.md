@@ -206,6 +206,7 @@ You can select the minimum and maximum length of the n-grams:
 
 ```python
 print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+
 ('South Central China', 'centro sur de China', 0.899)
 ('form of birds', 'forma de aves', 0.9635)
 ('order Carnivora', 'orden Carnivora', 0.9223)
@@ -218,7 +219,7 @@ print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 
 ### Using Part-of-Speech tags
 
-You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives and adverbs:
+You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
 ```python
 
 print(tt.get_ngrams((sentence, translated_sentence), include_pos=['ADJ'])
@@ -228,23 +229,6 @@ print(tt.get_ngrams((sentence, translated_sentence), include_pos=['ADJ'])
 ('white', 'blanco', 0.9537)
 ('red', 'rojo', 0.9698)
 ('black', 'negro', 0.9099)
-```
-
-### Selecting the n-gram range
-You can select the minimum and maximum n-gram lengths:
-
-```python
-tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4)
-
-('South Central China', 'centro sur de China', 0.899)
-('form of birds', 'forma de aves', 0.9635)
-('order Carnivora', 'orden Carnivora', 0.9223)
-('result of farming', 'resultado de la agricultura', 0.9365)
-('meat in the form', 'carne en forma', 0.9325)
-('bear species', 'especies de osos', 0.8191)
-('bamboo leaves', 'hojas de bambú', 0.9245)
-('lowland areas', 'zonas de baja altitud', 0.8583)
-
 ```
 
 <hr/>
