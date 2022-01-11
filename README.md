@@ -122,9 +122,8 @@ trg_sentence = """
 The special thing about tm2tb is that it can extract and match the terms from the two sentences:
 
 ```python
-print(tt.get_ngrams((src_sentence, trg_sentence)))
-```
-```python
+>>> print(tt.get_ngrams((src_sentence, trg_sentence)))
+
 [('panda', 'panda', 1.0)
 ('pandas', 'pandas', 1.0)
 ('birds', 'aves', 0.9401)
