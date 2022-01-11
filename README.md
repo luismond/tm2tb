@@ -12,6 +12,8 @@ To match the n-grams from a source sentence with the n-grams from a target sente
 
 ![Similarity matrix](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities.png)
 
+For bilingual documents, bilingual n-grams are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of n-grams.
+
 <hr/>
 
 ## Main features
