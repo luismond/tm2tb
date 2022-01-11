@@ -5,7 +5,28 @@ tm2tb is a versatile term / keyword / n-gram extractor. It can extract terms fro
 It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
 <hr/>
 
-## Basic examples
+## Main features
+
+- Extract bilingual terms from pairs of sentences or short paragraphs.
+- Extract bilingual terms from translated documents such as translation memories, and other bilingual files.
+- Extract terms and keywords from single sentences.
+- Use part-of-speech tags to select different patterns of terms and keyphrases.
+
+## Languages supported
+
+So far, English, Spanish, German and French have been tested. I plan to add more languages (as long as they are supported by spaCy).
+
+## Bilingual file formats supported
+
+- .tmx
+- .mqxliff
+- .mxliff
+- .csv (with two columns for source and target)
+- .xlsx (with two columns for source and target)
+
+<hr/>
+
+# Basic examples
 
 ### Extracting the best terms from a sentence
 
@@ -169,42 +190,62 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 <hr/>
 
-# Main features
+## Installation
 
-- Extract bilingual terms from pairs of sentences or short paragraphs.
-- Extract bilingual terms from translated documents such as translation memories, and other bilingual files.
-- Extract terms and keywords from single sentences.
-- Use part-of-speech tags to select different patterns of terms and keyphrases.
+1. After cloning the repository, install the requirements:
 
-# Languages supported
+```
+pip install -r requirements.txt
+```
 
-So far, English, Spanish, German and French have been tested. I plan to add more languages (as long as they are supported by spaCy).
+This will install the following libraries:
 
-# Bilingual file formats supported
+pip==21.3.1
+setuptools==60.2.0
+wheel==0.37.1
+spacy==3.2.1
+langdetect==1.0.9
+pandas==1.3.5
+xmltodict==0.12.0
+openpyxl==3.0.9
 
-- .tmx
-- .mqxliff
-- .mxliff
-- .csv (with two columns for source and target)
-- .xlsx (with two columns for source and target)
+2. Install the spaCy models of your choice.
 
-# License
+tm2tb needs at least a couple of spaCy language models to perform part-of-speech tagging. This is needed to select candidate n-grams.
+
+Check the available spaCy language models [here](https://spacy.io/models).
+
+For example, to install the English and the Spanish language models:
+
+`python -m spacy download es_core_news_sm`
+`python -m spacy download en_core_web_sm`
+
+These models are optimized for efficiency and are lightweight. They are a good choice for quickly testing the module.
+
+Other models, such as `en_core_web_trf` are much larger and will take more time to download, but they are more precise.
+
+**NOTE:** When you first run the module, the sentence transformer LaBSE will be downloaded and cached.
+
+[LaBSE](https://tfhub.dev/google/LaBSE/1) is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
+
+## License
 
 TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
-# tm2tb.com
+## tm2tb.com
 For bilingual documents, the functionality of tm2tb is also available through the web app: www.tm2tb.com
 
 ![](https://github.com/luismond/tm2tb_web_app/blob/main/static/tm2tb_example_en_es.png?raw=true)
 
-# Credits
-## Libraries
+## Credits
+
+### Libraries
 - `spaCy`: Tokenization, POS-tagging
 - `sentence-transformers`: Sentence and n-gram embeddings
 - `xmltodict`: parsing of XML file formats (.xliff, .tmx, etc.)
 
-## Embedding models
+### Embedding models
 - [LaBSE](https://huggingface.co/sentence-transformers/LaBSE) (Language-agnostic Bert Sentence Embeddings)
 
-## Other credits:
+### Other credits:
 - [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and Maximal Marginal Relevance
