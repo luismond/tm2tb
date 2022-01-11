@@ -1,10 +1,10 @@
 # TM2TB
-<hr/>
-tm2tb is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents in different file formats. It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
 
-<hr>/
+tm2tb is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents in different file formats. It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
+<hr/>
+
 ## Basic examples
-<hr>/
+
 ### Extracting the best terms from a sentence
 
 ```python
@@ -112,11 +112,11 @@ print(tt.get_ngrams((src_sentence, trg_sentence))
 
 ```
 
-The values represents the similarities between the source terms and the target terms.
+The values represent the similarities between the source terms and the target terms.
 
 ### Extracting terms from bilingual documents
 
-Furthermore, tm2tb can also extract bilingual terms from bilingual documents. Let's take a small translation file:
+Furthermore, tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
 
 ```
                                                  src                                                trg
@@ -140,6 +140,7 @@ file_path = '/Documents/panda_bear_english_spanish.tmx'
 bitext = tt.read_bitext(file_path)
 print(tt.get_ngrams(bitext))
 ```
+
 ```
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
@@ -163,6 +164,8 @@ print(tt.get_ngrams(bitext))
 ('captivity', 'cautiverio', 0.7633)]
 ```
 In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
+
+<hr/>
 
 # Main features
 
