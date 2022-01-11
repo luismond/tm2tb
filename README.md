@@ -178,7 +178,7 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 # Languages supported
 
-Any language supported by spaCy.
+So far, English, Spanish, German and French have been tested. I plan to add more languages (as long as they are supported by spaCy).
 
 # Bilingual file formats supported
 
