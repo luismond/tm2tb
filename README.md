@@ -212,7 +212,7 @@ openpyxl==3.0.9
 
 2. Install the spaCy models of your choice.
 
-**TM2TB** needs at least a couple of spaCy language models to work.
+**tm2tb** needs at least a couple of spaCy language models to work.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
