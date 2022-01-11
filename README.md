@@ -17,7 +17,7 @@ To match the n-grams from a source sentence with the n-grams from a target sente
 ## Main features
 
 - Extract bilingual terms from pairs of sentences or short paragraphs.
-- Extract bilingual terms from translated documents such as translation memories, and other bilingual files.
+- Extract bilingual terms from documents such as translation memories, and other bilingual files.
 - Extract terms and keywords from single sentences.
 - Use part-of-speech tags to select different patterns of terms and keyphrases.
 
