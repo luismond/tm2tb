@@ -295,7 +295,7 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 ### Libraries
 - `spaCy`: Tokenization, POS-tagging
 - `sentence-transformers`: Sentence and n-gram embeddings
-- `xmltodict`: parsing of XML file formats (.xliff, .tmx, etc.)
+- `xmltodict`: parsing of XML file formats (.mqxliff, .tmx, etc.)
 
 ### Other credits:
-- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and Maximal Marginal Relevance
+- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and the implementation of Maximal Marginal Relevance.
