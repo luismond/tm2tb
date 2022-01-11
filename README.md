@@ -166,7 +166,14 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 # Main features
 
-- Find translation pairs of terms, multi-word nouns, short phrases and collocations from single sentences, pairs of sentences or bilingual documents.
+- Extract bilingual terms from pairs of sentences or short paragraphs.
+- Extract bilingual terms from translated documents such as translation memories, and other bilingual files.
+- Extract terms and keywords from single sentences.
+- Use part-of-speech tags to select different patterns of terms and keyphrases.
+
+# Languages supported
+
+Any language supported by spaCy.
 
 # Bilingual file formats supported
 
@@ -175,10 +182,6 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 - .mxliff
 - .csv (with two columns for source and target)
 - .xlsx (with two columns for source and target)
-
-# Languages supported
-
-Any language supported by spaCy.
 
 # License
 
