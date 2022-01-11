@@ -240,6 +240,10 @@ For bilingual documents, the functionality of tm2tb is also available through th
 
 ![](https://github.com/luismond/tm2tb_web_app/blob/main/static/tm2tb_example_en_es.png?raw=true)
 
+## Maintainer
+
+[Luis Mondragon](https://www.linkedin.com/in/luismondragon/)
+
 ## Credits
 
 ### Libraries
