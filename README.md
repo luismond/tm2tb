@@ -192,7 +192,7 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 ## Installation
 
-1. After cloning the repository, install the requirements:
+1. After cloning the repository, navigate to your desired location, create a virtual environment and install the requirements:
 
 ```
 pip install -r requirements.txt
