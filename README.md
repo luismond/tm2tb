@@ -199,7 +199,7 @@ pip install -r requirements.txt
 ```
 
 This will install the following libraries:
-
+```
 pip==21.3.1
 setuptools==60.2.0
 wheel==0.37.1
@@ -208,6 +208,7 @@ langdetect==1.0.9
 pandas==1.3.5
 xmltodict==0.12.0
 openpyxl==3.0.9
+```
 
 2. Install the spaCy models of your choice.
 
