@@ -37,7 +37,7 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 
 # Basic examples
 
-### Extracting the best terms from a sentence
+### Extracting terms from a sentence
 
 ```python
 from tm2tb import Tm2Tb
