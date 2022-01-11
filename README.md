@@ -10,7 +10,7 @@ For pairs of sentences (which are translations of each other), the process above
 
 ![Similarity matrix](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities.png)
 
-For bilingual documents, bilingual terms are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
+For bilingual documents, n-grams are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
 
 <hr/>
 
