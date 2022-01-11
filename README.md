@@ -40,7 +40,9 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 ### Extracting the best terms from a sentence
 
 ```python
-from tm2tb import Tm2Tb as tt
+from tm2tb import Tm2Tb
+
+tt = Tm2Tb()
 
 src_sentence = """ 
                 The giant panda, also known as the panda bear (or simply the panda), 
