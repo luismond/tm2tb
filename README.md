@@ -6,7 +6,7 @@ It leverages spaCy's part-of-speech tags and LaBSE's sentence embeddings to extr
 
 ## Approach
 
-To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. Then, embeddings from the n-gram candidates and the sentence are obtained. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
+To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. No stopwords are used. Then, embeddings from the n-gram candidates and the sentence are obtained. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
 
 To match the n-grams from a source sentence with the n-grams from a target sentence, the process above is done for both sentences. Next, the embeddings of the source n-grams and the target n-grams are compared using cosine similarity, which returns the most similar target n-gram for each source n-gram:
 
