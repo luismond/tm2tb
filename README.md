@@ -277,10 +277,6 @@ Other models, such as `en_core_web_trf` are much larger and will take more time 
 
 LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
-## License
-
-TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
-
 ## tm2tb.com
 For bilingual documents, the functionality of tm2tb is also available through a web app: www.tm2tb.com
 
@@ -289,6 +285,10 @@ For bilingual documents, the functionality of tm2tb is also available through a 
 ## Maintainer
 
 [Luis Mondragon](https://www.linkedin.com/in/luismondragon/)
+
+## License
+
+TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
 ## Credits
 
