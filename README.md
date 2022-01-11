@@ -222,7 +222,7 @@ print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
 ```python
 
-print(tt.get_ngrams((sentence, translated_sentence), include_pos=['ADJ'])
+print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ'])
 
 ('giant', 'gigante', 0.936)
 ('native', 'originario', 0.8423)
