@@ -112,7 +112,7 @@ print(tt.get_ngrams((src_sentence, trg_sentence))
 
 ```
 
-The value represents the similarities between the source terms and the target terms.
+The values represents the similarities between the source terms and the target terms.
 
 ### Extracting terms from bilingual documents
 
