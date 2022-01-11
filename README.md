@@ -116,7 +116,7 @@ The values represents the similarities between the source terms and the target t
 
 ### Extracting terms from bilingual documents
 
-Furthermore, tm2tb can also extract bilingual terms from bilingual documents. Lets take a small translation file:
+Furthermore, tm2tb can also extract bilingual terms from bilingual documents. Let's take a small translation file:
 
 ```
                                                  src                                                trg
