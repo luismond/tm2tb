@@ -1,10 +1,11 @@
 # TM2TB
+<hr/>
+tm2tb is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents in different file formats. It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
 
-tm2tb is a versatile term / keyword / ngram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents in different file formats. It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
-
+<hr>/
 ## Basic examples
-
-### Extracting the best ngrams from a sentence
+<hr>/
+### Extracting the best terms from a sentence
 
 ```python
 from tm2tb import Tm2Tb as tt
@@ -43,10 +44,9 @@ print(tt.get_ngrams(src_sentence))
 
 ```
 
-
 The values represent the similarity between the terms and the sentence.
 
-We can get terms in other languages as well:
+We can get terms in other languages as well. (The language is detected automatically):
 
 ```python
 trg_sentence = """
