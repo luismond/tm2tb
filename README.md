@@ -247,8 +247,5 @@ For bilingual documents, the functionality of tm2tb is also available through th
 - `sentence-transformers`: Sentence and n-gram embeddings
 - `xmltodict`: parsing of XML file formats (.xliff, .tmx, etc.)
 
-### Embedding models
-- [LaBSE](https://huggingface.co/sentence-transformers/LaBSE) (Language-agnostic Bert Sentence Embeddings)
-
 ### Other credits:
 - [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and Maximal Marginal Relevance
