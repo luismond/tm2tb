@@ -55,11 +55,11 @@ src_sentence = """
                 or even meat in the form of birds, rodents, or carrion. 
                 In captivity, they may receive honey, eggs, fish, shrub leaves, oranges, or bananas.
                """
-
-print(tt.get_ngrams(src_sentence))
 ```
 
 ```python
+print(tt.get_ngrams(src_sentence))
+
 [('panda', 0.4116),
  ('Carnivora', 0.2499),
  ('bear', 0.2271),
@@ -96,11 +96,11 @@ trg_sentence = """
                 naranjas o plátanos.
                """
 
-print(tt.get_ngrams(trg_sentence))
-
 ```
 
 ```python
+print(tt.get_ngrams(trg_sentence))
+
 [('panda', 0.4639),
  ('carne de aves', 0.2894),
  ('dieta', 0.2824),
@@ -169,10 +169,10 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 ```python
 file_path = '/Documents/panda_bear_english_spanish.tmx'
 bitext = tt.read_bitext(file_path)
-print(tt.get_ngrams(bitext))
 ```
 
-```
+```python
+print(tt.get_ngrams(bitext))
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
 ('Gansu', 'Gansu', 1.0)
@@ -219,8 +219,8 @@ print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 ### Using Part-of-Speech tags
 
 You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
-```python
 
+```python
 print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ'])
 
 ('giant', 'gigante', 0.936)
