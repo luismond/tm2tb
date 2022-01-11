@@ -1,27 +1,15 @@
 """
 TM2TB Sentence class.
-Implements methods for string cleaning, validation, tokenization,
-ngram generation and ngram selection.
+Implements methods for string cleaning, validation, tokenization, and ngram selection.
 """
 import re
 from langdetect import detect
 
-# import es_dep_news_trf
-# import en_core_web_trf
-# import de_dep_news_trf
-# import fr_dep_news_trf
-
-# model_en = en_core_web_trf.load()
-# model_es = es_dep_news_trf.load()
-# model_de = de_dep_news_trf.load()
-# model_fr = fr_dep_news_trf.load()
-
-#fast load
 import es_dep_news_trf
 import en_core_web_sm
+
 model_en = en_core_web_sm.load()
 model_es = es_dep_news_trf.load()
-
 
 class Sentence:
 
