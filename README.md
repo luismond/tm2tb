@@ -1,4 +1,4 @@
-# tm2tb: 
+# TM2TB
 
 tm2tb is a versatile term / keyword / ngram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents in different file formats. It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
 
@@ -136,7 +136,7 @@ Furthermore, tm2tb can also extract bilingual terms from bilingual documents. Le
 ```
 
 ```python
-file_path = '/Documents/panda_bear_english_spanish.csv'
+file_path = '/Documents/panda_bear_english_spanish.tmx'
 bitext = tt.read_bitext(file_path)
 print(tt.get_ngrams(bitext))
 ```
@@ -162,7 +162,7 @@ print(tt.get_ngrams(bitext))
 ('shrub leaves', 'hojas de arbustos', 0.9162)
 ('captivity', 'cautiverio', 0.7633)]
 ```
-
+In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
 
 # Main features
 
