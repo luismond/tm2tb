@@ -3,6 +3,15 @@
 **tm2tb** is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents. 
 
 It leverages spaCy's part-of-speech tags and LaBSE's sentence embeddings to extract relevant terms from sentences and to match bilingual terms in translated sentences and documents.
+
+## Approach
+
+To select n-grams from a sentence, tm2tb selects n-gram candidates using part-of-speech tags as delimiters. Then, embeddings from the n-gram candidates and the sentence are obtained. Finally, the embeddings are used to find iteratively the n-gram that is more similar to the sentence using cosine similarity and maximal marginal relevance.
+
+To match the n-grams from a source sentence with the n-grams from a target sentence, the process above is done for both sentences. Next, the embeddings of the source n-grams and the target n-grams are compared using cosine similarity, which returns the most similar target n-gram for each source n-gram.
+
+[](https://github.com/luismond/tm2tb/blob/main/.gitignore/max_seq_similarities.png?raw=true)
+
 <hr/>
 
 ## Main features
