@@ -141,15 +141,14 @@ class Tm2Tb:
                 bi_ngrams_ = self.get_bi_ngrams_from_bisentence(src_sentence,
                                                                 trg_sentence,
                                                                 **kwargs)
-                bi_ngrams.append(bi_ngrams_)
+                for bi_ngram in bi_ngrams_:
+                    bi_ngrams.append(bi_ngram)
             except ValueError:
                 pass
 
-        # Make bi_ngrams dataframe
-        bi_ngrams = pd.concat(bi_ngrams)
-        bi_ngrams = bi_ngrams.reset_index()
-        bi_ngrams = bi_ngrams.drop(columns=['index'])
-        bi_ngrams = self._filter_bi_ngrams(bi_ngrams, min_similarity)
+        bi_ngrams = pd.DataFrame(bi_ngrams)
+        bi_ngrams.columns = ['src', 'src_s', 'trg', 'trg_s', 'similarity', 'x']
+        bi_ngrams = self._filter_bi_ngrams(bi_ngrams, min_similarity, get_ngram_sent_avgs=True)
         return bi_ngrams
 
     @classmethod
@@ -160,23 +159,51 @@ class Tm2Tb:
         return bitext
 
     @classmethod
-    def _filter_bi_ngrams(cls, bi_ngrams, min_similarity):
-        # Group by source, get closest target ngram
-        bi_ngrams = pd.DataFrame([df.loc[df['similarity'].idxmax()]
-                            for (src_ngram, df) in list(bi_ngrams.groupby('src'))])
+    def _filter_bi_ngrams(cls, bi_ngrams,
+                          min_similarity,
+                          get_ngram_sent_avgs=False):
 
-        # Group by target, get closest source ngram
-        bi_ngrams = pd.DataFrame([df.loc[df['similarity'].idxmax()]
-                            for (trg_ngram, df) in list(bi_ngrams.groupby('trg'))])
-
-        # Filter by similarity
+        # Keep ngrams above min_similarity
         bi_ngrams = bi_ngrams[bi_ngrams['similarity'] >= min_similarity]
+
+        def group_and_get_best_match(bi_ngrams):
+            # Group by source, get most similar target ngram
+            bi_ngrams = pd.DataFrame([df.loc[df['similarity'].idxmax()]
+                                for (src_ngram, df) in list(bi_ngrams.groupby('src'))])
+
+            # Group by target, get most similar source ngram
+            bi_ngrams = pd.DataFrame([df.loc[df['similarity'].idxmax()]
+                                for (trg_ngram, df) in list(bi_ngrams.groupby('trg'))])
+            return bi_ngrams
+
+        def get_ngram_to_sentence_avgs(bi_ngrams):
+            #Get ngram to sentence averages from all extracted ngrams
+            src_avg = {a: round(b['src_s'].sum()/len(b), 4)
+                       for (a, b) in list(bi_ngrams.groupby('src'))}
+            trg_avg = {a: round(b['trg_s'].sum()/len(b), 4)
+                       for (a, b) in list(bi_ngrams.groupby('trg'))}
+            bi_ngrams = bi_ngrams.drop_duplicates(subset='src')
+            bi_ngrams = bi_ngrams.drop_duplicates(subset='trg')
+            bi_ngrams['src_s'] = bi_ngrams['src'].apply(lambda ngram: src_avg[ngram])
+            bi_ngrams['trg_s'] = bi_ngrams['trg'].apply(lambda ngram: trg_avg[ngram])
+            return bi_ngrams
+
+        if get_ngram_sent_avgs is True:
+            bi_ngrams = get_ngram_to_sentence_avgs(bi_ngrams)
+
+        bi_ngrams = group_and_get_best_match(bi_ngrams)
         bi_ngrams['x'] = bi_ngrams['similarity']*bi_ngrams['src_s']*bi_ngrams['trg_s']
         bi_ngrams = bi_ngrams.sort_values(by='x', ascending=False)
 
         # Turn to list
-        # bi_ngrams = list(zip(bi_ngrams['src'],bi_ngrams['trg'],
-        #                             bi_ngrams['similarity'],bi_ngrams['src_s'],
-        #                             bi_ngrams['trg_s']))
-        # bi_ngrams = [(a, b, round(c, 4), d, e) for (a,b,c,d,e) in bi_ngrams]
+        bi_ngrams = list(zip(bi_ngrams['src'],
+                              bi_ngrams['src_s'],
+                              bi_ngrams['trg'],
+                              bi_ngrams['trg_s'],
+                              bi_ngrams['similarity'],
+                              bi_ngrams['x']))
+
+        bi_ngrams = [(a, b, c, d, round(e,4), round(f,4))
+                     for (a,b,c,d,e,f) in bi_ngrams]
+
         return bi_ngrams
