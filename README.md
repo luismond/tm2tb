@@ -212,14 +212,16 @@ openpyxl==3.0.9
 
 2. Install the spaCy models of your choice.
 
-tm2tb needs at least a couple of spaCy language models to perform part-of-speech tagging. This is needed to select candidate n-grams.
+tm2tb needs at least a couple of spaCy language models to work.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
 For example, to install the English and the Spanish language models:
 
-`python -m spacy download es_core_news_sm`
-`python -m spacy download en_core_web_sm`
+```
+python -m spacy download es_core_news_sm
+python -m spacy download en_core_web_sm
+```
 
 These models are optimized for efficiency and are lightweight. They are a good choice for quickly testing the module.
 
