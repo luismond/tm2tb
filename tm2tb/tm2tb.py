@@ -14,7 +14,9 @@ from sentence_transformers import SentenceTransformer
 from tm2tb import Sentence
 from tm2tb import BilingualReader
 
-model = SentenceTransformer('sentence-transformers/LaBSE')
+PATH = '/home/user/pCloudDrive/PROGRAMMING/APPS/TM2TB/tm2tb_server/labse_model'
+model = SentenceTransformer(PATH)
+#model = SentenceTransformer('sentence-transformers/LaBSE')
 
 class Tm2Tb:
 
