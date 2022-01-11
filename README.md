@@ -59,7 +59,8 @@ src_sentence = """
 
 ```python
 print(tt.get_ngrams(src_sentence))
-
+```
+```python
 [('panda', 0.4116),
  ('Carnivora', 0.2499),
  ('bear', 0.2271),
@@ -100,7 +101,8 @@ trg_sentence = """
 
 ```python
 print(tt.get_ngrams(trg_sentence))
-
+```
+```python
 [('panda', 0.4639),
  ('carne de aves', 0.2894),
  ('dieta', 0.2824),
@@ -122,9 +124,9 @@ print(tt.get_ngrams(trg_sentence))
 The special thing about tm2tb is that it can extract and match the terms from the two sentences:
 
 ```python
-
-print(tt.get_ngrams((src_sentence, trg_sentence))
-
+print(tt.get_ngrams((src_sentence, trg_sentence)))
+```
+```python
 [('panda', 'panda', 1.0)
 ('pandas', 'pandas', 1.0)
 ('birds', 'aves', 0.9401)
@@ -140,7 +142,6 @@ print(tt.get_ngrams((src_sentence, trg_sentence))
 ('body', 'cuerpo', 0.9856)
 ('leaves', 'hojas', 0.9367)
 ('carrion', 'carroña', 0.8236)]
-
 ```
 
 The values represent the similarities between the source terms and the target terms.
@@ -167,16 +168,15 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 ```
 
 ```python
-
 # Read the file
-
 file_path = '/Documents/panda_bear_english_spanish.tmx'
 bitext = tt.read_bitext(file_path)
 ```
 
 ```python
 print(tt.get_ngrams(bitext))
-
+```
+```python
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
 ('Gansu', 'Gansu', 1.0)
@@ -209,7 +209,8 @@ You can select the minimum and maximum length of the n-grams:
 
 ```python
 print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
-
+```
+```python
 ('South Central China', 'centro sur de China', 0.899)
 ('form of birds', 'forma de aves', 0.9635)
 ('order Carnivora', 'orden Carnivora', 0.9223)
@@ -225,8 +226,9 @@ print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
 
 ```python
-print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ'])
-
+print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
+```
+```python
 ('giant', 'gigante', 0.936)
 ('native', 'originario', 0.8423)
 ('white', 'blanco', 0.9537)
@@ -238,7 +240,7 @@ print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ'])
 
 ## Installation
 
-1. After cloning the repository, navigate to your desired location, create a virtual environment and install the requirements:
+1. Navigate to your desired location, clone the repository, create a virtual environment and install the requirements:
 
 ```
 pip install -r requirements.txt
