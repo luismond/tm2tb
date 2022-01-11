@@ -10,7 +10,7 @@ To select n-grams from a sentence, tm2tb selects n-gram candidates using part-of
 
 To match the n-grams from a source sentence with the n-grams from a target sentence, the process above is done for both sentences. Next, the embeddings of the source n-grams and the target n-grams are compared using cosine similarity, which returns the most similar target n-gram for each source n-gram.
 
-[!](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities.png)
+![Similarity matrix](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities.png)
 
 <hr/>
 
