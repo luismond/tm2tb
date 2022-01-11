@@ -1,6 +1,6 @@
 # TM2TB
 
-tm2tb is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents. 
+**tm2tb** is a versatile term / keyword / n-gram extractor. It can extract terms from single sentences, pairs of sentences and bilingual documents. 
 
 It leverages spaCy's part-of-speech tags and LaBSE sentence embeddings to extract relevant terms from sentences and to match terms in translated sentences and documents.
 <hr/>
