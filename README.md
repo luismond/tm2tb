@@ -125,9 +125,6 @@ The special thing about tm2tb is that it can extract and match the terms from th
 
 print(tt.get_ngrams((src_sentence, trg_sentence))
 
-```
-
-```ptyhon
 [('panda', 'panda', 1.0)
 ('pandas', 'pandas', 1.0)
 ('birds', 'aves', 0.9401)
