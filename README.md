@@ -167,12 +167,16 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 ```
 
 ```python
+
+# Read the file
+
 file_path = '/Documents/panda_bear_english_spanish.tmx'
 bitext = tt.read_bitext(file_path)
 ```
 
 ```python
 print(tt.get_ngrams(bitext))
+
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
 ('Gansu', 'Gansu', 1.0)
