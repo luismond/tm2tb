@@ -166,8 +166,7 @@ print(tt.get_ngrams(bitext))
 
 # Main features
 
-- Find translation pairs of single terms, multi-word nouns, short phrases and collocations from single sentences, pairs of sentences or bilingual documents.
-- Use your own bilingual files in .tmx, .mqxliff, .mxliff or .csv format to extract a list of bilingual terms.
+- Find translation pairs of terms, multi-word nouns, short phrases and collocations from single sentences, pairs of sentences or bilingual documents.
 
 # Bilingual file formats supported
 
@@ -180,10 +179,6 @@ print(tt.get_ngrams(bitext))
 # Languages supported
 
 Any language supported by spaCy.
-
-# Tests
-
-In the tests folder you can find bilingual translation files in many languages, which you can use to test the app's functionality
 
 # License
 
