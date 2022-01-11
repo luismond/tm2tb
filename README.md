@@ -85,7 +85,7 @@ print(tt.get_ngrams(trg_sentence))
 ```
 ### Extracting terms from pairs of sentences
 
-But the special thing about TM2TB is that it can extract and match the terms from the two sentences:
+The special thing about TM2TB is that it can extract and match the terms from the two sentences:
 
 ```python
 
