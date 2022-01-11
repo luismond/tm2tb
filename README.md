@@ -236,7 +236,7 @@ These models are optimized for efficiency and are lightweight. They are a good c
 
 Other models, such as `en_core_web_trf` are much larger and will take more time to download, but they are more precise.
 
-**NOTE:** When you first run the module, the sentence transformer [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
+**NOTE:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
 
 LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
