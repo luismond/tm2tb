@@ -146,6 +146,14 @@ print(tt.get_ngrams((src_sentence, trg_sentence))
 
 The values represent the similarities between the source terms and the target terms.
 
+### Using Part-of-Speech tags
+
+You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
+```python
+```
+
+
+
 ### Extracting terms from bilingual documents
 
 Furthermore, tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
