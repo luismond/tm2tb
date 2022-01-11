@@ -1,14 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 TM2TB Sentence class.
 Implements methods for string cleaning, validation, tokenization,
 ngram generation and ngram selection.
 """
 import re
-import json
 from langdetect import detect
-import requests
 
 # import es_dep_news_trf
 # import en_core_web_trf
@@ -25,8 +21,6 @@ import es_dep_news_trf
 import en_core_web_sm
 model_en = en_core_web_sm.load()
 model_es = es_dep_news_trf.load()
-
-#from tm2tb import DistanceApi
 
 
 class Sentence:
@@ -50,17 +44,14 @@ class Sentence:
 
     Methods
     -------
-    preprocess():
+    preprocess()
         Cleans and validates the sentence.
 
     get_spacy_model():
         Gets the the spaCy model corresponding to the sentence language.
 
     get_ngrams(ngrams_min=, ngrams_max=, include_pos=, exclude_pos=)
-        Gets ngrams from the sentence.
-
-    get_top_ngrams(server_mode=, diversity=, top_n=, overlap=, **kwargs)
-        Gets the top_n ngrams that are most similar to the sentence.
+        Gets ngrams candidates from the sentence
     """
     supported_languages = ['en', 'es', 'de', 'fr']
 
@@ -190,7 +181,7 @@ class Sentence:
             spacy_model = model_fr
         return spacy_model
 
-    def get_ngrams(self,
+    def get_candidate_ngrams(self,
                    ngrams_min = 1,
                    ngrams_max = 3,
                    include_pos = None,
@@ -229,7 +220,6 @@ class Sentence:
 
         if include_pos is None:
             include_pos = ['NOUN','PROPN']
-
         if exclude_pos is None:
             exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX']
 
@@ -239,6 +229,7 @@ class Sentence:
         pos_tokens = [(token.text, token.pos_) for token in doc]
 
         # Get ngrams from pos_tokens
+
         pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
                   for n in range(ngrams_min, ngrams_max+1))
         pos_ngrams = (ng for ngl in pos_ngrams for ng in ngl)
@@ -269,7 +260,7 @@ class Sentence:
             pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
             return re.sub(pattern, repl, ngram)
 
-        result = {'ngrams':[], 
+        result = {'ngrams':[],
                  'joined_ngrams':[],
                  'tags':[],}
 
@@ -280,66 +271,4 @@ class Sentence:
             result['joined_ngrams'].append(joined_ngram)
             result['tags'].append(tag)
 
-        return result
-
-    def get_top_ngrams(self,
-                       server_mode='remote',
-                       diversity=.8,
-                       top_n=20,
-                       overlap=True,
-                       **kwargs):
-        """
-        Get the ngrams that are most similar to the sentence.
-
-        Parameters
-        ----------
-        server_mode : string, optional
-            DESCRIPTION. Defines if the similarity queries are done locally or remotely.
-        diversity : int, optional
-            DESCRIPTION. Diversity value for Maximal Marginal Relevance. The default is .8.
-        top_n : int, optional
-            DESCRIPTION. Number of best ngrams to return. The default is 20.
-        overlap : string, optional
-            DESCRIPTION. Defines if overlapping ngrams should be kept or dropped.
-        **kwargs : dict
-            DESCRIPTION. Same optional parameters as Sentence.get_ngrams()
-
-        Returns
-        -------
-        top_ngrams : List of tuples (ngram, value).
-            List of top_n ngrams that are most similar to the sentence.
-        """
-
-        sentence = self.clean_sentence
-        ngrams = self.get_ngrams(**kwargs)
-        ngrams = list(set(ngrams['joined_ngrams']))
-
-        params = json.dumps(
-            {'seq1':[sentence],
-             'seq2':ngrams,
-             'diversity':diversity,
-             'top_n':top_n,
-             'query_type':'ngrams_to_sentence'})
-
-        if server_mode=='remote':
-            url = 'http://0.0.0.0:5000/distance_api'
-            response = requests.post(url=url, json=params).json()
-            top_ngrams = [tuple(el) for el in json.loads(response)]
-
-        if server_mode=='local':
-            response = DistanceApi(params).post()
-            top_ngrams = json.loads(response)
-            top_ngrams = [tuple(el) for el in json.loads(response)]
-
-        # Look for top_ngrams in sentence, remove them from sentence.
-        # If top_ngram not present in sentence, remove it from top_ngrams.
-        if overlap is False:
-            for tup in top_ngrams:
-                pattern = r"(^|\s|\W)({})($|\s|\W)".format(tup[0])
-                matches = re.findall(pattern, sentence)
-                sentence = re.sub(pattern, ' ', sentence)
-                if len(matches)==0:
-                    top_ngrams.remove(tup)
-        if overlap is True:
-            pass
-        return top_ngrams
+        return list(set(result['joined_ngrams']))
