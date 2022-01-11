@@ -212,7 +212,7 @@ openpyxl==3.0.9
 
 2. Install the spaCy models of your choice.
 
-tm2tb needs at least a couple of spaCy language models to work.
+**TM2TB** needs at least a couple of spaCy language models to work.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
@@ -227,9 +227,9 @@ These models are optimized for efficiency and are lightweight. They are a good c
 
 Other models, such as `en_core_web_trf` are much larger and will take more time to download, but they are more precise.
 
-**NOTE:** When you first run the module, the sentence transformer LaBSE will be downloaded and cached.
+**NOTE:** When you first run the module, the sentence transformer [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
 
-[LaBSE](https://tfhub.dev/google/LaBSE/1) is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
+LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
 ## License
 
