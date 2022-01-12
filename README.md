@@ -255,7 +255,7 @@ sentence-transformers==2.1.0
 
 2. Install the spaCy models of your choice.
 
-**tm2tb** needs at least a couple of spaCy language models to work.
+**tm2tb** needs at least two spaCy language models to work.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
