@@ -3,18 +3,20 @@ TM2TB module. Extracts terms from sentences, pairs of sentences and bilingual do
 @author: Luis Mondragon (luismond@gmail.com)
 Last updated on Tue Jan 11 04:55:22 2022
 """
-
-from typing import Union, Tuple, List
 import os
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import pandas as pd
+
+from sklearn.metrics.pairwise import cosine_similarity
+from typing import Union, Tuple, List
 from sentence_transformers import SentenceTransformer
 
 from tm2tb import Sentence
 from tm2tb import BilingualReader
 
+print('Loading LaBSE model...')
 model = SentenceTransformer('sentence-transformers/LaBSE')
+
 
 class Tm2Tb:
 
@@ -216,6 +218,7 @@ class Tm2Tb:
 
         max_seq_similarities = get_max_seq_similarities(src_ngrams_, trg_ngrams_)
         # Filter bi_ngrams
+        
         bi_ngrams = self._filter_bi_ngrams(max_seq_similarities, min_similarity)
         return bi_ngrams
 
@@ -235,14 +238,17 @@ class Tm2Tb:
             except:
                 pass
 
-        bitext_bi_ngrams = pd.concat(bitext_bi_ngrams)
-        bitext_bi_ngrams = bitext_bi_ngrams.drop(columns=['relevance'])
+        bitext_bi_ngrams = [x for y in bitext_bi_ngrams for x in y]
+        #bitext_bi_ngrams = pd.concat(bitext_bi_ngrams)
+        #bitext_bi_ngrams = bitext_bi_ngrams.drop(columns=['relevance'])
 
         # Duplicate bisentence ngrams are kept because they are used
         # to get the ngram-to-sentence similarity average.
         bitext_bi_ngrams = self._filter_bi_ngrams(bitext_bi_ngrams,
                                                   min_similarity,
                                                   get_ngram_sent_avgs=True)
+       
+
         return bitext_bi_ngrams
 
     @classmethod
@@ -327,4 +333,13 @@ class Tm2Tb:
             bi_ngrams = get_ngram_to_sentence_avgs(bi_ngrams)
         bi_ngrams = group_and_get_best_match(bi_ngrams)
         bi_ngrams = get_relevance(bi_ngrams)
-        return bi_ngrams
+        
+        bi_ngrams_ = []
+        for (a, b, c, d, e) in list(zip(bi_ngrams['src_ngram'],
+                                        bi_ngrams['src_ngram_sent_sim'],
+                                        bi_ngrams['trg_ngram'],
+                                        bi_ngrams['trg_ngram_sent_sim'],
+                                        bi_ngrams['bi_ngram_similarity'])):
+            bi_ngrams_.append((a, b, c, d, round(e, 4)))
+        
+        return bi_ngrams_
