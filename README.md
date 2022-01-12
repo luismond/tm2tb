@@ -166,7 +166,7 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 
 ```python
 # Read the file
-file_path = 'tm2tb/tests/panda_bear_english_spanish.csv'
+file_path = 'tests/panda_bear_english_spanish.csv'
 bitext = tt.read_bitext(file_path)
 ```
 
