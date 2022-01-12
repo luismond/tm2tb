@@ -5,11 +5,11 @@ Implements methods for string cleaning, validation, tokenization, and ngram sele
 import re
 from langdetect import detect
 
-import es_dep_news_trf
+import es_core_news_sm
 import en_core_web_sm
 
 model_en = en_core_web_sm.load()
-model_es = es_dep_news_trf.load()
+model_es = es_core_news_sm.load()
 
 class Sentence:
 
