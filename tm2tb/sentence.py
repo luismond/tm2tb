@@ -5,9 +5,9 @@ Implements methods for string cleaning, validation, tokenization, and ngram sele
 import re
 from langdetect import detect
 
+print('Loading spaCy models...')
 import es_core_news_sm
 import en_core_web_sm
-
 model_en = en_core_web_sm.load()
 model_es = es_core_news_sm.load()
 
