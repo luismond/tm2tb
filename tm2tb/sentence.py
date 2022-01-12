@@ -4,12 +4,7 @@ Implements methods for string cleaning, validation, tokenization, and ngram sele
 """
 import re
 from langdetect import detect
-
-print('Loading spaCy models...')
-import es_core_news_sm
-import en_core_web_sm
-model_en = en_core_web_sm.load()
-model_es = es_core_news_sm.load()
+from tm2tb.spacy_models import get_spacy_model
 
 class Sentence:
 
@@ -34,9 +29,6 @@ class Sentence:
     -------
     preprocess()
         Cleans and validates the sentence.
-
-    get_spacy_model():
-        Gets the the spaCy model corresponding to the sentence language.
 
     get_ngrams(ngrams_min=, ngrams_max=, include_pos=, exclude_pos=)
         Gets ngrams candidates from the sentence
@@ -157,17 +149,6 @@ class Sentence:
         sentence = validate_lang(sentence)
         return sentence
 
-    def get_spacy_model(self):
-        'Gets spacy model'
-        if self.lang=='en':
-            spacy_model = model_en
-        if self.lang=='es':
-            spacy_model = model_es
-        if self.lang=='de':
-            spacy_model = model_de
-        if self.lang=='fr':
-            spacy_model = model_fr
-        return spacy_model
 
     def get_candidate_ngrams(self,
                    ngrams_min = 1,
@@ -211,7 +192,9 @@ class Sentence:
         if exclude_pos is None:
             exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX']
 
-        doc = self.get_spacy_model()(self.clean_sentence)
+        
+        spacy_model = get_spacy_model(self.lang)
+        doc = spacy_model(self.clean_sentence)
 
         # Get text and part-of-speech tag for each token in document
         pos_tokens = [(token.text, token.pos_) for token in doc]
