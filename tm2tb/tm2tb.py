@@ -181,10 +181,12 @@ class Tm2Tb:
 
         src_ngrams_ = self._get_best_sentence_ngrams(src_sentence,
                                                      return_embs=True,
+                                                     top_n=30,
                                                      **kwargs)
 
         trg_ngrams_ = self._get_best_sentence_ngrams(trg_sentence,
                                                      return_embs=True,
+                                                     top_n=30,
                                                      **kwargs)
 
         def get_max_seq_similarities(src_ngrams_, trg_ngrams_):
@@ -230,7 +232,7 @@ class Tm2Tb:
                                                                             trg_sentence,
                                                                             **kwargs)
                 bitext_bi_ngrams.append(bisentence_bi_ngrams_)
-            except ValueError:
+            except:
                 pass
 
         bitext_bi_ngrams = pd.concat(bitext_bi_ngrams)
