@@ -39,7 +39,7 @@ pprint(tt.get_ngrams(trg_sentence))
 pprint(tt.get_ngrams((src_sentence, trg_sentence)))
 
 # Extracting terms from a bilingual document
-file_path = 'tm2tb/tests/panda_bear_english_spanish.csv'
+file_path = 'tests/panda_bear_english_spanish.csv'
 bitext = tt.read_bitext(file_path)
 pprint(tt.get_ngrams(bitext))
 
