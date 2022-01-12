@@ -4,7 +4,7 @@
 
 ## Approach
 
-To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. No stopwords are used. Then, a model language is used to obtain the embeddings of the n-gram candidates and the sentence. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
+To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. Then, a model language is used to obtain the embeddings of the n-gram candidates and the sentence. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
 
 For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. The resulting n-gram embeddings are then compared using cosine similarity, which returns the most similar target n-gram for each source n-gram:
 
