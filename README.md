@@ -234,11 +234,13 @@ You can pass a list of part-of-speech tags to delimit the selection of terms. Fo
 
 ## Installation
 
-1. Navigate to your desired location, clone the repository, create a virtual environment and install the requirements:
+1. Navigate to your desired location, and create a virtual environment.
 
-```
-pip install -r requirements.txt
-```
+2. Clone the repository:
+`git clone https://github.com/luismond/tm2tb`
+
+3. Install the requirements:
+`pip install -r requirements.txt`
 
 This will install the following libraries:
 ```
@@ -254,7 +256,6 @@ sentence-transformers==2.1.0
 ```
 
 Also, the following spaCy models will be downloaded and installed:
-
 ```
 en_core_web_sm-3.2.0
 es_core_news_sm-3.2.0
