@@ -254,11 +254,11 @@ sentence-transformers==2.1.0
 ```
 
 **Note about spaCy models:**
-tm2tb comes prepackaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases?q=en_core_web&expanded=true), [Spanish](https://github.com/explosion/spacy-models/releases?q=es_core_web&expanded=true), [German](https://github.com/explosion/spacy-models/releases/tag/de_core_news_sm-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/tag/fr_core_news_sm-3.2.0).
+tm2tb comes pre-packaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases?q=en_core_web&expanded=true), [Spanish](https://github.com/explosion/spacy-models/releases?q=es_core_web&expanded=true), [German](https://github.com/explosion/spacy-models/releases/tag/de_core_news_sm-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/tag/fr_core_news_sm-3.2.0).
 
 These models are optimized for efficiency and are lightweight.
 
-You can download larger models or models for additional languages.
+You can download larger models for better Part-of-Speech tagging accuracy (or models for additional languages), and add them to `tm2tb.spacy_models.py`.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
