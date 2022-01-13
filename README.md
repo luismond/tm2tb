@@ -253,24 +253,16 @@ openpyxl==3.0.9
 sentence-transformers==2.1.0
 ```
 
-2. Install the spaCy models of your choice.
+**Note about spaCy models:**
+tm2tb comes prepackaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases?q=en_core_web&expanded=true), [Spanish](https://github.com/explosion/spacy-models/releases?q=es_core_web&expanded=true), [German](https://github.com/explosion/spacy-models/releases/tag/de_core_news_sm-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/tag/fr_core_news_sm-3.2.0).
 
-**tm2tb** needs at least two spaCy language models to work.
+These models are optimized for efficiency and are lightweight.
+
+You can download larger models or models for additional languages.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
-For example, to install the English and the Spanish language models:
-
-```
-python -m spacy download es_core_news_sm
-python -m spacy download en_core_web_sm
-```
-
-These models are optimized for efficiency and are lightweight. They are a good choice for quickly testing the module.
-
-Other models, such as `en_core_web_trf` are much larger and will take more time to download, but they are more precise.
-
-**NOTE:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
+**Note about transformers models:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
 
 LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
