@@ -175,7 +175,7 @@ class Tm2Tb:
     def _get_bi_ngrams_from_bisentence(self,
                                        src_sentence,
                                        trg_sentence,
-                                       min_similarity=.75,
+                                       min_similarity=.85,
                                        **kwargs):
 
         # Get sentence ngrams, ngrams-to-sentence similarities and embeddings
@@ -222,7 +222,7 @@ class Tm2Tb:
         bi_ngrams = self._filter_bi_ngrams(max_seq_similarities, min_similarity)
         return bi_ngrams
 
-    def _get_bi_ngrams_from_bitext(self, bitext, min_similarity=.75, **kwargs):
+    def _get_bi_ngrams_from_bitext(self, bitext, min_similarity=.85, **kwargs):
 
         # Get bi_ngrams from a list of tuples of sentences.
 
