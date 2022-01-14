@@ -42,7 +42,7 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 ```python
 from tm2tb import Tm2Tb
 
-tt = Tm2Tb()
+model = Tm2Tb()
 
 src_sentence = """ 
                 The giant panda, also known as the panda bear (or simply the panda), 
@@ -58,7 +58,7 @@ src_sentence = """
 ```
 
 ```python
->>> print(tt.get_ngrams(src_sentence))
+>>> print(model.get_ngrams(src_sentence))
 
 [('panda', 0.4116),
  ('Carnivora', 0.2499),
@@ -99,7 +99,7 @@ trg_sentence = """
 ```
 
 ```python
->>> print(tt.get_ngrams(trg_sentence))
+>>> print(model.get_ngrams(trg_sentence))
 
 [('panda', 0.4639),
  ('carne de aves', 0.2894),
@@ -122,7 +122,7 @@ trg_sentence = """
 The special thing about tm2tb is that it can extract and match the terms from the two sentences:
 
 ```python
->>> print(tt.get_ngrams((src_sentence, trg_sentence)))
+>>> print(model.get_ngrams((src_sentence, trg_sentence)))
 
 [('panda', 'panda', 1.0)
 ('pandas', 'pandas', 1.0)
@@ -167,11 +167,11 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 ```python
 # Read the file
 file_path = 'tests/panda_bear_english_spanish.csv'
-bitext = tt.read_bitext(file_path)
+bitext = model.read_bitext(file_path)
 ```
 
 ```python
->>> print(tt.get_ngrams(bitext))
+>>> print(model.get_ngrams(bitext))
 
 [('panda bear', 'oso panda', 0.8826)
 ('Ursidae', 'Ursidae', 1.0)
@@ -204,7 +204,7 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 You can select the minimum and maximum length of the n-grams: 
 
 ```python
->>> print(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+>>> print(model.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
 
 ('South Central China', 'centro sur de China', 0.899)
 ('form of birds', 'forma de aves', 0.9635)
@@ -221,7 +221,7 @@ You can select the minimum and maximum length of the n-grams:
 You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
 
 ```python
->>> print(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
+>>> print(model.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
 
 ('giant', 'gigante', 0.936)
 ('native', 'originario', 0.8423)
