@@ -42,8 +42,8 @@ class Sentence:
 
     def preprocess(self,
                    min_non_alpha_ratio = .25,
-                   sentence_min_length = 100,
-                   sentence_max_length = 900):
+                   sentence_min_length = 30,
+                   sentence_max_length = 700):
         """
         Normalizes spaces, apostrophes and special characters.
         Validates sentence alphabetic-ratio, length, and language.
@@ -149,39 +149,62 @@ class Sentence:
         sentence = validate_lang(sentence)
         return sentence
 
+    def generate_ngrams(self,
+                   ngrams_min = 1,
+                   ngrams_max = 2):
+        "Generate ngrams from sentence sequence"
+
+        # Get spacy model and instantiate a spacy doc with the clean sentence
+        spacy_model = get_spacy_model(self.lang)
+        doc = spacy_model(self.clean_sentence)
+
+        # Get text and part-of-speech tag for each token in document
+        pos_tokens = [(token.text, token.pos_) for token in doc]
+
+        # Get n-grams from pos_tokens
+        pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
+                  for n in range(ngrams_min, ngrams_max+1))
+        return (ng for ngl in pos_ngrams for ng in ngl)
 
     def get_candidate_ngrams(self,
-                   ngrams_min = 1,
-                   ngrams_max = 3,
-                   include_pos = None,
-                   exclude_pos = None
-                   ):
+                      include_pos = None,
+                      exclude_pos = None,
+                      **kwargs):
         """
-        Get ngrams from the sentence.
+        Filter ngrams with part-of-speech tags and punctuation rules.
 
         Parameters
         ----------
-        ngrams_min : int, optional
-            DESCRIPTION. Minimum ngram sequence length.
-        ngrams_max : int, optional
-            DESCRIPTION. Maximum ngram sequence length.
-        include_pos : List, optional
-            DESCRIPTION. A list of POS-tags to delimit the ngrams.
-                        If None, the default value is ['NOUN', 'PROPN']
-        exclude_pos : List, optional
-            DESCRIPTION. A list of POS-tags to exclude from the ngrams.
-                        If None, the default value is ['X', 'SCONJ', 'CCONJ', 'AUX']
+
+        include_pos : list
+            DESCRIPTION.    A list of POS-tags to delimit the ngrams.
+                            If None, the default value is ['NOUN', 'PROPN']
+
+        exclude_pos : list
+            DESCRIPTION.    A list of POS-tags to exclude from the ngrams.
+
+        **kwargs : dict
+
+            See below
+
+            Optional Keyword Arguments:
+                ngrams_min : int, optional
+                    DESCRIPTION.    Minimum ngram sequence length.
+                                    The default value is 1.
+
+                ngrams_max : int, optional
+                    DESCRIPTION.    Maximum ngram sequence length.
+                                    The default value is 2.
 
         Returns
         -------
         dict
-            Dictionary representing ngrams, pos-tags and joined ngrams:
-                {
-                ngrams: ["red", "panda"],
-                tags: ["ADJ", "NOUN"],
-                joined_ngrams: ["red panda"]
-                }
+            DESCRIPTION. Dictionary of n-grams and part-of-speech tags
+
         """
+
+
+        pos_ngrams = self.generate_ngrams(**kwargs)
 
         #include_punct = ["'", ":", "’", "’", "'", "™", "®", "%"]
         exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
@@ -190,34 +213,21 @@ class Sentence:
         if include_pos is None:
             include_pos = ['NOUN','PROPN']
         if exclude_pos is None:
-            exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX']
-
-        
-        spacy_model = get_spacy_model(self.lang)
-        doc = spacy_model(self.clean_sentence)
-
-        # Get text and part-of-speech tag for each token in document
-        pos_tokens = [(token.text, token.pos_) for token in doc]
-
-        # Get ngrams from pos_tokens
-
-        pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
-                  for n in range(ngrams_min, ngrams_max+1))
-        pos_ngrams = (ng for ngl in pos_ngrams for ng in ngl)
+            exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX', 'VERB']
 
         # Keep ngrams where the first element's pos-tag
         # and the last element's pos-tag are present in include_pos
         pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][1] in include_pos
                           and pos_ngram[-1:][0][1] in include_pos, pos_ngrams)
 
+        # Keep ngrams where none of elements' tag is in exclude pos
+        pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
+                                                      for token in pos_ngram), pos_ngrams)
+
         # Keep ngrams where the first element's token
         # and the last element's token are alpha
         pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][0].isalpha()
                           and pos_ngram[-1:][0][0].isalpha(), pos_ngrams)
-
-        # Keep ngrams where none of elements' tag is in exclude pos
-        pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
-                                                      for token in pos_ngram), pos_ngrams)
 
         # Keep ngrams where none of the middle elements' text is in exclude punct
         pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
@@ -231,15 +241,15 @@ class Sentence:
             pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
             return re.sub(pattern, repl, ngram)
 
-        result = {'ngrams':[],
-                 'joined_ngrams':[],
-                 'tags':[],}
+        pos_ngrams_ = {'ngrams':[],
+                       'joined_ngrams':[],
+                       'tags':[]}
 
         for pos_ngram in pos_ngrams:
             ngram, tag = zip(*pos_ngram)
             joined_ngram = rejoin_special_punct(' '.join(ngram))
-            result['ngrams'].append(ngram)
-            result['joined_ngrams'].append(joined_ngram)
-            result['tags'].append(tag)
+            pos_ngrams_['ngrams'].append(ngram)
+            pos_ngrams_['joined_ngrams'].append(joined_ngram)
+            pos_ngrams_['tags'].append(tag)
 
-        return list(set(result['joined_ngrams']))
+        return list(set(pos_ngrams_['joined_ngrams']))#move this to next method
