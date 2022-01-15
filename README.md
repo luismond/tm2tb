@@ -6,9 +6,7 @@
 
 To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. Then, a model language is used to obtain the embeddings of the n-gram candidates and the sentence. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
 
-For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. The resulting n-gram embeddings are then compared using cosine similarity, which returns the most similar target n-gram for each source n-gram:
-
-![Similarity matrix generated in Spyder for visualization purposes](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities_small.png)
+For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. The resulting n-gram embeddings are then compared using cosine similarity, which returns the most similar target n-gram for each source n-gram.
 
 For bilingual documents, n-grams are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
 
@@ -142,6 +140,10 @@ The special thing about tm2tb is that it can extract and match the terms from th
 ```
 
 The values represent the similarities between the source terms and the target terms.
+
+This list is extracted from a similarity matrix of all source ngrams and all target ngrams. We can see here a sample of the matrix:
+
+![Similarity matrix generated in Spyder for visualization purposes](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities_small.png)
 
 ### Extracting terms from bilingual documents
 
