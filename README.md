@@ -282,7 +282,9 @@ LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sente
 ## tm2tb.com
 For bilingual documents, the functionality of tm2tb is also available through a web app: www.tm2tb.com
 
-![](https://github.com/luismond/tm2tb_web_app/blob/main/static/tm2tb_example_en_es.png?raw=true)
+![](https://u.pcloud.link/publink/show?code=XZQNJGXZKLHGiBxlweboC15rMyalkJ73cHkk)
+![](https://u.pcloud.link/publink/show?code=XZ8NJGXZYDL6JsIn99JMyy54zID3WbIIALEy)
+![](https://u.pcloud.link/publink/show?code=XZfNJGXZDCkNOqUQTcHmQPrc8QjmAhjhzUHy)
 
 ## Maintainer
 
