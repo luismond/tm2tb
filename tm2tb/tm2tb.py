@@ -113,12 +113,12 @@ class Tm2Tb:
                                        **kwargs):
 
         src_ngrams_df = self.get_ngrams(src_sentence,
-                                        top_n=30,
+                                        top_n=50,
                                         return_embs=True,
                                         **kwargs)
 
         trg_ngrams_df = self.get_ngrams(trg_sentence,
-                                        top_n=30,
+                                        top_n=50,
                                         return_embs=True,
                                         **kwargs)
 
@@ -511,7 +511,7 @@ class Sentence:
         pos_ngrams_ = pos_ngrams_.drop(columns=['index'])
         return pos_ngrams_
 
-    def get_best_sentence_ngrams(self, top_n = 30, diversity=.5, return_embs=False, **kwargs):
+    def get_best_sentence_ngrams(self, top_n = 30, diversity=.8, return_embs=False, **kwargs):
         """
         Embed sentence and candidate ngrams.
         Calculate the best sentence ngrams using cosine similarity and MMR.
