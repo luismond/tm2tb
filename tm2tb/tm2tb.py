@@ -18,7 +18,7 @@ import pandas as pd
 from tm2tb.spacy_models import get_spacy_model
 from tm2tb import BitextReader
 print('Loading LaBSE model...')
-model = SentenceTransformer('')
+model = SentenceTransformer('/home/user/TM2TB/labse_model')
 
 
 class Tm2Tb:
@@ -121,56 +121,45 @@ class Tm2Tb:
     def _get_bi_ngrams_from_bisentence(self,
                                        src_sentence,
                                        trg_sentence,
-                                       min_similarity=.75,
+                                       min_similarity=.8,
                                        **kwargs):
         
+        src_sn = Sentence(src_sentence)
+        src_ngrams_df = src_sn.get_best_sentence_ngrams(top_n=30,
+                                                        return_embs=True,
+                                                        **kwargs)
 
-        src_ngrams_dict = Sentence(src_sentence).get_best_sentence_ngrams(top_n=30,
-                                                                          return_embs=True,
-                                                                          **kwargs)
-
-        trg_ngrams_dict = Sentence(trg_sentence).get_best_sentence_ngrams(top_n=30,
-                                                                          return_embs=True,
-                                                                          **kwargs)
-
-        src_ngrams = src_ngrams_dict['joined_ngrams'].tolist()
-        src_ngrams_ranks = src_ngrams_dict['rank'].tolist()
-        src_ngrams_embs = src_ngrams_dict['embedding'].tolist()
-        src_ngrams_tags = src_ngrams_dict['tags'].tolist()
-    
-        trg_ngrams = trg_ngrams_dict['joined_ngrams'].tolist()
-        trg_ngrams_ranks = trg_ngrams_dict['rank'].tolist()
-        trg_ngrams_embs = trg_ngrams_dict['embedding'].tolist()
-        trg_ngrams_tags = trg_ngrams_dict['tags'].tolist()
+        trg_sn = Sentence(trg_sentence)
+        trg_ngrams_df = trg_sn.get_best_sentence_ngrams(top_n=30,
+                                                        return_embs=True,
+                                                        **kwargs)
         
-        seq_similarities = cosine_similarity(src_ngrams_embs,
-                                              trg_ngrams_embs)
+        seq_similarities = cosine_similarity(src_ngrams_df['embedding'].tolist(),
+                                              trg_ngrams_df['embedding'].tolist())
         # get seq1 & seq2 indexes
-        seq1_idx = list(range(len(src_ngrams)))
-        seq2_idx = list(range(len(trg_ngrams)))
+        seq1_idx = list(range(len(src_ngrams_df['joined_ngrams'].tolist())))
+        seq2_idx = list(range(len(trg_ngrams_df['joined_ngrams'].tolist())))
     
         # # get max seq2 values and indexes
         max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
         max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
-    
-        # get max seq similarities
-        max_seq_similarities = [(src_ngrams[idx],
-                                  src_ngrams_ranks[idx],
-                                  src_ngrams_tags[idx],
-                                  trg_ngrams[max_seq2_idx[idx]],
-                                  trg_ngrams_ranks[max_seq2_idx[idx]],
-                                  trg_ngrams_tags[max_seq2_idx[idx]],
-                                  float(max_seq2_values[idx])) for idx in seq1_idx]
-        
-        # # make dataframe
-        bi_ngrams = pd.DataFrame(max_seq_similarities)
+
+        # make bi_ngrams data frame with the top src_ngram/trg_ngram similarities
+        bi_ngrams = pd.DataFrame([(src_ngrams_df.iloc[idx]['joined_ngrams'],
+                                   src_ngrams_df.iloc[idx]['rank'],
+                                   src_ngrams_df.iloc[idx]['tags'],
+                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['joined_ngrams'],
+                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['rank'],
+                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['tags'],
+                                   float(max_seq2_values[idx])) for idx in seq1_idx])
+
         bi_ngrams.columns = ['src_ngram',
-                              'src_ngram_rank',
-                              'src_ngram_tags',
-                              'trg_ngram',
-                              'trg_ngram_rank',
-                              'trg_ngram_tags',
-                              'bi_ngram_similarity']
+                             'src_ngram_rank',
+                             'src_ngram_tags',
+                             'trg_ngram',
+                             'trg_ngram_rank',
+                             'trg_ngram_tags',
+                             'bi_ngram_similarity']
     
         # # Keep ngrams above min_similarity
         bi_ngrams = bi_ngrams[bi_ngrams['bi_ngram_similarity'] >= min_similarity]
@@ -190,12 +179,10 @@ class Tm2Tb:
             bi_ngrams['src_ngram_rank'] * bi_ngrams['trg_ngram_rank']
         bi_ngrams = bi_ngrams.sort_values(by='bi_ngram_rank', ascending=False)
         
-        # Sort, reset index and convert to dictionary
+        # Finish
         bi_ngrams = bi_ngrams.round(4)
         bi_ngrams = bi_ngrams.reset_index()
         bi_ngrams = bi_ngrams.drop(columns=['index'])
-        #bi_ngrams = bi_ngrams.to_dict(orient='index')
-        
         return bi_ngrams
   
     def _get_bi_ngrams_from_bitext(self, bitext, min_similarity=.85, **kwargs):
@@ -320,7 +307,7 @@ class Sentence:
     def __init__(self, sentence):
         self.sentence = sentence
         self.lang = detect(self.sentence)
-        self.clean_sentence = self._preprocess()
+        self.clean_sentence = self._preprocess()        
 
     def _preprocess(self,
                    min_non_alpha_ratio = .25,
@@ -550,27 +537,28 @@ class Sentence:
         Embed sentence and candidate ngrams.
         Calculate the best sentence ngrams using cosine similarity and MMR.
         """
-    
-        #sent = Sentence(sentence)
         clean_sentence = self.clean_sentence
-        ngrams_dict = self._get_candidate_ngrams(**kwargs)
-      
-    
-        ngrams = ngrams_dict['ngrams']
-        joined_ngrams = ngrams_dict['joined_ngrams']
-    
+        cand_ngrams_df = self._get_candidate_ngrams(**kwargs)
+        joined_ngrams = cand_ngrams_df['joined_ngrams']
+
+        # Embed clean sentence and joined ngrams
         seq1_embeddings = model.encode([clean_sentence])
         seq2_embeddings = model.encode(joined_ngrams)
+
+        # Get sentence/ngrams similarities
         ngram_sentence_sims = cosine_similarity(seq2_embeddings,
                                                  seq1_embeddings)
+        
+        # Get ngrams/ngrams similarities
         ngram_sims = cosine_similarity(seq2_embeddings)
+        
         # Initialize candidates and choose best ngram
         best_ngrams_idx = [np.argmax(ngram_sentence_sims)]
+        
         # All ngrams that are not in best ngrams
-        candidates_idx = [i for i in range(len(ngrams)) if i != best_ngrams_idx[0]]
-        # if top_n is None:
-        #     top_n = round(len(ngrams)*.8)
-        for _ in range(min(top_n - 1, len(ngrams) - 1)):
+        candidates_idx = [i for i in range(len(joined_ngrams)) if i != best_ngrams_idx[0]]
+
+        for _ in range(min(top_n - 1, len(joined_ngrams) - 1)):
             # Get distances within candidates and between candidates and selected ngrams
             candidate_sims = ngram_sentence_sims[candidates_idx, :]
             rest_ngrams_sims = np.max(ngram_sims[candidates_idx][:, best_ngrams_idx], axis=1)
@@ -582,13 +570,16 @@ class Sentence:
             best_ngrams_idx.append(mmr_idx)
             candidates_idx.remove(mmr_idx)
     
-        best_ngrams_dict = ngrams_dict.iloc[best_ngrams_idx]
-        best_ngrams_dict.loc[:, 'rank'] = [round(float(ngram_sentence_sims.reshape(1, -1)[0][idx]), 4)
+        # Keep only ngrams in best_ngrams_idx
+        best_ngrams_df = cand_ngrams_df.iloc[best_ngrams_idx]
+        
+        # Add rank and embeddings
+        best_ngrams_df.loc[:, 'rank'] = [round(float(ngram_sentence_sims.reshape(1, -1)[0][idx]), 4)
                                     for idx in best_ngrams_idx]
-        best_ngrams_dict.loc[:, 'embedding'] = [seq2_embeddings[idx] for idx in best_ngrams_idx]
-        best_ngrams_dict = best_ngrams_dict.sort_values(by='rank', ascending = False)
+        best_ngrams_df.loc[:, 'embedding'] = [seq2_embeddings[idx] for idx in best_ngrams_idx]
+        best_ngrams_df = best_ngrams_df.sort_values(by='rank', ascending = False)
     
         if return_embs == False:
-            best_ngrams_dict = best_ngrams_dict.drop(columns=['ngrams','tags','embedding'])            
+            best_ngrams_df = best_ngrams_df.drop(columns=['ngrams','tags','embedding'])            
     
-        return best_ngrams_dict
+        return best_ngrams_df
