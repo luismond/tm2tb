@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-BilingualReader: Reads parallel bilingual data files
+BitextReader: Reads parallel bilingual data files
 """
 import os
 from collections import OrderedDict
@@ -9,14 +9,25 @@ import xmltodict
 import openpyxl
 import pandas as pd
 
-class BilingualReader:
+class BitextReader:
     'Reads parallel bilingual data files'
     extensions = ['.csv', '.mqxliff', '.mxliff', '.tmx', '.xlsx']
-    def __init__(self, path, fn):
-        self.file_path = os.path.join(path, fn)
+    def __init__(self, file_path):
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
         self.file_max_size = 5000000
+
+    def read_bitext(self):
+        'Get bitext from file content'
+        bitext = self.get_file_content()
+        bitext.columns = ['src', 'trg']
+        bitext = bitext.dropna()
+        if len(bitext)==0:
+            raise ValueError('Document appears to be empty')
+        bitext = bitext.astype(str)
+        bitext = bitext[bitext['src'].str.len()>0]
+        bitext = bitext[bitext['trg'].str.len()>0]
+        return bitext
 
     def get_file_content(self):
         'Check extension and get bitext'
@@ -41,17 +52,6 @@ class BilingualReader:
             content = xlsxr.read_xlsx()
         return content
 
-    def get_bitext(self):
-        'Get bitext from file content'
-        bitext = self.get_file_content()
-        bitext.columns = ['src', 'trg']
-        bitext = bitext.dropna()
-        if len(bitext)==0:
-            raise ValueError('Document appears to be empty')
-        bitext = bitext.astype(str)
-        bitext = bitext[bitext['src'].str.len()>0]
-        bitext = bitext[bitext['trg'].str.len()>0]
-        return bitext
 
 class CsvReader:
     'Reads .csv files'
