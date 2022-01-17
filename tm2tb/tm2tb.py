@@ -3,6 +3,7 @@ TM2TB module. Extracts terms from sentences, pairs of sentences and bilingual do
 @author: Luis Mondragon (luismond@gmail.com)
 Last updated on Tue Jan 11 04:55:22 2022
 """
+
 import re
 from collections import Counter as cnt
 from typing import Union, Tuple, List
@@ -17,8 +18,9 @@ from tm2tb.spacy_models import get_spacy_model
 from tm2tb import BitextReader
 
 pd.options.mode.chained_assignment = None
+
 print('Loading LaBSE model...')
-model = SentenceTransformer('/home/user/TM2TB/labse_model')
+model = SentenceTransformer('sentence-transformers/LaBSE')
 
 class Tm2Tb:
     """
