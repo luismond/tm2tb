@@ -411,7 +411,7 @@ class Sentence:
 
     def _generate_ngrams(self,
                    ngrams_min = 1,
-                   ngrams_max = 3):
+                   ngrams_max = 2):
         """
         Generate ngrams from sentence sequence
         """
