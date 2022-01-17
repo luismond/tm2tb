@@ -122,21 +122,17 @@ The special thing about tm2tb is that it can extract and match the terms from th
 ```python
 >>> print(model.get_ngrams((src_sentence, trg_sentence)))
 
-[('panda', 'panda', 1.0)
-('pandas', 'pandas', 1.0)
-('birds', 'aves', 0.9401)
+[('panda', 'pandas', 0.9422)
+('red panda', 'panda rojo', 0.9807)
+('Giant pandas', 'pandas gigantes', 0.9322)
 ('diet', 'dieta', 0.9723)
-('bananas', 'plátanos', 0.7827)
 ('rodents', 'roedores', 0.8565)
 ('fish', 'pescado', 0.925)
 ('name', 'nombre', 0.9702)
 ('order', 'orden', 0.9591)
 ('oranges', 'naranjas', 0.9387)
-('bamboo', 'bambú', 0.9237)
-('eggs', 'huevos', 0.95)
-('body', 'cuerpo', 0.9856)
-('leaves', 'hojas', 0.9367)
 ('carrion', 'carroña', 0.8236)]
+
 ```
 
 The values represent the similarities between the source terms and the target terms.
@@ -206,16 +202,19 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 You can select the minimum and maximum length of the n-grams: 
 
 ```python
->>> print(model.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+>>> print(model.get_ngrams(bitext, ngrams_min=1, ngrams_max=5))
 
-('South Central China', 'centro sur de China', 0.899)
-('form of birds', 'forma de aves', 0.9635)
-('order Carnivora', 'orden Carnivora', 0.9223)
-('result of farming', 'resultado de la agricultura', 0.9365)
-('meat in the form', 'carne en forma', 0.9325)
-('bear species', 'especies de osos', 0.8191)
-('bamboo leaves', 'hojas de bambú', 0.9245)
-('lowland areas', 'zonas de baja altitud', 0.8583)
+[('panda', 'pandas', 0.9422)
+('red panda', 'panda rojo', 0.9807)
+('Giant pandas', 'panda gigante', 0.9019)
+('native to South Central China', 'originario del centro-sur de China', 0.8912)
+('diet', 'dieta', 0.9723)
+('fish', 'pescado', 0.925)
+('China', 'China', 1.0)
+('name', 'nombre', 0.9702)
+('order', 'orden', 0.9591)
+('oranges', 'naranjas', 0.9387)
+('carrion', 'carroña', 0.8236)]
 ```
 
 ### Using Part-of-Speech tags
@@ -225,11 +224,13 @@ You can pass a list of part-of-speech tags to delimit the selection of terms. Fo
 ```python
 >>> print(model.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
 
-('giant', 'gigante', 0.936)
+[('giant', 'gigante', 0.936)
+('rotund', 'rotundo', 0.8959)
 ('native', 'originario', 0.8423)
 ('white', 'blanco', 0.9537)
 ('red', 'rojo', 0.9698)
-('black', 'negro', 0.9099)
+('black', 'negro', 0.9099)]
+
 ```
 
 <hr/>
