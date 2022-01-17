@@ -3,7 +3,6 @@ TM2TB module. Extracts terms from sentences, pairs of sentences and bilingual do
 @author: Luis Mondragon (luismond@gmail.com)
 Last updated on Tue Jan 11 04:55:22 2022
 """
-
 import re
 from collections import Counter as cnt
 from typing import Union, Tuple, List
@@ -18,9 +17,8 @@ from tm2tb.spacy_models import get_spacy_model
 from tm2tb import BitextReader
 
 pd.options.mode.chained_assignment = None
-
 print('Loading LaBSE model...')
-model = SentenceTransformer('sentence-transformers/LaBSE')
+model = SentenceTransformer('')
 
 class Tm2Tb:
     """
@@ -111,16 +109,14 @@ class Tm2Tb:
     def _get_bi_ngrams_from_bisentence(self,
                                        src_sentence,
                                        trg_sentence,
-                                       min_similarity=.8,
+                                       min_similarity=.85,
                                        **kwargs):
 
         src_ngrams_df = self.get_ngrams(src_sentence,
-                                        top_n=50,
                                         return_embs=True,
                                         **kwargs)
 
         trg_ngrams_df = self.get_ngrams(trg_sentence,
-                                        top_n=50,
                                         return_embs=True,
                                         **kwargs)
 
@@ -409,14 +405,12 @@ class Sentence:
         sentence = validate_lang(sentence)
         return sentence
 
-    def _generate_ngrams(self,
-                   ngrams_min = 1,
-                   ngrams_max = 2):
+    def _generate_ngrams(self, ngrams_min = 1, ngrams_max = 2):
         """
         Generate ngrams from sentence sequence
         """
 
-        # Get spacy model and instantiate a spacy doc with the clean sentence
+        # Get spaCy model and instantiate a doc with the clean sentence
         spacy_model = get_spacy_model(self.lang)
         doc = spacy_model(self.clean_sentence)
 
@@ -428,10 +422,7 @@ class Sentence:
                   for n in range(ngrams_min, ngrams_max+1))
         return (ng for ngl in pos_ngrams for ng in ngl)
 
-    def _get_candidate_ngrams(self,
-                      include_pos = None,
-                      exclude_pos = None,
-                      **kwargs):
+    def _get_candidate_ngrams(self, include_pos = None, exclude_pos = None, **kwargs):
         """
         Filter ngrams with part-of-speech tags and punctuation rules.
 
@@ -471,7 +462,7 @@ class Sentence:
             include_pos = ['NOUN', 'PROPN', 'ADJ']
         if exclude_pos is None:
             exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX', 'VERB']
-
+            exclude_pos = [tag for tag in exclude_pos if not tag in include_pos]
         # Keep ngrams where the first element's pos-tag
         # and the last element's pos-tag are present in include_pos
         pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][1] in include_pos
@@ -513,14 +504,17 @@ class Sentence:
         pos_ngrams_ = pos_ngrams_.drop(columns=['index'])
         return pos_ngrams_
 
-    def get_best_sentence_ngrams(self, top_n = 30, diversity=.8, return_embs=False, **kwargs):
+    def get_best_sentence_ngrams(self, top_n = None, diversity=.8, return_embs=False, **kwargs):
         """
         Embed sentence and candidate ngrams.
         Calculate the best sentence ngrams using cosine similarity and MMR.
         """
         cand_ngrams_df = self._get_candidate_ngrams(**kwargs)
         joined_ngrams = cand_ngrams_df['joined_ngrams']
-
+        
+        if top_n is None:
+            top_n = round(len(joined_ngrams)*.75)
+        
         # Embed clean sentence and joined ngrams
         seq1_embeddings = model.encode([self.clean_sentence])
         seq2_embeddings = model.encode(joined_ngrams)
@@ -536,6 +530,7 @@ class Sentence:
 
         # All ngrams that are not in best ngrams
         candidates_idx = [i for i in range(len(joined_ngrams)) if i != best_ngrams_idx[0]]
+        
 
         for _ in range(min(top_n - 1, len(joined_ngrams) - 1)):
             # Get distances within candidates and between candidates and selected ngrams
