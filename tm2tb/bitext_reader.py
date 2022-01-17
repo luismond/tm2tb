@@ -13,6 +13,7 @@ class BitextReader:
     'Reads parallel bilingual data files'
     extensions = ['.csv', '.mqxliff', '.mxliff', '.tmx', '.xlsx']
     def __init__(self, file_path):
+        self.file_path = file_path
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
         self.file_max_size = 5000000
