@@ -22,7 +22,7 @@ from tm2tb.filter_ngrams import filter_ngrams
 pd.options.mode.chained_assignment = None
 
 print('Loading sentence transformer model...')
-model = SentenceTransformer('')
+model = SentenceTransformer('distiluse-base-multilingual-cased-v1')
 
 class Tm2Tb:
     """
