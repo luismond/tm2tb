@@ -1,9 +1,8 @@
 """
 TM2TB module. Extracts terms from sentences, pairs of sentences and bilingual documents.
 @author: Luis Mondragon (luismond@gmail.com)
-Last updated on Tue Jan 21 04:55:22 2022
+Last updated on Tue Jan 23 04:55:22 2022
 """
-import re
 from collections import Counter as cnt
 from typing import Union, Tuple, List
 import numpy as np
@@ -13,15 +12,16 @@ from random import randint
 from spacy.tokens import Doc
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-from langdetect import detect
+from langdetect import detect, LangDetectException
 
 from tm2tb.spacy_models import get_spacy_model
 from tm2tb import BitextReader
 from tm2tb.preprocess import preprocess
+from tm2tb.filter_ngrams import filter_ngrams
 
 pd.options.mode.chained_assignment = None
 
-print('Loading LaBSE model...')
+print('Loading sentence transformer model...')
 model = SentenceTransformer('')
 
 class Tm2Tb:
@@ -43,7 +43,9 @@ class Tm2Tb:
     def __init__(self, model=model):
         self.model = model
 
-    def get_ngrams(self, input_: Union[str, Tuple[tuple], List[list]], fast=False, **kwargs):
+    def get_ngrams(self, 
+                   input_: Union[str, Tuple[tuple], List[list]],
+                   **kwargs):
         """
         Parameters
         ----------
@@ -98,20 +100,11 @@ class Tm2Tb:
         
         if isinstance(input_, str):
             ngrams = Sentence(input_).get_top_ngrams(**kwargs)
-
         elif isinstance(input_, tuple):
-            src_sentence, trg_sentence = input_
-            ngrams = BiSentence(src_sentence, trg_sentence).get_top_ngrams(**kwargs)
-       
+            ngrams = BiSentence(input_).get_top_ngrams(**kwargs)
         elif isinstance(input_, list):
-            bitext = input_
-            if fast is False:
-                ngrams = BiText(bitext).get_top_ngrams(**kwargs)
-            if fast is True:
-                ngrams = BiText(bitext).get_top_ngrams_fast()
-
+            ngrams = BiText(input_).get_top_ngrams()
         return ngrams
-    
     
     @classmethod
     def read_bitext(cls, file_path):
@@ -168,7 +161,18 @@ class Sentence:
     get_best_sentence_ngrams(self, top_n = 30, diversity=.5, return_embs=False, **kwargs)
         Embeds sentence and candidate ngrams, calculates n-gram-to-sentence similarities
     """
-    
+    def __init__(self, sentence):
+        self.sentence = sentence
+        self.supported_languages = ['en', 'es']#, 'de', 'fr']
+        self.clean_sentence = preprocess(self.sentence)
+        self.lang = self.validate_lang()
+        
+    def validate_lang(self):
+        lang = detect(self.clean_sentence)
+        if not lang in self.supported_languages:
+            raise ValueError('Language not supported!')
+        else:
+            return lang
 
     def _generate_ngrams(self, ngrams_min = 1, ngrams_max = 2):
         """
@@ -220,55 +224,8 @@ class Sentence:
         """
 
         pos_ngrams = self._generate_ngrams(**kwargs)
-
-        exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
-                '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
-
-        if include_pos is None:
-            include_pos = ['NOUN', 'PROPN', 'ADJ']
-        if exclude_pos is None:
-            exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX', 'VERB']
-            exclude_pos = [tag for tag in exclude_pos if not tag in include_pos]
-        # Keep ngrams where the first element's pos-tag
-        # and the last element's pos-tag are present in include_pos
-        pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][1] in include_pos
-                          and pos_ngram[-1:][0][1] in include_pos, pos_ngrams)
-
-        # Keep ngrams where none of elements' tag is in exclude pos
-        pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
-                                                      for token in pos_ngram), pos_ngrams)
-
-        # Keep ngrams where the first element's token
-        # and the last element's token are alpha
-        pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][0].isalpha()
-                          and pos_ngram[-1:][0][0].isalpha(), pos_ngrams)
-
-        # Keep ngrams where none of the middle elements' text is in exclude punct
-        pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
-                                                       for token in pos_ngram[1:-1])), pos_ngrams)
-
-        # check if POS n-grams are empty
-        pos_ngrams = [list(pn) for pn in pos_ngrams]
-        if len(pos_ngrams)==0:
-            raise ValueError('No POS n-grams left after filtering!')
-
-        def rejoin_special_punct(ngram):
-            'Joins apostrophes and other special characters to their token.'
-            def repl(match):
-                groups = match.groups()
-                return '{}{}{}'.format(groups[0],groups[2], groups[3])
-            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
-            return re.sub(pattern, repl, ngram)
-        
-        # Make data frame from n-grams and parts-of-speech
-        pos_ngrams_ = pd.DataFrame([zip(*pos_ngram) for pos_ngram in pos_ngrams])
-        pos_ngrams_.columns = ['ngrams','tags']
-        pos_ngrams_.loc[:, 'joined_ngrams'] = \
-            pos_ngrams_['ngrams'].apply(lambda ng: rejoin_special_punct(' '.join(ng)))
-        pos_ngrams_ = pos_ngrams_.drop_duplicates(subset='joined_ngrams')
-        pos_ngrams_ = pos_ngrams_.reset_index()
-        pos_ngrams_ = pos_ngrams_.drop(columns=['index'])
-        return pos_ngrams_
+        pos_ngrams = filter_ngrams(pos_ngrams, include_pos, exclude_pos)
+        return pos_ngrams
 
     def get_top_ngrams(self, top_n = None, diversity=.8, return_embs=False, **kwargs):
         """
@@ -279,7 +236,7 @@ class Sentence:
         joined_ngrams = cand_ngrams_df['joined_ngrams']
         
         if top_n is None:
-            top_n = round(len(joined_ngrams)*.75)
+            top_n = round(len(joined_ngrams)*.85)
         
         # Embed clean sentence and joined ngrams
         seq1_embeddings = model.encode([self.clean_sentence])
@@ -326,33 +283,81 @@ class Sentence:
         return best_ngrams_df
 
 class BiSentence:
-    def __init__(self, src_sentence, trg_sentence):
-        self.src_sentence = src_sentence
-        self.trg_sentence = trg_sentence
+    def __init__(self, sentence_tuple):
+        self.src_sentence, self.trg_sentence = sentence_tuple
+        self.src_ngrams_df, self.trg_ngrams_df = self.get_src_trg_top_ngrams()
+        self.src_seq_similarities, self.trg_seq_similarities = self.get_seq_similarities()
+        self.src_aligned_ngrams, self.trg_aligned_ngrams = self.get_aligned_ngrams()
         
-    def get_top_ngrams(self, min_similarity=.85, **kwargs):
+    def get_src_trg_top_ngrams(self):
+        # Get source ngram dataframe
+        src_ngrams_df = Sentence(self.src_sentence).get_top_ngrams(ngrams_min=1,
+                                                                   ngrams_max=5,
+                                                                   diversity=.2,
+                                                                   return_embs=True)
+        
+        # Get target ngram dataframe
+        trg_ngrams_df = Sentence(self.trg_sentence).get_top_ngrams(ngrams_min=1,
+                                                                   ngrams_max=5,
+                                                                   diversity=.2,
+                                                                   return_embs=True)
+        return src_ngrams_df, trg_ngrams_df
+    
+    def get_seq_similarities(self):
+        # Get source/target ngram similarity matrix
+        src_seq_similarities = cosine_similarity(self.src_ngrams_df['embedding'].tolist(),
+                                              self.trg_ngrams_df['embedding'].tolist())
+        
+        # Get target/source ngram similarity matrix
+        trg_seq_similarities = cosine_similarity(self.trg_ngrams_df['embedding'].tolist(),
+                                              self.src_ngrams_df['embedding'].tolist())
+        return src_seq_similarities, trg_seq_similarities
+    
+    def get_aligned_ngrams(self):
+        # Get ngrams, pos_tags and ranks from source & target sentences
+        src_ngrams = self.src_ngrams_df['joined_ngrams'].tolist()
+        trg_ngrams = self.trg_ngrams_df['joined_ngrams'].tolist()
+        src_tags = self.src_ngrams_df['tags'].tolist()
+        trg_tags = self.trg_ngrams_df['tags'].tolist()
+        src_ranks = self.src_ngrams_df['rank'].tolist()
+        trg_ranks = self.trg_ngrams_df['rank'].tolist()
+    
+        # Get source ngram & target ngram indexes 
+        src_idx = list(range(len(src_ngrams)))
+        trg_idx = list(range(len(trg_ngrams)))
+        
+        # Get indexes and values of most similar target ngram for each source ngram
+        src_max_values = np.max(self.trg_seq_similarities[trg_idx][:, src_idx], axis=1)
+        src_max_idx = np.argmax(self.trg_seq_similarities[trg_idx][:, src_idx], axis=1)
+        
+        # Get indexes and values of most similar source ngram for each target ngram
+        trg_max_values = np.max(self.src_seq_similarities[src_idx][:, trg_idx], axis=1)
+        trg_max_idx = np.argmax(self.src_seq_similarities[src_idx][:, trg_idx], axis=1)
+        
+        # Align target ngrams & metadata with source ngrams & metadata
+        src_aligned_ngrams = pd.DataFrame([(src_ngrams[idx],
+                                            src_ranks[idx],
+                                            src_tags[idx],
+                                            trg_ngrams[trg_max_idx[idx]],
+                                            trg_ranks[trg_max_idx[idx]],
+                                            trg_tags[trg_max_idx[idx]],
+                                            float(trg_max_values[idx])) for idx in src_idx])
+        
+        # Align source ngrams & metadata with target ngrams & metadata
+        trg_aligned_ngrams = pd.DataFrame([(src_ngrams[src_max_idx[idx]],
+                                            src_ranks[src_max_idx[idx]],
+                                            src_tags[src_max_idx[idx]],
+                                            trg_ngrams[idx],
+                                            trg_ranks[idx],
+                                            trg_tags[idx],
+                                            float(src_max_values[idx])) for idx in trg_idx])
+        return src_aligned_ngrams, trg_aligned_ngrams
 
-        src_ngrams_df = Sentence(self.src_sentence).get_top_ngrams(return_embs=True, **kwargs)
-        trg_ngrams_df = Sentence(self.trg_sentence).get_top_ngrams(return_embs=True, **kwargs)
-     
-        seq_similarities = cosine_similarity(src_ngrams_df['embedding'].tolist(),
-                                              trg_ngrams_df['embedding'].tolist())
-        # get seq1 & seq2 indexes
-        seq1_idx = list(range(len(src_ngrams_df['joined_ngrams'].tolist())))
-        seq2_idx = list(range(len(trg_ngrams_df['joined_ngrams'].tolist())))
-
-        # # get max seq2 values and indexes
-        max_seq2_values = np.max(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
-        max_seq2_idx = np.argmax(seq_similarities[seq1_idx][:, seq2_idx], axis=1)
-
-        # make bi_ngrams data frame with the top src_ngram/trg_ngram similarities
-        bi_ngrams = pd.DataFrame([(src_ngrams_df.iloc[idx]['joined_ngrams'],
-                                   src_ngrams_df.iloc[idx]['rank'],
-                                   src_ngrams_df.iloc[idx]['tags'],
-                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['joined_ngrams'],
-                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['rank'],
-                                   trg_ngrams_df.iloc[max_seq2_idx[idx]]['tags'],
-                                   float(max_seq2_values[idx])) for idx in seq1_idx])
+    def get_top_ngrams(self):
+        # Concatenate source & target ngram alignments            
+        bi_ngrams = pd.concat([self.src_aligned_ngrams, self.trg_aligned_ngrams])
+        bi_ngrams = bi_ngrams.reset_index()
+        bi_ngrams = bi_ngrams.drop(columns=['index'])
         bi_ngrams.columns = ['src_ngram',
                              'src_ngram_rank',
                              'src_ngram_tags',
@@ -360,158 +365,133 @@ class BiSentence:
                              'trg_ngram_rank',
                              'trg_ngram_tags',
                              'bi_ngram_similarity']
-
-        # # Keep n-grams above min_similarity
-        bi_ngrams = bi_ngrams[bi_ngrams['bi_ngram_similarity'] >= min_similarity]
+        
+        # Keep n-grams above min_similarity
+        bi_ngrams = bi_ngrams[bi_ngrams['bi_ngram_similarity'] >= .8]
         if len(bi_ngrams)==0:
             raise ValueError('No ngram pairs above minimum similarity!')
-
+        
+        # For one-word terms, keep those longer than 1 character
+        bi_ngrams = bi_ngrams[bi_ngrams['src_ngram'].str.len()>1]
+        bi_ngrams = bi_ngrams[bi_ngrams['trg_ngram'].str.len()>1]
+        
         # Group by source, get the most similar target n-gram
         bi_ngrams = pd.DataFrame([df.loc[df['bi_ngram_similarity'].idxmax()]
                             for (src_ngram, df) in list(bi_ngrams.groupby('src_ngram'))])
-
+        
         # Group by target, get the most similar source n-gram
         bi_ngrams = pd.DataFrame([df.loc[df['bi_ngram_similarity'].idxmax()]
                             for (trg_ngram, df) in list(bi_ngrams.groupby('trg_ngram'))])
-
+        
         # Get bi n-gram rank
         bi_ngrams['bi_ngram_rank'] = bi_ngrams['bi_ngram_similarity'] * \
             bi_ngrams['src_ngram_rank'] * bi_ngrams['trg_ngram_rank']
         bi_ngrams = bi_ngrams.sort_values(by='bi_ngram_rank', ascending=False)
-
-        # Finish
         bi_ngrams = bi_ngrams.round(4)
-        bi_ngrams = bi_ngrams.reset_index()
-        bi_ngrams = bi_ngrams.drop(columns=['index'])
         return bi_ngrams
 
 
 class BiText:
-    "Implements fast methods for bilingual terminology extraction"
-    "Bitext is a list of tuples of sentences"
+    """
+    Implements fast methods for bilingual terminology extraction.
+    Bitext is a list of tuples of sentences.
+    """
     def __init__(self, bitext):
         self.bitext = bitext
+        self.src_sentences, self.trg_sentences = zip(*self.bitext)
+        self.src_sentences = self.preprocess_sentences(self.src_sentences)
+        self.trg_sentences = self.preprocess_sentences(self.trg_sentences)
         self.supported_languages = ['en', 'es', 'de', 'fr']
         self.sample_len = 20
-        self.src_lang, self.trg_lang = self.get_bitext_langs()
+        self.src_lang = self.detect_text_lang(self.src_sentences)
+        self.trg_lang = self.detect_text_lang(self.trg_sentences)
 
-    def get_bitext_sample(self):
-        rand_start = randint(0,(len(self.bitext)-1)-self.sample_len)
-        bitext_sample = self.bitext[rand_start:rand_start+self.sample_len]
-        return bitext_sample
-
-    def get_bitext_langs(self):
-        if len(self.bitext)<=self.sample_len:
-            bitext_sample = self.bitext
+    def detect_text_lang(self, sentences):
+        """
+        Runs langdetect on a sample of the sentences.
+        Returns the most commonly detected language.
+        """
+        sentences = [s for s in sentences if len(s)>10]
+        
+        if len(sentences)<=self.sample_len:
+            sentences_sample = sentences
         else:
-            bitext_sample = self.get_bitext_sample()
-        src_lang = detect(' '.join(i[0] for i in bitext_sample))
-        trg_lang = detect(' '.join(i[1] for i in bitext_sample))
-        if src_lang not in self.supported_languages or\
-            trg_lang not in self.supported_languages:
-            raise ValueError('Lang not supported!')
-        return src_lang, trg_lang
-
-    def preproc_bitext_sentences(self):
-        src_sentences = []
-        trg_sentences = []
-        for i, _ in enumerate(self.bitext):
+            rand_start = randint(0, (len(sentences)-1)-self.sample_len)
+            sentences_sample = sentences[rand_start:rand_start+self.sample_len]
+        detections = []
+        for i in sentences_sample:
             try:
-                src_sentence_raw = self.bitext[i][0]
-                src_sentence = preprocess(src_sentence_raw)
-                src_sentences.append(src_sentence)
-                trg_sentence_raw = self.bitext[i][1]
-                trg_sentence = preprocess(trg_sentence_raw)
-                trg_sentences.append(trg_sentence)
+                detections.append(detect(i))
+            except LangDetectException:
+                pass
+        if len(detections)==0:
+            raise ValueError('Insufficient data to detect language!')
+        lang = cnt(detections).most_common(1)[0][0]
+
+        if lang not in self.supported_languages:
+            raise ValueError('Lang not supported!')
+        return lang
+
+    @staticmethod
+    def preprocess_sentences(sentences):
+        """
+        Batch preprocess sentences
+        """
+        sentences_ = []
+        for sentence in sentences:
+            try:
+                sentences_.append(preprocess(sentence))
             except:
                 pass
-        if len(src_sentences) == 0 or len(trg_sentences) == 0:
-            raise ValueError('No clean sentences left!')
-        return src_sentences, trg_sentences
+        if len(sentences)==0:
+            raise ValueError('No clean sentences!')
+        return sentences_
 
-    def get_bitext_pos_tagged_tokens(self):
-        src_sentences, trg_sentences = self.preproc_bitext_sentences()
-        src_model = get_spacy_model(self.src_lang)
-        sdocs = list(src_model.pipe(src_sentences))
+    def get_pos_tokens(self, sentences, lang):
+        """
+        Get part-of-speech tags of each token in sentence
+        """
+        sentences = self.preprocess_sentences(sentences)
+        
+        # Get spaCy model
+        spacy_model = get_spacy_model(lang)
+        # Pipe sentences
+        sdocs = list(spacy_model.pipe(sentences))
+        # Concatenate Docs
         sc_doc = Doc.from_docs(sdocs)
-        src_pos_tagged_tokens = [(token.text, token.pos_) for token in sc_doc]
-        trg_model = get_spacy_model(self.trg_lang)
-        tdocs = list(trg_model.pipe(trg_sentences))
-        tc_doc = Doc.from_docs(tdocs, ensure_whitespace=True)
-        trg_pos_tagged_tokens = [(token.text, token.pos_) for token in tc_doc]
-        return src_pos_tagged_tokens, trg_pos_tagged_tokens
+        # Extract text and pos from Doc
+        pos_tokens = [(token.text, token.pos_) for token in sc_doc]
+        return pos_tokens
 
-    @staticmethod
-    def get_ngrams(pos_tokens):
+    def get_pos_ngrams(self, sentences, lang, ngrams_min=1, ngrams_max=2):
+        """
+        Get ngrams from part-of-speech tagged sentences
+        """
+        pos_tokens = self.get_pos_tokens(sentences, lang)
         pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
-                  for n in range(1, 4+1))
+                  for n in range(ngrams_min, ngrams_max+1))
         return (ng for ngl in pos_ngrams for ng in ngl)
 
-    def generate_bitext_ngrams(self):
-        src_pos_tagged_tokens, trg_pos_tagged_tokens = self.get_bitext_pos_tagged_tokens()
-        src_pos_tagged_ngrams = self.get_ngrams(src_pos_tagged_tokens)
-        trg_pos_tagged_ngrams = self.get_ngrams(trg_pos_tagged_tokens)
-        return src_pos_tagged_ngrams, trg_pos_tagged_ngrams
+    def get_candidate_ngrams(self,
+                             sentences,
+                             lang,
+                             include_pos = None,
+                             exclude_pos = None,
+                             min_freq=1,
+                             **kwargs):
+        """
+        Get final candidate ngrams from part-of-speech tagged sentences
+        """
+        pos_ngrams = self.get_pos_ngrams(sentences, lang, **kwargs)
+        pos_ngrams = [a for a,b in cnt(list(pos_ngrams)).items() if b>=min_freq]
+        candidate_ngrams = filter_ngrams(pos_ngrams, include_pos, exclude_pos)
+        return candidate_ngrams
 
     @staticmethod
-    def get_candidate_ngrams(pos_ngrams, include_pos = None, exclude_pos = None):
-        freq_min = 2
-        pos_ngrams = [a for a,b in cnt(list(pos_ngrams)).items() if b>=freq_min]
-
-        exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
-                '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
-        if include_pos is None:
-            include_pos = ['NOUN', 'PROPN', 'ADJ']
-        if exclude_pos is None:
-            exclude_pos = ['X', 'SCONJ', 'CCONJ', 'AUX', 'VERB']
-            exclude_pos = [tag for tag in exclude_pos if not tag in include_pos]
-        # Keep ngrams where the first element's pos-tag
-        # and the last element's pos-tag are present in include_pos
-        pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][1] in include_pos
-                          and pos_ngram[-1:][0][1] in include_pos, pos_ngrams)
-        # Keep ngrams where none of elements' tag is in exclude pos
-        pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
-                                                      for token in pos_ngram), pos_ngrams)
-        # Keep ngrams where the first element's token
-        # and the last element's token are alpha
-        pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][0].isalpha()
-                          and pos_ngram[-1:][0][0].isalpha(), pos_ngrams)
-        # Keep ngrams where none of the middle elements' text is in exclude punct
-        pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
-                                                       for token in pos_ngram[1:-1])), pos_ngrams)
-
-        # check if POS n-grams are empty
-        pos_ngrams = [list(pn) for pn in pos_ngrams]
-        if len(pos_ngrams)==0:
-            raise ValueError('No POS n-grams left after filtering!')
-
-        def rejoin_special_punct(ngram):
-            'Joins apostrophes and other special characters to their token.'
-            def repl(match):
-                groups = match.groups()
-                return '{}{}{}'.format(groups[0],groups[2], groups[3])
-            pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
-            return re.sub(pattern, repl, ngram)
-
-        # Make data frame from n-grams and parts-of-speech
-        pos_ngrams_ = pd.DataFrame([zip(*pos_ngram) for pos_ngram in pos_ngrams])
-        pos_ngrams_.columns = ['ngrams','tags']
-        pos_ngrams_.loc[:, 'joined_ngrams'] = \
-            pos_ngrams_['ngrams'].apply(lambda ng: rejoin_special_punct(' '.join(ng)))
-        pos_ngrams_ = pos_ngrams_.drop_duplicates(subset='joined_ngrams')
-        pos_ngrams_ = pos_ngrams_.reset_index()
-        pos_ngrams_ = pos_ngrams_.drop(columns=['index'])
-        return pos_ngrams_
-
-    def get_bitext_candidate_ngrams(self):
-        src_pos_tagged_ngrams, trg_pos_tagged_ngrams = self.generate_bitext_ngrams()
-        src_candidate_ngrams = self.get_candidate_ngrams(src_pos_tagged_ngrams)
-        trg_candidate_ngrams = self.get_candidate_ngrams(trg_pos_tagged_ngrams)
-        return src_candidate_ngrams, trg_candidate_ngrams
-
-    @staticmethod
-    def get_bitext_top_ngrams_partial(ngrams0, ngrams1):
-        # Get top bitext ngrams from one side
+    def get_bitext_top_ngrams_partial(ngrams0, ngrams1, min_similarity=.8):
+        """
+        Get top bitext ngrams from one side
+        """
         src_ngrams = ngrams0['joined_ngrams'].tolist()
         trg_ngrams = ngrams1['joined_ngrams'].tolist()
         # Get POS tags
@@ -539,25 +519,35 @@ class BiText:
                              'trg_ngram',
                              'trg_ngram_tags',
                              'bi_ngram_similarity']
-        # # Keep ngrams above min_similarity
-        bi_ngrams = bi_ngrams[bi_ngrams['bi_ngram_similarity'] >= .85]
+        # Keep ngrams above min_similarity
+        bi_ngrams = bi_ngrams[bi_ngrams['bi_ngram_similarity'] >= min_similarity]
         if len(bi_ngrams)==0:
             raise ValueError('No ngram pairs above minimum similarity!')
         # Finish
         bi_ngrams = bi_ngrams.round(4)
         bi_ngrams = bi_ngrams.reset_index()
         bi_ngrams = bi_ngrams.drop(columns=['index'])
-        # print('finnish')
-        # print(time()-START)
         return bi_ngrams
 
-    def get_top_ngrams_fast(self):
+    def get_top_ngrams(self, **kwargs):
         """
-        Extract and filter all source ngrams and all target ngrams. 
+        Extract and filter all source ngrams and all target ngrams.
         Find their most similar matches.
         Much faster, less precise, can cause OOM errors.
         """
-        src_ngrams, trg_ngrams = self.get_bitext_candidate_ngrams()
+
+        src_ngrams = self.get_candidate_ngrams(self.src_sentences,
+                                                self.src_lang,
+                                                include_pos = None,
+                                                exclude_pos = None,
+                                                **kwargs)
+
+        trg_ngrams = self.get_candidate_ngrams(self.trg_sentences,
+                                                self.trg_lang,
+                                                include_pos = None,
+                                                exclude_pos = None,
+                                                **kwargs)
+
         # Get top bitext ngrams from the source side
         bi_ngramss = self.get_bitext_top_ngrams_partial(src_ngrams, trg_ngrams)
         # Get top bitext ngrams from the target side
@@ -570,77 +560,18 @@ class BiText:
                              'bi_ngram_similarity']
         # Concat results
         bi_ngrams = pd.concat([bi_ngramss, bi_ngramst])
+
         # Drop duplicates
         bi_ngrams['st'] = [''.join(t) for t in list(zip(bi_ngrams['src_ngram'],
                                                         bi_ngrams['trg_ngram']))]
         bi_ngrams = bi_ngrams.drop_duplicates(subset='st')
         bi_ngrams = bi_ngrams.drop(columns=['st'])
-        return bi_ngrams
-    
-    def get_top_ngrams(self, **kwargs):
-        """
-        Extract all bi-ngrams from all sentence tuples in bitext.
-        Slow, more precise, less RAM-hungry.
-        """
-        bitext = self.bitext
-        bi_ngrams = []
-        for i, _ in enumerate(bitext):
-            try:
-                src_sentence = bitext[i][0]
-                trg_sentence = bitext[i][1]
-                bi_ngrams_ = BiSentence(src_sentence, trg_sentence).get_ngrams(**kwargs)
-                # bi_ngrams_ = self._get_bi_ngrams_from_bisentence(src_sentence,
-                #                                                  trg_sentence,
-                #                                                  **kwargs)
-                bi_ngrams.append(bi_ngrams_)
-            except:
-                pass
-
-        if len(bi_ngrams) == 0:
-            raise ValueError('No bilingual n-gram candidates found!')
-
-        # Concatenate sentence-level n-grams
-        bi_ngrams = pd.concat(bi_ngrams)
         bi_ngrams = bi_ngrams.reset_index()
+        # Group by source, get the most similar target n-gram
+        bi_ngrams = pd.DataFrame([df.loc[df['bi_ngram_similarity'].idxmax()]
+                            for (src_ngram, df) in list(bi_ngrams.groupby('src_ngram'))])
 
-        # Get rank avgs
-        src_avg = {a: round(b['src_ngram_rank'].sum()/len(b), 4)
-                    for (a, b) in list(bi_ngrams.groupby('src_ngram'))}
-        trg_avg = {a: round(b['trg_ngram_rank'].sum()/len(b), 4)
-                    for (a, b) in list(bi_ngrams.groupby('trg_ngram'))}
-
-        # Get frequencies
-        src_counts = cnt(bi_ngrams['src_ngram'])
-        trg_counts = cnt(bi_ngrams['trg_ngram'])
-
-        # Drop duplicates
-        bi_ngrams = bi_ngrams.drop_duplicates(subset='src_ngram')
-        bi_ngrams = bi_ngrams.drop_duplicates(subset='trg_ngram')
-
-        # Apply rank avgs
-        bi_ngrams['src_ngram_rank'] = \
-            bi_ngrams['src_ngram'].apply(lambda ngram: src_avg[ngram])
-        bi_ngrams['trg_ngram_rank'] = \
-            bi_ngrams['trg_ngram'].apply(lambda ngram: trg_avg[ngram])
-
-        # Apply frequencies
-        bi_ngrams['src_ngram_freq'] = bi_ngrams['src_ngram'].apply(lambda s: src_counts[s])
-        bi_ngrams['trg_ngram_freq'] = bi_ngrams['trg_ngram'].apply(lambda s: trg_counts[s])
-
-        # Get bi-ngram rank
-        bi_ngrams['bi_ngram_rank'] = bi_ngrams['bi_ngram_similarity'] * \
-            bi_ngrams['src_ngram_rank'] * bi_ngrams['trg_ngram_rank']
-        bi_ngrams = bi_ngrams.sort_values(by='bi_ngram_rank', ascending=False)
-
-        # Finish
-        bi_ngrams = bi_ngrams.round(4)
-        bi_ngrams = bi_ngrams.reset_index()
-        bi_ngrams = bi_ngrams.drop(columns=['index'])
-
-        # Re-order columns
-        columns = ['src_ngram', 'src_ngram_tags', 'src_ngram_freq', 'src_ngram_rank',\
-                   'trg_ngram', 'trg_ngram_tags', 'trg_ngram_freq', 'trg_ngram_rank',\
-                       'bi_ngram_similarity', 'bi_ngram_rank']
-
-        bi_ngrams = bi_ngrams.reindex(columns=columns)
+        # Group by target, get the most similar source n-gram
+        bi_ngrams = pd.DataFrame([df.loc[df['bi_ngram_similarity'].idxmax()]
+                            for (trg_ngram, df) in list(bi_ngrams.groupby('trg_ngram'))])
         return bi_ngrams
