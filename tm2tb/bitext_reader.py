@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 BitextReader: Reads parallel bilingual data files
 """
@@ -16,18 +14,16 @@ class BitextReader:
         self.file_path = file_path
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
-        self.file_max_size = 5000000
+        self.file_max_size = 10000000
 
     def read_bitext(self):
         'Get bitext from file content'
         bitext = self.get_file_content()
         bitext.columns = ['src', 'trg']
-        bitext = bitext.dropna()
+        bitext = bitext.fillna('')
         if len(bitext)==0:
             raise ValueError('Document appears to be empty')
         bitext = bitext.astype(str)
-        bitext = bitext[bitext['src'].str.len()>0]
-        bitext = bitext[bitext['trg'].str.len()>0]
         return bitext
 
     def get_file_content(self):
@@ -37,28 +33,21 @@ class BitextReader:
         if not self.file_extension in self.extensions:
             raise ValueError('Unsupported file extension')
         if self.file_extension == '.csv':
-            csvr = CsvReader(self.file_path, self.file_extension)
-            content = csvr.read_csv()
+            content = CsvReader(self.file_path).read_csv()
         if self.file_extension == '.mqxliff':
-            mqr = MqxliffReader(self.file_path, self.file_extension)
-            content = mqr.read_mqxliff()
+            content = XmlReader(self.file_path).read_mqxliff()
         if self.file_extension == '.mxliff':
-            mxr = MxliffReader(self.file_path, self.file_extension)
-            content = mxr.read_mxliff()
+            content = XmlReader(self.file_path).read_mxliff()
         if self.file_extension == '.tmx':
-            tmxr = TmxReader(self.file_path, self.file_extension)
-            content = tmxr.read_tmx()
+            content = XmlReader(self.file_path).read_tmx()
         if self.file_extension == '.xlsx':
-            xlsxr = XlsxReader(self.file_path, self.file_extension)
-            content = xlsxr.read_xlsx()
+            content = XlsxReader(self.file_path).read_xlsx()
         return content
-
 
 class CsvReader:
     'Reads .csv files'
-    def __init__(self, file_path, file_extension):
+    def __init__(self, file_path):
         self.file_path = file_path
-        self.file_extension = file_extension
 
     def read_csv(self):
         'Read two-column .csv file'
@@ -69,7 +58,8 @@ class CsvReader:
         content = self.validate_csv_content(content)
         return content
 
-    def validate_csv_content(self, content):
+    @staticmethod
+    def validate_csv_content(content):
         'Validate nrows and ncols'
         content = content.dropna()
         n_cols = len(content.columns)
@@ -81,37 +71,26 @@ class CsvReader:
             raise ValueError(msg.format(n_cols))
         return content
 
-def parse_xml(file_path):
-    'Parse xml-based bilingual file (.mqxliff, .mxliff, .tmx)'
-    try:
-        with open(file_path, encoding='utf-8') as file:
-            doc = xmltodict.parse(file.read())
-    except UnicodeError:
-        with open(file_path, encoding='utf-16') as file:
-            doc = xmltodict.parse(file.read())
-    except xmltodict.expat.ExpatError:
-        raise ValueError('xmltodict Expat Error')
-    return doc
-
-class MqxliffReader:
-    'Read bilingual .mqxliff file'
-    def __init__(self, file_path, file_extension):
+class XmlReader:
+    'Read an xml-based bilingual file (.mqxliff, .mxliff, .tmx)'
+    def __init__(self, file_path):
         self.file_path = file_path
-        self.file_extension = file_extension
 
-    def split_format_tags(self):
-        'Temporary hack to avoid joined words due to format tags'
-        with open(self.file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-            content = content.replace('<ph', ' <ph')
-            content = content.replace('</ph>', ' </ph> ')
-        with open(self.file_path, 'w', encoding='utf-8') as file:
-            file.write(content)
+    @staticmethod
+    def parse_xml(file_path):
+        try:
+            with open(file_path, encoding='utf-8') as file:
+                doc = xmltodict.parse(file.read())
+        except UnicodeError:
+            with open(file_path, encoding='utf-16') as file:
+                doc = xmltodict.parse(file.read())
+        except xmltodict.expat.ExpatError:
+            raise ValueError('xmltodict Expat Error')
+        return doc
 
     def read_mqxliff(self):
         'Read bilingual .mqxliff file'
-        self.split_format_tags()
-        doc = parse_xml(self.file_path)
+        doc = self.parse_xml(self.file_path)
         units = doc['xliff']['file']['body']['trans-unit']
         try:
             source_segments = [unit['source'] for unit in units]
@@ -123,43 +102,32 @@ class MqxliffReader:
         segments = zip(source_segments, target_segments)
         segments = [(seg[0]['#text'], seg[1]['#text']) for seg in segments
                     if '#text' in seg[0] and '#text' in seg[1]]
-        bitext = pd.DataFrame(segments)
-        return bitext
-
-class MxliffReader:
-    'Read bilingual .mxliff file'
-    def __init__(self, file_path, file_extension):
-        self.file_path = file_path
-        self.file_extension = file_extension
+        content = pd.DataFrame(segments)
+        return content
 
     def read_mxliff(self):
         'Read bilingual .mxliff file'
-        doc = parse_xml(self.file_path)
+        doc = self.parse_xml(self.file_path)
         units = [unit['trans-unit'] for unit in doc['xliff']['file']['body']['group']]
         source_segments = [unit['source'] for unit in units]
         target_segments = [unit['target'] for unit in units]
         segments = zip(source_segments, target_segments)
-        bitext = pd.DataFrame(segments)
-        return bitext
-
-class TmxReader:
-    'Reads bilingual .tmx file'
-    def __init__(self, file_path, file_extension):
-        self.file_path = file_path
-        self.file_extension = file_extension
+        content = pd.DataFrame(segments)
+        return content
 
     def read_tmx(self):
         'Reads bilingual .tmx file'
-        doc = parse_xml(self.file_path)
+        doc = self.parse_xml(self.file_path)
         source_segments = [t['tuv'][0]['seg'] for t in doc['tmx']['body']['tu']]
         target_segments = [t['tuv'][1]['seg'] for t in doc['tmx']['body']['tu']]
         source_segments = [self.get_tmx_text(unit) for unit in source_segments]
         target_segments = [self.get_tmx_text(unit) for unit in target_segments]
         segments = zip(source_segments, target_segments)
-        bitext = pd.DataFrame(segments)
-        return bitext
+        content = pd.DataFrame(segments)
+        return content
 
-    def get_tmx_text(self, unit):
+    @staticmethod
+    def get_tmx_text(unit):
         """
         unit : string or OrderedDict
             Translation unit in tmx file. Can be a string or OrderedDict.
@@ -180,9 +148,8 @@ class TmxReader:
 
 class XlsxReader:
     'Reads .xlsx file'
-    def __init__(self, file_path, file_extension):
+    def __init__(self, file_path):
         self.file_path = file_path
-        self.file_extension = file_extension
         self.max_col = 2    # Max col limit to avoid OOM errors
         self.max_row = 10000 # Max row limit to avoid OOM errors
 
