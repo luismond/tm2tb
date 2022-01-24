@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import re
 import pandas as pd
 
-def filter_ngrams(pos_ngrams, include_pos, exclude_pos):
-    
+def filter_ngrams(pos_ngrams, include_pos=None, exclude_pos=None):
+
     exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
             '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
-    
+
     if include_pos is None:
         include_pos = ['NOUN', 'PROPN', 'ADJ']
     if exclude_pos is None:
@@ -17,25 +15,25 @@ def filter_ngrams(pos_ngrams, include_pos, exclude_pos):
     # and the last element's pos-tag are present in include_pos
     pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][1] in include_pos
                       and pos_ngram[-1:][0][1] in include_pos, pos_ngrams)
-    
+
     # Keep ngrams where none of elements' tag is in exclude pos
     pos_ngrams = filter(lambda pos_ngram: not any(token[1] in exclude_pos
                                                   for token in pos_ngram), pos_ngrams)
-    
+
     # Keep ngrams where the first element's token
     # and the last element's token are alpha
     pos_ngrams = filter(lambda pos_ngram: pos_ngram[0][0].isalpha()
                       and pos_ngram[-1:][0][0].isalpha(), pos_ngrams)
-    
+
     # Keep ngrams where none of the middle elements' text is in exclude punct
     pos_ngrams = filter(lambda pos_ngram: not any((token[0] in exclude_punct
                                                    for token in pos_ngram[1:-1])), pos_ngrams)
-    
+
     # check if POS n-grams are empty
     pos_ngrams = [list(pn) for pn in pos_ngrams]
     if len(pos_ngrams)==0:
         raise ValueError('No POS n-grams left after filtering!')
-    
+
     def rejoin_special_punct(ngram):
         'Joins apostrophes and other special characters to their token.'
         def repl(match):
@@ -43,7 +41,7 @@ def filter_ngrams(pos_ngrams, include_pos, exclude_pos):
             return '{}{}{}'.format(groups[0],groups[2], groups[3])
         pattern = r"(.+)(\s)('s|:|’s|’|'|™|®|%)(.+)"
         return re.sub(pattern, repl, ngram)
-    
+
     # Make data frame from n-grams and parts-of-speech
     pos_ngrams_ = pd.DataFrame([zip(*pos_ngram) for pos_ngram in pos_ngrams])
     pos_ngrams_.columns = ['ngrams','tags']
