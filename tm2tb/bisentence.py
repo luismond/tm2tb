@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 BiSentence class. Inherits from Sentence
 """
@@ -13,7 +11,7 @@ class BiSentence:
     def __init__(self, sentence_tuple):
         self.src_sentence, self.trg_sentence = sentence_tuple
 
-    def get_src_trg_top_ngrams(self, **kwargs):
+    def get_ngrams_dfs(self, **kwargs):
         # Get source ngram dataframe
         src_ngrams_df = Sentence(self.src_sentence).get_top_ngrams(return_embs=True, **kwargs)
         # Get target ngram dataframe
@@ -21,50 +19,42 @@ class BiSentence:
         return src_ngrams_df, trg_ngrams_df
 
     @staticmethod
-    def get_seq_similarities(src_ngrams_df, trg_ngrams_df):
-        # Get source/target ngram similarity matrix
-        src_seq_similarities = cosine_similarity(src_ngrams_df['embedding'].tolist(),
-                                              trg_ngrams_df['embedding'].tolist())
-        # Get target/source ngram similarity matrix
-        trg_seq_similarities = cosine_similarity(trg_ngrams_df['embedding'].tolist(),
-                                              src_ngrams_df['embedding'].tolist())
-        return src_seq_similarities, trg_seq_similarities
+    def get_seq_similarities(src_embs, trg_embs):
+        seq_similarities = cosine_similarity(src_embs, trg_embs)
+        return seq_similarities
 
     def get_aligned_ngrams(self, **kwargs):
-        # Get ngrams, pos_tags and ranks from source & target sentences
-        src_ngrams_df, trg_ngrams_df = self.get_src_trg_top_ngrams(**kwargs)
-        src_seq_similarities, trg_seq_similarities = self.get_seq_similarities(src_ngrams_df,
-                                                                               trg_ngrams_df)
+        src_ngrams_df, trg_ngrams_df = self.get_ngrams_dfs(**kwargs)
         src_ngrams = src_ngrams_df['joined_ngrams'].tolist()
-        trg_ngrams = trg_ngrams_df['joined_ngrams'].tolist()
         src_tags = src_ngrams_df['tags'].tolist()
-        trg_tags = trg_ngrams_df['tags'].tolist()
         src_ranks = src_ngrams_df['rank'].tolist()
+        src_embeddings = src_ngrams_df['embedding'].tolist()
+        trg_ngrams = trg_ngrams_df['joined_ngrams'].tolist()
+        trg_tags = trg_ngrams_df['tags'].tolist()
         trg_ranks = trg_ngrams_df['rank'].tolist()
-        # Get source ngram & target ngram indexes
+        trg_embeddings = trg_ngrams_df['embedding'].tolist()
+        seq_similarities = self.get_seq_similarities(src_embeddings, trg_embeddings)
         src_idx = list(range(len(src_ngrams)))
         trg_idx = list(range(len(trg_ngrams)))
-        # Get indexes and values of most similar target ngram for each source ngram
-        src_max_values = np.max(trg_seq_similarities[trg_idx][:, src_idx], axis=1)
-        src_max_idx = np.argmax(trg_seq_similarities[trg_idx][:, src_idx], axis=1)
         # Get indexes and values of most similar source ngram for each target ngram
-        trg_max_values = np.max(src_seq_similarities[src_idx][:, trg_idx], axis=1)
-        trg_max_idx = np.argmax(src_seq_similarities[src_idx][:, trg_idx], axis=1)
-        # Align target ngrams & metadata with source ngrams & metadata
+        trg_max_values = np.max(seq_similarities[src_idx][:, trg_idx], axis=1)
+        trg_max_idx = np.argmax(seq_similarities[src_idx][:, trg_idx], axis=1)
+        # Get indexes and values of most similar target ngram for each source ngram
+        src_max_values = np.max(seq_similarities[src_idx][:, trg_idx], axis=0)
+        src_max_idx = np.argmax(seq_similarities[src_idx][:, trg_idx], axis=0)
         src_aligned_ngrams = pd.DataFrame([(src_ngrams[idx],
-                                            src_ranks[idx],
                                             src_tags[idx],
+                                            src_ranks[idx],
                                             trg_ngrams[trg_max_idx[idx]],
-                                            trg_ranks[trg_max_idx[idx]],
                                             trg_tags[trg_max_idx[idx]],
+                                            trg_ranks[trg_max_idx[idx]],
                                             float(trg_max_values[idx])) for idx in src_idx])
-        # Align source ngrams & metadata with target ngrams & metadata
         trg_aligned_ngrams = pd.DataFrame([(src_ngrams[src_max_idx[idx]],
-                                            src_ranks[src_max_idx[idx]],
                                             src_tags[src_max_idx[idx]],
+                                            src_ranks[src_max_idx[idx]],
                                             trg_ngrams[idx],
-                                            trg_ranks[idx],
                                             trg_tags[idx],
+                                            trg_ranks[idx],
                                             float(src_max_values[idx])) for idx in trg_idx])
         return src_aligned_ngrams, trg_aligned_ngrams
 
@@ -75,11 +65,11 @@ class BiSentence:
         bi_ngrams = bi_ngrams.reset_index()
         bi_ngrams = bi_ngrams.drop(columns=['index'])
         bi_ngrams.columns = ['src_ngram',
-                             'src_ngram_rank',
                              'src_ngram_tags',
+                             'src_ngram_rank',
                              'trg_ngram',
-                             'trg_ngram_rank',
                              'trg_ngram_tags',
+                             'trg_ngram_rank',
                              'bi_ngram_similarity']
 
         # Keep n-grams above min_similarity
