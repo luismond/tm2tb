@@ -2,12 +2,10 @@
 tm2tb test examples
 """
 from tm2tb import Tm2Tb
-from pprint import pprint
+term_model = Tm2Tb()
 
-tt = Tm2Tb()
-
-# Extracting terms from a sentence in English
-src_sentence = """ 
+#%% Extract terms from a sentence in English
+en_sentence = """ 
                 The giant panda, also known as the panda bear (or simply the panda), 
                 is a bear native to South Central China. It is characterised 
                 by its bold black-and-white coat and rotund body. The name "giant panda" 
@@ -18,10 +16,11 @@ src_sentence = """
                 or even meat in the form of birds, rodents, or carrion. 
                 In captivity, they may receive honey, eggs, fish, shrub leaves, oranges, or bananas.
                """
-pprint(tt.get_ngrams(src_sentence))
+en_sentence_terms = term_model.get_terms_from_sentence(en_sentence)
+print(en_sentence_terms[:10])
 
-# Extracting terms from a sentence in Spanish
-trg_sentence = """
+# Extract terms from a sentence in Spanish
+es_sentence = """
                 El panda gigante, también conocido como oso panda (o simplemente panda), 
                 es un oso originario del centro-sur de China. Se caracteriza por su llamativo
                 pelaje blanco y negro, y su cuerpo rotundo. El nombre de "panda gigante" 
@@ -33,17 +32,34 @@ trg_sentence = """
                 En cautividad, pueden alimentarse de miel, huevos, pescado, hojas de arbustos,
                 naranjas o plátanos.
                """
-pprint(tt.get_ngrams(trg_sentence))
 
-# Extracting and matching terms from both sentences
-pprint(tt.get_ngrams((src_sentence, trg_sentence)))
+es_sentence_terms = term_model.get_terms_from_sentence(es_sentence)
+print(es_sentence_terms[:10])
+
+
+# Extract and align terms from both sentences
+bilingual_terms = term_model.get_terms_from_bisentence((en_sentence, es_sentence))
+bilingual_terms = bilingual_terms.drop(columns=['src_ngram_rank',
+                                                'src_ngram_tags',
+                                                'trg_ngram_rank',
+                                                'trg_ngram_tags',
+                                                'bi_ngram_rank'])
+print(bilingual_terms[:10])
+
 
 # Extracting terms from a bilingual document
-file_path = 'tests/panda_bear_english_spanish.csv'
-bitext = tt.read_bitext(file_path)
-pprint(tt.get_ngrams(bitext))
+bitext_path = 'tests/panda_bear_english_spanish.csv'
+bitext_terms = term_model.get_terms_from_bitext(bitext_path)
+bitext_terms = bitext_terms.drop(columns=['src_ngram_tags',
+                                          'trg_ngram_tags',])
+print(bitext_terms[:10])
 
-# Using arguments
-pprint(tt.get_ngrams(src_sentence, diversity=.1))
-pprint(tt.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
-pprint(tt.get_ngrams(bitext, ngrams_min=2, ngrams_max=4))
+# Extract terms from a text
+en_text_path = 'tests/panda_text_english.txt'
+en_text_terms = term_model.get_terms_from_text(en_text_path)
+print(en_text_terms[:10])
+
+# Extract terms from a text
+es_text_path = 'tests/panda_text_spanish.txt'
+es_text_terms = term_model.get_terms_from_text(es_text_path)
+print(es_text_terms[:10])
