@@ -1,6 +1,6 @@
 """
 spaCy model selection
-tm2tb comes pre-packaged with 4 small spaCy language models,
+tm2tb comes pre-packaged with 4 mid-sized spaCy language models,
 for English, Spanish, German and French.
 Check the available spaCy language models here: https://spacy.io/models
 """
@@ -8,26 +8,26 @@ Check the available spaCy language models here: https://spacy.io/models
 disabled_comps = ['parser', 'lemmatizer', 'ner','entity_linker', 'trf_data', 'textcat']
 
 try:
-    import es_core_news_sm
-    model_es = es_core_news_sm.load(exclude=disabled_comps)
+    import es_core_news_md
+    model_es = es_core_news_md.load(exclude=disabled_comps)
 except ModuleNotFoundError:
     print('No Spanish model found')
 
 try:
-    import en_core_web_sm
-    model_en = en_core_web_sm.load(exclude=disabled_comps)
+    import en_core_web_md
+    model_en = en_core_web_md.load(exclude=disabled_comps)
 except ModuleNotFoundError:
     print('No English model found')
 
 try:
-    import de_core_news_sm
-    model_de = de_core_news_sm.load(exclude=disabled_comps)
+    import de_core_news_md
+    model_de = de_core_news_md.load(exclude=disabled_comps)
 except ModuleNotFoundError:
     print('No German model found')
 
 try:
-    import fr_core_news_sm
-    model_fr = fr_core_news_sm.load(exclude=disabled_comps)
+    import fr_core_news_md
+    model_fr = fr_core_news_md.load(exclude=disabled_comps)
 except ModuleNotFoundError:
     print('No French model found')
 
