@@ -52,5 +52,5 @@ def rank_ngrams(cand_ngrams_df,
     # Keep ngrams with rank above 0
     best_ngrams_df = best_ngrams_df[best_ngrams_df['rank']>0.01]
     if return_embs is False:
-        best_ngrams_df = best_ngrams_df.drop(columns=['ngrams','tags','embedding'])
+        best_ngrams_df = best_ngrams_df.drop(columns=['embedding'])
     return best_ngrams_df
