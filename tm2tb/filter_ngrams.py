@@ -4,8 +4,8 @@ import pandas as pd
 
 def filter_ngrams(pos_tokens,
                   ngrams_min=1,
-                  ngrams_max=2,
-                  min_freq=1,
+                  ngrams_max=3,
+                  min_freq=2,
                   include_pos=None,
                   exclude_pos=None):
 
