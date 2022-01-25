@@ -13,7 +13,7 @@ pd.options.mode.chained_assignment = None
 class Sentence:
     def __init__(self, sentence):
         self.sentence = sentence
-        self.supported_languages = ['en', 'es']
+        self.supported_languages = ['en', 'es' 'fr', 'de']
         self.clean_sentence = preprocess(self.sentence)
         self.lang = self.validate_lang()
 
