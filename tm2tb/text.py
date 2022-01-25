@@ -110,6 +110,7 @@ class Text:
                                  doc_embedding,
                                  seq2_embeddings,
                                  top_n=100,
-                                 diversity=.8)
+                                 diversity=diversity,
+                                 return_embs=return_embs)
         
         return top_ngrams
