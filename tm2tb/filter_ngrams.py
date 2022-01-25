@@ -1,7 +1,18 @@
+from collections import Counter as cnt
 import re
 import pandas as pd
 
-def filter_ngrams(pos_ngrams, include_pos=None, exclude_pos=None):
+def filter_ngrams(pos_tokens,
+                  ngrams_min=1,
+                  ngrams_max=2,
+                  min_freq=1,
+                  include_pos=None,
+                  exclude_pos=None):
+
+    pos_ngrams = (zip(*[pos_tokens[i:] for i in range(n)])
+              for n in range(ngrams_min, ngrams_max+1))
+    pos_ngrams = (ng for ngl in pos_ngrams for ng in ngl)
+    pos_ngrams = [a for a,b in cnt(list(pos_ngrams)).items() if b>=min_freq]
 
     exclude_punct = [',','.','/','\\','(',')','[',']','{','}',';','|','"','!',
             '?','…','...', '<','>','“','”','（','„',"'",',',"‘",'=','+']
