@@ -4,13 +4,6 @@ tm2tb test examples
 from tm2tb import Tm2Tb
 term_model = Tm2Tb()
 
-'''
-Idea: low level: tech, programming vocabulary (ngrams, etc)
-      high level: linguistic-ish, easier, friendlier vocabulary (terms, etc)
-      avoid translator-only vocabulary
-      module should appeal to translators, marketers, language learners, nlp devs
-'''
-
 #%% Extract terms from a sentence in English
 en_sentence = """ 
                 The giant panda, also known as the panda bear (or simply the panda), 
