@@ -63,8 +63,3 @@ print(en_text_terms[:10])
 es_text_path = 'tests/panda_text_spanish.txt'
 es_text_terms = term_model.get_terms_from_text(es_text_path)
 print(es_text_terms[:10])
-
-# Align terms from two non-aligned texts
-two_texts_terms = term_model.get_terms_from_two_texts((en_text_path, es_text_path))
-print(two_texts_terms[:10])
-
