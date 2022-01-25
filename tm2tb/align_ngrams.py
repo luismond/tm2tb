@@ -84,4 +84,16 @@ def get_top_ngrams(src_ngrams_df,
         bi_ngrams['src_ngram_rank'] * bi_ngrams['trg_ngram_rank']
     bi_ngrams = bi_ngrams.sort_values(by='bi_ngram_rank', ascending=False)
     bi_ngrams = bi_ngrams.round(4)
+
+    # Finalize
+    columns = ['src_term', 'src_term_tags', 'src_term_rank', 'trg_term',
+           'trg_term_tags', 'trg_term_rank', 'biterm_sim',
+           'biterm_rank']
+    bi_ngrams.columns = columns
+    bi_ngrams = bi_ngrams[bi_ngrams['biterm_sim']>.9]
+    bi_ngrams['biterm_sim_dw'] = bi_ngrams['biterm_sim'].apply(lambda n: n if n < .99 else n*.75)
+    bi_ngrams['doc_rank'] = bi_ngrams['src_term_rank']*bi_ngrams['trg_term_rank']
+    bi_ngrams['biterm_rank'] = bi_ngrams['biterm_sim_dw'] * bi_ngrams['doc_rank']
+    bi_ngrams = bi_ngrams.sort_values(by='biterm_rank', ascending=False)
+
     return bi_ngrams
