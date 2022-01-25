@@ -88,7 +88,7 @@ class Text:
         candidate_ngrams = filter_ngrams(pos_tokens, **kwargs)
         return candidate_ngrams
 
-    def get_top_ngrams(self, top_n = None, diversity=.8, return_embs=False, **kwargs):
+    def get_top_ngrams(self, top_n = None, diversity=.9, return_embs=False, **kwargs):
         """
         Embed sentence and candidate ngrams.
         Calculate the best sentence ngrams using cosine similarity and MMR.
@@ -109,7 +109,7 @@ class Text:
                                  joined_ngrams,
                                  doc_embedding,
                                  seq2_embeddings,
-                                 top_n=100,
+                                 top_n=top_n,
                                  diversity=diversity,
                                  return_embs=return_embs)
         
