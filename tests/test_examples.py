@@ -2,6 +2,7 @@
 tm2tb test examples
 """
 from tm2tb import Tm2Tb
+from pprint import pprint
 term_model = Tm2Tb()
 
 #%% Extract terms from a sentence in English
@@ -17,7 +18,7 @@ en_sentence = """
                 In captivity, they may receive honey, eggs, fish, shrub leaves, oranges, or bananas.
                """
 en_sentence_terms = term_model.get_terms_from_sentence(en_sentence)
-print(en_sentence_terms[:10])
+pprint(en_sentence_terms[:10])
 
 # Extract terms from a sentence in Spanish
 es_sentence = """
@@ -34,32 +35,27 @@ es_sentence = """
                """
 
 es_sentence_terms = term_model.get_terms_from_sentence(es_sentence)
-print(es_sentence_terms[:10])
-
+pprint(es_sentence_terms[:10])
 
 # Extract and align terms from both sentences
 bilingual_terms = term_model.get_terms_from_bisentence((en_sentence, es_sentence))
-bilingual_terms = bilingual_terms.drop(columns=['src_ngram_rank',
-                                                'src_ngram_tags',
-                                                'trg_ngram_rank',
-                                                'trg_ngram_tags',
-                                                'bi_ngram_rank'])
-print(bilingual_terms[:10])
+pprint(bilingual_terms[:10])
+
+# Extract terms from a text
+en_text_path = 'tests/panda_text_english.txt'
+en_text_terms = term_model.get_terms_from_text(en_text_path)
+pprint(en_text_terms[:10])
+
+# Extract terms from a text
+es_text_path = 'tests/panda_text_spanish.txt'
+es_text_terms = term_model.get_terms_from_text(es_text_path)
+pprint(es_text_terms[:10])
 
 
 # Extracting terms from a bilingual document
 bitext_path = 'tests/panda_bear_english_spanish.csv'
 bitext_terms = term_model.get_terms_from_bitext(bitext_path)
-bitext_terms = bitext_terms.drop(columns=['src_ngram_tags',
-                                          'trg_ngram_tags',])
-print(bitext_terms[:10])
 
-# Extract terms from a text
-en_text_path = 'tests/panda_text_english.txt'
-en_text_terms = term_model.get_terms_from_text(en_text_path)
-print(en_text_terms[:10])
+pprint(bitext_terms[:10])
 
-# Extract terms from a text
-es_text_path = 'tests/panda_text_spanish.txt'
-es_text_terms = term_model.get_terms_from_text(es_text_path)
-print(es_text_terms[:10])
+

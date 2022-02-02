@@ -92,6 +92,6 @@ def preprocess(sentence,
     sentence = normalize_space_seqs(sentence)
     sentence = normalize_apostrophe(sentence)
     sentence = normalize_newline(sentence)
-    sentence = validate_if_mostly_alphabetic(sentence)
-    sentence = validate_length(sentence)
+    #sentence = validate_if_mostly_alphabetic(sentence)
+    #sentence = validate_length(sentence)
     return sentence

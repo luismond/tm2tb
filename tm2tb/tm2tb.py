@@ -15,16 +15,19 @@ class Tm2Tb:
         pass
 
     def get_terms_from_sentence(self, sentence, **kwargs):
-        return Sentence(sentence).get_top_ngrams(**kwargs)
+        return Sentence(sentence).get_top_terms(**kwargs)
 
     def get_terms_from_bisentence(self, bisentence, **kwargs):
-        return BiSentence(bisentence).get_top_ngrams(**kwargs)
+        return BiSentence(bisentence).get_top_biterms(**kwargs)
 
     def get_terms_from_bitext(self, bitext_path, **kwargs):
         bitext = BitextReader(bitext_path).read_bitext()
-        return BiText(bitext).get_top_ngrams(**kwargs)
+        return BiText(bitext).get_top_biterms(**kwargs)
+
+    def get_terms_from_bitext_df(self, bitext, **kwargs):
+        return BiText(bitext).get_biterms(**kwargs)
 
     def get_terms_from_text(self, text_path, **kwargs):
         with open(text_path, 'r', encoding='utf8') as file:
             text = file.read().split('\n')
-        return Text(text).get_top_ngrams(**kwargs)
+        return Text(text).get_top_terms(**kwargs)

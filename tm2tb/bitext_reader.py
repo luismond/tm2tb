@@ -14,7 +14,7 @@ class BitextReader:
         self.file_path = file_path
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
-        self.file_max_size = 10000000
+        self.file_max_size = 20000000
 
     def read_bitext(self):
         'Get bitext from file content'

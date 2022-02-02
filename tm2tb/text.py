@@ -7,12 +7,11 @@ from collections import Counter as cnt
 from collections import defaultdict
 from collections import namedtuple
 import itertools
-import numpy as np
 from langdetect import detect, LangDetectException
 from sklearn.metrics.pairwise import cosine_similarity
 from spacy.tokens import Span
 from tm2tb import trf_model
-from tm2tb.spacy_models import get_spacy_model
+from tm2tb import get_spacy_model
 from tm2tb.preprocess import preprocess
 
 class Text:
@@ -109,14 +108,9 @@ class Text:
         """
         spans = self.get_docs_spans(span_range)
         for span in spans:
-            # get span.text frequencies
             self.spans_freqs_dict[span.text] += 1
-            # get span.text-span mapping
             self.spans_strings_dict[span.text] = span
-            # add all document indices to span-doc dictionary
-            # Get all doc indices of documents where each span occurs
             self.spans_docs_dict[span.text].add(self.docs.index(span.doc))
-
         for span_text, freq in self.spans_freqs_dict.items():
             if freq < freq_min:
                 self.spans_docs_dict.pop(span_text)
@@ -140,16 +134,7 @@ class Text:
         spans_embeddings = trf_model.encode(top_spans_strings)
         return spans_embeddings
 
-    @staticmethod
-    def get_rank_sigmoid(freq, sim):
-        """
-        Squashes the product of the span's frequency and similarity with a sigmoid function
-        """
-        rank = 1/(1 + np.exp(-freq*sim))
-        rank = round(rank, 4)
-        return rank
-
-    def get_top_spans(self, span_range=(1,3), freq_min=1, return_embeddings=False):
+    def get_top_terms(self, span_range=(1,3), freq_min=2, return_as_tuples=True):
         """
         Use document embedding and span candidates embeddings to obtain their similarity
         Add frequency, rank, doc_idx and similarity metadata to spans
@@ -157,7 +142,7 @@ class Text:
         self.update_dicts(span_range, freq_min)
 
         Span.set_extension("sim", default=None, force=True)
-        Span.set_extension("rank", default=None, force=True)
+        Span.set_extension("span_id", default=None, force=True)
         Span.set_extension("embedding", default=None, force=True)
         Span.set_extension("freq", default=None, force=True)
         Span.set_extension("docs_idx", default=None, force=True)
@@ -168,45 +153,25 @@ class Text:
         span_doc_sims = cosine_similarity(spans_embeddings, docs_embeddings_avg)
         span_doc_sims_idx = list(range(len(span_doc_sims)))
 
-        # Build top spans with their frequency, similarity, rank, etc.
+        # Add metadata to spans
         top_spans = []
         for idx in span_doc_sims_idx:
             span = list(self.spans_strings_dict.values())[idx]
             sim = round(float(span_doc_sims.reshape(1, -1)[0][idx]), 4)
-            if sim > 0:
-                span._.sim = sim
-                span._.freq = self.spans_freqs_dict[span.text]
-                span._.rank = self.get_rank_sigmoid(span._.freq, span._.sim)
-                span._.docs_idx = self.spans_docs_dict[span.text]
-                span_tags = [t.pos_ for t in span]
-                if return_embeddings is True:
-                    TopSpan = namedtuple('Term', ['term',
-                                                  'doc_similarity',
-                                                  'frequency',
-                                                  'rank',
-                                                  'docs_idx',
-                                                  'tags',
-                                                  'emb'])
-
-                    span._.embedding = spans_embeddings[idx]
-                    top_span = TopSpan(span.text,
-                                       span._.sim,
-                                       span._.freq,
-                                       span._.rank,
-                                       span._.docs_idx,
-                                       span_tags,
-                                       span._.embedding)
-                if return_embeddings is False:
-                    TopSpan = namedtuple('Term', ['term',
-                                                  'doc_similarity',
-                                                  'frequency',
-                                                  'rank',
-                                                  'tags'])
-                    top_span = TopSpan(span.text,
-                                       span._.sim,
-                                       span._.freq,
-                                       span._.rank,
-                                       span_tags)
-                top_spans.append(top_span)
-        top_spans = sorted(top_spans, key=lambda top_span: top_span.rank, reverse=True)
+            span._.sim = sim
+            span._.freq = self.spans_freqs_dict[span.text]
+            span._.span_id = idx
+            span._.docs_idx = self.spans_docs_dict[span.text]
+            span._.embedding = spans_embeddings[idx]
+            top_spans.append(span)
+        if return_as_tuples is True:
+            top_spans = self._return_spans_as_tuples(top_spans)
         return top_spans
+
+    @staticmethod
+    def _return_spans_as_tuples(spans):
+        NamedSpan = namedtuple('Term', ['term', 'similarity', 'frequency'])
+        named_spans = []
+        for span in spans:
+            named_spans.append(NamedSpan(span.text, span._.sim, span._.freq))
+        return sorted(named_spans, key=lambda span: span.similarity, reverse=True)
