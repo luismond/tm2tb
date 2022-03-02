@@ -1,8 +1,3 @@
-Giant panda
-From Wikipedia, the free encyclopedia
-Giant panda at the Ocean Park Hong Kong
-Conservation status
-
 The giant panda, also known as the panda bear (or simply the panda), is a bear native to South Central China. It is characterised by its bold black-and-white coat and rotund body. The name "giant panda" is sometimes used to distinguish it from the red panda, a neighboring musteloid. Though it belongs to the order Carnivora, the giant panda is a folivore, with bamboo shoots and leaves making up more than 99% of its diet. Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion. In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.
 
 The giant panda lives in a few mountain ranges in central China, mainly in Sichuan, but also in neighbouring Shaanxi and Gansu. As a result of farming, deforestation, and other development, the giant panda has been driven out of the lowland areas where it once lived, and it is a conservation-reliant vulnerable species. A 2007 report showed 239 pandas living in captivity inside China and another 27 outside the country. As of December 2014, 49 giant pandas lived in captivity outside China, living in 18 zoos in 13 different countries. Wild population estimates vary; one estimate shows that there are about 1,590 individuals living in the wild, while a 2006 study via DNA analysis estimated that this figure could be as high as 2,000 to 3,000. Some reports also show that the number of giant pandas in the wild is on the rise. In March 2015, conservation news site Mongabay stated that the wild giant panda population had increased by 268, or 16.8%, to 1,864. In 2016, the IUCN reclassified the species from "endangered" to "vulnerable", affirming decade-long efforts to save the panda. In July 2021, Chinese authorities also reclassified the giant panda as vulnerable rather than endangered.
@@ -46,7 +41,6 @@ The giant panda's tail, measuring 10 to 15 cm (4 to 6 in), is the second-longest
 
 The giant panda typically lives around 20 years in the wild and up to 30 years in captivity. A female named Jia Jia was the oldest giant panda ever in captivity, born in 1978 and died at an age of 38 on 16 October 2016.
 
-Pathology
 
 Toxoplasma gondii (arrow) in macrophages in the lung of a giant panda
 A seven-year-old female named Jin Yi died in 2014 in a zoo in Zhengzhou, China, after showing symptoms of gastroenteritis and respiratory disease. It was found that the cause of death was toxoplasmosis, a disease caused by an obligate intracellular parasitic protozoan known as Toxoplasma gondii that infects most warm-blooded animals, including humans.
@@ -54,12 +48,7 @@ A seven-year-old female named Jin Yi died in 2014 in a zoo in Zhengzhou, China, 
 Genomics
 The giant panda genome was sequenced in 2009 using Illumina dye sequencing. Its genome contains 20 pairs of autosomes and one pair of sex chromosomes.
 
-Ecology
-Diet
 
-Pandas eating bamboo.
-File:Pandas playing 640x480.ogv
-Pandas eating, standing, playing
 Despite its taxonomic classification as a carnivoran, the giant panda's diet is primarily herbivorous, consisting almost exclusively of bamboo. However, the giant panda still has the digestive system of a carnivore, as well as carnivore-specific genes, and thus derives little energy and little protein from consumption of bamboo. Its ability to digest cellulose is ascribed to the microbes in its gut. Pandas are born with sterile intestines and require bacteria obtained from their mother's feces to digest vegetation. The giant panda is a highly specialised animal with unique adaptations, and has lived in bamboo forests for millions of years.
 
 The average giant panda eats as much as 9 to 14 kg (20 to 30 lb) of bamboo shoots a day to compensate for the limited energy content of its diet. Ingestion of such a large quantity of material is possible and necessary because of the rapid passage of large amounts of indigestible plant material through the short, straight digestive tract. It is also noted, however, that such rapid passage of digesta limits the potential of microbial digestion in the gastrointestinal tract, limiting alternative forms of digestion. Given this voluminous diet, the giant panda defecates up to 40 times a day. The limited energy input imposed on it by its diet has affected the panda's behavior. The giant panda tends to limit its social interactions and avoids steeply sloping terrain to limit its energy expenditures.
@@ -108,8 +97,7 @@ In July 2009, Chinese scientists confirmed the birth of the first cub to be succ
 Attempts have also been made to reproduce giant pandas by interspecific pregnancy where cloned panda embryos were implanted into the uterus of an animal of another species. This has resulted in panda fetuses, but no live births.
 
 Human use and interaction
-Early references
-Main article: Mo (Chinese zoology)
+
 In the past, pandas were thought to be rare and noble creatures – the Empress Dowager Bo was buried with a panda skull in her vault. The grandson of Emperor Taizong of Tang is said to have given Japan two pandas and a sheet of panda skin as a sign of goodwill. Unlike many other animals in Ancient China, pandas were rarely thought to have medical uses. The few known uses include the Sichuan tribal peoples' use of panda urine to melt accidentally swallowed needles, and the use of panda pelts to control menstruation as described in the Qin dynasty encyclopedia Erya.
 
 
