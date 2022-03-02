@@ -238,6 +238,8 @@ You can pass a list of part-of-speech tags to delimit the selection of terms. Fo
 ## Installation
 
 1. Navigate to your desired location, and create a virtual environment.
+python3 -m venv tm2tb-env
+source tm2tb-env/bin/activate
 
 2. Clone the repository:
 `git clone https://github.com/luismond/tm2tb`
