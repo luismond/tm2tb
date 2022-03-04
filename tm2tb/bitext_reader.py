@@ -22,8 +22,9 @@ class BitextReader:
         bitext.columns = ['src', 'trg']
         bitext = bitext.fillna('')
         if len(bitext)==0:
-            raise ValueError('Document appears to be empty')
+            raise ValueError('Document appears to be empty.')
         bitext = bitext.astype(str)
+        bitext = list(zip(bitext['src'], bitext['trg']))
         return bitext
 
     def get_file_content(self):
@@ -78,6 +79,7 @@ class XmlReader:
 
     @staticmethod
     def parse_xml(file_path):
+        """Common method for parsing xml-based bitext files."""
         try:
             with open(file_path, encoding='utf-8') as file:
                 doc = xmltodict.parse(file.read())
