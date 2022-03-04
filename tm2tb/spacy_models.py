@@ -10,7 +10,7 @@ Check the available spaCy language models here: https://spacy.io/models
 
 # Disable unneeded pipeline components
 disabled_comps = ['lemmatizer', 'ner', 'entity_linker', 'trf_data', 'textcat']
-print('loading spacy models...')
+print('Loading spacy models...')
 
 try:
     import es_core_news_md
