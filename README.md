@@ -1,10 +1,10 @@
 # TM2TB
 
-**tm2tb** is a term / keyword / n-gram extraction module with a focus on bilingual data. It leverages spaCy's part-of-speech tags and multilingual sentence transformer models to extract and align terms from pairs of sentences and bilingual documents such as translation files.
+**tm2tb** is a term extraction module with a focus on bilingual data. It leverages spaCy's part-of-speech tags and multilingual sentence transformer models to extract and align terms from pairs of sentences and bilingual documents.
 
 ## Approach
 
-To extract terms from a sentence, tm2tb first selects candidates using part-of-speech tags as delimiters. Then, a model language is used to obtain the embeddings of the candidates and the sentence. Finally, the embeddings are used to find the terms that are more similar to the sentence using cosine similarity and maximal marginal relevance.
+To extract terms from a sentence, tm2tb first selects candidates using part-of-speech tags as delimiters. Then, a model language is used to embed the candidates and the sentence. Finally, the embeddings are used to find the terms that are more similar to the sentence using cosine similarity and maximal marginal relevance.
 
 For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. Then, the resulting term embeddings are compared using cosine similarity, which returns the most similar target term for each source term.
 
