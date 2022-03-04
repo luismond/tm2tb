@@ -5,7 +5,9 @@ from tm2tb import TermExtractor
 from tm2tb import BitermExtractor
 from tm2tb import BitextReader
 
-#%% Extracting terms from a sentence in English
+input('Press any key to start.\n')
+
+# Extracting terms from a sentence in English
 en_sentence = (
     "The giant panda, also known as the panda bear (or simply the panda)"
     " is a bear native to South Central China. It is characterised by its"
@@ -21,9 +23,13 @@ en_sentence = (
 
 extractor = TermExtractor(en_sentence)  # Instantiate extractor with sentence
 terms = extractor.extract_terms()       # Extract terms
-print(terms[:10])
 
-#%% Extracting terms from a sentence in Spanish
+print('Extract terms from a sentence in English:\n')
+print(en_sentence)
+print(terms[:10])
+input('Press any key to continue.\n')
+
+# Extracting terms from a sentence in Spanish
 es_sentence = (
     "El panda gigante, también conocido como oso panda (o simplemente panda),"
     " es un oso originario del centro-sur de China. Se caracteriza por su"
@@ -39,37 +45,40 @@ es_sentence = (
 
 extractor = TermExtractor(es_sentence)  # Instantiate extractor with sentence
 terms = extractor.extract_terms()       # Extract terms
+print('Extract terms from a sentence in Spanish:\n')
+print(es_sentence)
 print(terms[:10])
+input('Press any key to continue.\n')
 
-#%% Extract and align terms from both sentences
+# Extract and align terms from both sentences
 extractor = BitermExtractor((en_sentence, es_sentence)) # Instantiate extractor with sentences
 biterms = extractor.extract_terms()                     # Extract biterms
+print('Extract and align terms from both sentences:\n')
 print(biterms[:10])
+input('Press any key to continue.\n')
 
-#%% Extract terms from a bilingual document
+
+# Extract terms from a bilingual document
 path = 'tests/panda_bear_english_spanish.csv'
 bitext = BitextReader(path).read_bitext() # Read bitext
-
 extractor = BitermExtractor(bitext)       # Instantiate extractor with bitext
 biterms = extractor.extract_terms()       # Extract biterms
+print('Extract terms from a bilingual document:')
+print('Document path: {}'.format(path))
 print(biterms[:10])
 
-#%% Selecting the terms length (terms)
+# Selecting the terms length (terms)
 extractor = TermExtractor(en_sentence)
 terms = extractor.extract_terms(span_range=(2,3))
-print(terms[:10])
 
-#%% Selecting the parts-of-speech tags (terms)
+# Selecting the parts-of-speech tags (terms)
 extractor = TermExtractor(en_sentence)
 terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
-print(terms[:10])
 
-#%% Selecting the terms length (biterms)
+# Selecting the terms length (biterms)
 extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(span_range=(2,3))
-print(biterms[:10])
 
-#%% Selecting the parts-of-speech tags (biterms)
+# Selecting the parts-of-speech tags (biterms)
 extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
-print(biterms[:10])
