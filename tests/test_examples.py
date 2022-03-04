@@ -51,25 +51,25 @@ path = 'tests/panda_bear_english_spanish.csv'
 bitext = BitextReader(path).read_bitext() # Read bitext
 
 extractor = BitermExtractor(bitext)       # Instantiate extractor with bitext
-biterms = extractor.extract_terms()       # Extract terms
+biterms = extractor.extract_terms()       # Extract biterms
 print(biterms[:10])
 
 #%% Selecting the terms length (terms)
-extractor = TermExtractor(en_sentence)  
+extractor = TermExtractor(en_sentence)
 terms = extractor.extract_terms(span_range=(2,3))
 print(terms[:10])
 
 #%% Selecting the parts-of-speech tags (terms)
-extractor = TermExtractor(en_sentence)  
+extractor = TermExtractor(en_sentence)
 terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
 print(terms[:10])
 
 #%% Selecting the terms length (biterms)
-extractor = BitermExtractor((en_sentence, es_sentence)) 
+extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(span_range=(2,3))
 print(biterms[:10])
 
 #%% Selecting the parts-of-speech tags (biterms)
-extractor = BitermExtractor((en_sentence, es_sentence)) 
+extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
 print(biterms[:10])
