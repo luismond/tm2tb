@@ -35,7 +35,7 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 
 # Basic examples
 
-### New! Run this examples directly in a [Google Colab notebook.](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
+### New! Run these examples directly in a [Google Colab notebook.](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
 
 ### Extracting terms from a sentence
 
