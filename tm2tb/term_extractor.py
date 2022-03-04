@@ -14,6 +14,7 @@ from collections import ChainMap
 from typing import Union
 import itertools
 import numpy as np
+import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from spacy.tokens import Span
 from tm2tb import trf_model
@@ -40,7 +41,7 @@ class TermExtractor:
         self.input_ = input_
         self.lang = detect_lang(self.input_)
 
-    def extract_terms(self, return_as_tuples=True, **kwargs):
+    def extract_terms(self, return_as_table=True, **kwargs):
         """
         Extract terms from one sentence or multiple sentences.
 
@@ -78,12 +79,13 @@ class TermExtractor:
             terms = self.extract_terms_from_sentence(**kwargs)
         if isinstance(self.input_, list):
             terms = self.extract_terms_from_text(**kwargs)
-        if return_as_tuples is True:
-            terms = self._return_spans_as_tuples(terms)
+        if return_as_table is True:
+            #terms = self._return_spans_as_tuples(terms)
+            terms = self._return_as_table(terms)
         return terms
 
     def extract_terms_from_sentence(self,
-                                    span_range=(1, 3),
+                                    span_range=(1, 2),
                                     freq_min=1,
                                     incl_pos=None,
                                     excl_pos=None):
@@ -156,7 +158,7 @@ class TermExtractor:
         return top_spans
 
     def extract_terms_from_text(self,
-                                span_range=(1, 3),
+                                span_range=(1, 2),
                                 freq_min=1,
                                 incl_pos=None,
                                 excl_pos=None):
@@ -263,6 +265,7 @@ class TermExtractor:
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
         Span.set_extension("similarity", default=None, force=True)
+        Span.set_extension("rank", default=None, force=True)
         Span.set_extension("span_id", default=None, force=True)
         Span.set_extension("embedding", default=None, force=True)
         Span.set_extension("frequency", default=None, force=True)
@@ -468,7 +471,7 @@ class TermExtractor:
 
         """
         top_n = round(len(list(spans_dicts.maps[2].keys()))/2)
-        diversity = .8
+        diversity = .9
         # Construct a similarity matrix of spans
         spans_sims = cosine_similarity(spans_embeddings)
         # Choose best span to initialize the best spans index
@@ -537,17 +540,19 @@ class TermExtractor:
             similarity = round(float(span_doc_similarities.reshape(1, -1)[0][idx]), 4)
             span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
+            span._.rank = span._.similarity * 1/(1 + np.exp(-span._.frequency))
             span._.span_id = idx
             span._.docs_idx = spans_docs_dict[span.text]
             span._.embedding = spans_embeddings[idx]
             top_spans.append(span)
 
-        # add second-best spans, but downweight their similarity
+        # add second-best spans, but downweight their rank
         for idx in candidate_spans_idx:
             span = list(spans_texts_dict.values())[idx]
             similarity = round(float(span_doc_similarities.reshape(1, -1)[0][idx]), 4)
-            span._.similarity = similarity * .5
+            span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
+            span._.rank = (span._.similarity * 1/(1 + np.exp(-span._.frequency))) * .5
             span._.span_id = idx
             span._.docs_idx = spans_docs_dict[span.text]
             span._.embedding = spans_embeddings[idx]
@@ -562,4 +567,21 @@ class TermExtractor:
         terms = []
         for span in spans:
             terms.append(Term(span.text, span._.similarity, span._.frequency))
+        return terms
+
+    @staticmethod
+    def _return_as_table(spans):
+        """Take a list spaCy spans, return it as pandas dataframe."""
+        terms = []
+        for span in spans:
+            text = span.text
+            tags = [t.pos_ for t in span]
+            freq = span._.frequency
+            rank = span._.rank
+            terms.append((text, tags, rank, freq))
+        terms = pd.DataFrame(terms)
+        terms.columns = ['term', 'pos_tags', 'rank', 'frequency']
+        terms = terms.sort_values(by='rank', ascending=False)
+        terms.reset_index(drop=True, inplace=True)
+        terms = terms.round(4)
         return terms
