@@ -378,6 +378,8 @@ class BitermExtractor:
                             similarity, frequency, biterm_rank)
 
             biterms.append(biterm)
+        if len(biterms)==0:
+            raise ValueError('No biterms found.')
         return biterms
 
     @staticmethod

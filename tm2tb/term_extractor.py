@@ -396,7 +396,7 @@ class TermExtractor:
                 spans_docs_dict.pop(span)
                 spans_texts_dict.pop(span)
         if len(spans_texts_dict) == 0:
-            raise ValueError('No spans left!')
+            raise ValueError('No terms left with frequency {}'.format(freq_min))
         spans_dicts = ChainMap(spans_freqs_dict,
                                spans_docs_dict,
                                spans_texts_dict)
