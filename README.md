@@ -4,11 +4,11 @@
 
 ## Approach
 
-To extract n-grams from a sentence, tm2tb first selects n-gram candidates using part-of-speech tags as delimiters. Then, a model language is used to obtain the embeddings of the n-gram candidates and the sentence. Finally, the embeddings are used to find iteratively the n-grams that are more similar to the sentence using cosine similarity and maximal marginal relevance.
+To extract terms from a sentence, tm2tb first selects candidates using part-of-speech tags as delimiters. Then, a model language is used to obtain the embeddings of the candidates and the sentence. Finally, the embeddings are used to find the terms that are more similar to the sentence using cosine similarity and maximal marginal relevance.
 
-For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. The resulting n-gram embeddings are then compared using cosine similarity, which returns the most similar target n-gram for each source n-gram.
+For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. Then, the resulting term embeddings are compared using cosine similarity, which returns the most similar target term for each source term.
 
-For bilingual documents, n-grams are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
+For bilingual documents, terms are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
 
 <hr/>
 
@@ -38,112 +38,110 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 ### Extracting terms from a sentence
 
 ```python
-from tm2tb import Tm2Tb
+from tm2tb import TermExtractor
 
-model = Tm2Tb()
-
-src_sentence = """ 
-                The giant panda, also known as the panda bear (or simply the panda), 
-                is a bear native to South Central China. It is characterised 
-                by its bold black-and-white coat and rotund body. The name "giant panda" 
-                is sometimes used to distinguish it from the red panda, a neighboring musteloid.
-                Though it belongs to the order Carnivora, the giant panda is a folivore, 
-                with bamboo shoots and leaves making up more than 99% of its diet. 
-                Giant pandas in the wild will occasionally eat other grasses, wild tubers, 
-                or even meat in the form of birds, rodents, or carrion. 
-                In captivity, they may receive honey, eggs, fish, shrub leaves, oranges, or bananas.
-               """
+en_sentence = (
+    "The giant panda, also known as the panda bear (or simply the panda)"
+    " is a bear native to South Central China. It is characterised by its"
+    " bold black-and-white coat and rotund body. The name 'giant panda'"
+    " is sometimes used to distinguish it from the red panda, a neighboring"
+    " musteloid. Though it belongs to the order Carnivora, the giant panda"
+    " is a folivore, with bamboo shoots and leaves making up more than 99%"
+    " of its diet. Giant pandas in the wild will occasionally eat other grasses,"
+    " wild tubers, or even meat in the form of birds, rodents, or carrion."
+    " In captivity, they may receive honey, eggs, fish, shrub leaves,"
+    " oranges, or bananas."
+    )
 ```
 
 ```python
->>> print(model.get_ngrams(src_sentence))
 
-[('panda', 0.4116),
- ('Carnivora', 0.2499),
- ('bear', 0.2271),
- ('South Central China', 0.2204),
- ('diet', 0.1889),
- ('wild', 0.1726),
- ('rodents', 0.1718),
- ('Central', 0.1638),
- ('form of birds', 0.1575),
- ('fish', 0.144),
- ('name', 0.1318),
- ('order', 0.1172),
- ('oranges', 0.1149),
- ('carrion', 0.1029),
- ('South', 0.0937)]
+>>> extractor = TermExtractor(en_sentence)  # instantiate extractor with sentence
+>>> terms = extractor.extract_terms()       # extract terms
+>>> print(terms[:10])
+
+            term        pos_tags    rank  frequency
+0    giant panda     [ADJ, NOUN]  0.7819          3
+1    bear native     [NOUN, ADJ]  0.3705          1
+2          panda          [NOUN]  0.3651          6
+3     panda bear    [NOUN, NOUN]  0.2920          1
+4   Giant pandas     [ADJ, NOUN]  0.2852          1
+5         pandas          [NOUN]  0.2606          1
+6      red panda     [ADJ, NOUN]  0.2308          1
+7  Central China  [PROPN, PROPN]  0.2298          1
+8           bear          [NOUN]  0.2198          2
+9          giant           [ADJ]  0.2159          3
 
 ```
-
-The values represent the similarity between the terms and the sentence.
 
 We can get terms in other languages as well. (The language is detected automatically):
 
 ```python
-trg_sentence = """
-                El panda gigante, también conocido como oso panda (o simplemente panda), 
-                es un oso originario del centro-sur de China. Se caracteriza por su llamativo
-                pelaje blanco y negro, y su cuerpo rotundo. El nombre de "panda gigante" 
-                se usa en ocasiones para distinguirlo del panda rojo, un mustélido parecido. 
-                Aunque pertenece al orden de los carnívoros, el panda gigante es folívoro, 
-                y más del 99 % de su dieta consiste en brotes y hojas de bambú.
-                En la naturaleza, los pandas gigantes comen ocasionalmente otras hierbas, 
-                tubérculos silvestres o incluso carne de aves, roedores o carroña.
-                En cautividad, pueden alimentarse de miel, huevos, pescado, hojas de arbustos,
-                naranjas o plátanos.
-               """
+
+es_sentence = (
+    "El panda gigante, también conocido como oso panda (o simplemente panda),"
+    " es un oso originario del centro-sur de China. Se caracteriza por su"
+    " llamativo pelaje blanco y negro, y su cuerpo rotundo. El nombre 'panda"
+    " gigante' se usa en ocasiones para distinguirlo del panda rojo, un"
+    " mustélido parecido. Aunque pertenece al orden de los carnívoros, el panda"
+    " gigante es folívoro, y más del 99 % de su dieta consiste en brotes y"
+    " hojas de bambú. En la naturaleza, los pandas gigantes comen ocasionalmente"
+    " otras hierbas, tubérculos silvestres o incluso carne de aves, roedores o"
+    " carroña. En cautividad, pueden alimentarse de miel, huevos, pescado, hojas"
+    " de arbustos, naranjas o plátanos."
+    )
+
 
 ```
 
 ```python
->>> print(model.get_ngrams(trg_sentence))
 
-[('panda', 0.4639),
- ('carne de aves', 0.2894),
- ('dieta', 0.2824),
- ('roedores', 0.2424),
- ('hojas de bambú', 0.234),
- ('naturaleza', 0.2123),
- ('orden', 0.2042),
- ('nombre', 0.2041),
- ('naranjas', 0.1895),
- ('China', 0.1847),
- ('ocasiones', 0.1742),
- ('pelaje', 0.1627),
- ('carroña', 0.1293),
- ('cautividad', 0.1238),
- ('hierbas', 0.1145)]
+>>> extractor = TermExtractor(es_sentence)  # Instantiate extractor with sentence
+>>> terms = extractor.extract_terms()       # Extract terms
+>>> print(terms[:10])
+
+             term        pos_tags    rank  frequency
+0   panda gigante     [NOUN, ADJ]  0.7886          3
+1           panda          [NOUN]  0.3725          5
+2  oso originario     [NOUN, ADJ]  0.3589          1
+3  pandas giga...     [NOUN, ADJ]  0.2914          1
+4        gigantes           [ADJ]  0.2815          1
+5       oso panda  [PROPN, PROPN]  0.2711          1
+6          pandas          [NOUN]  0.2657          1
+7           China         [PROPN]  0.2366          1
+8      panda rojo   [NOUN, PROPN]  0.2323          1
+9         gigante           [ADJ]  0.1757          3
+
 ```
 ### Extracting terms from pairs of sentences
 
-The special thing about tm2tb is that it can extract and match the terms from the two sentences:
+The special thing about tm2tb is that it can extract and align the terms from both sentences:
 
 ```python
->>> print(model.get_ngrams((src_sentence, trg_sentence)))
+>>> from tm2tb import BitermExtractor
 
-[('panda', 'pandas', 0.9422)
-('red panda', 'panda rojo', 0.9807)
-('Giant pandas', 'pandas gigantes', 0.9322)
-('diet', 'dieta', 0.9723)
-('rodents', 'roedores', 0.8565)
-('fish', 'pescado', 0.925)
-('name', 'nombre', 0.9702)
-('order', 'orden', 0.9591)
-('oranges', 'naranjas', 0.9387)
-('carrion', 'carroña', 0.8236)]
+>>> extractor = BitermExtractor((en_sentence, es_sentence)) # Instantiate extractor with sentences
+>>> biterms = extractor.extract_terms()                     # Extract biterms
+>>> print(biterms[:10])
+
+       src_term     src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
+0   giant panda  [ADJ, NOUN]   panda gigante    [NOUN, ADJ]      0.9911          1       0.6385
+1   bear native  [NOUN, ADJ]  oso originario    [NOUN, ADJ]      0.9156          1       0.5607
+2  Giant pandas  [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5521
+3         panda       [NOUN]           panda         [NOUN]      1.0000          1       0.5470
+4     red panda  [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5420
+5         giant        [ADJ]        gigantes          [ADJ]      0.9166          1       0.5416
+6        pandas       [NOUN]          pandas         [NOUN]      1.0000          1       0.5336
+7        bamboo       [NOUN]           bambú         [NOUN]      0.9811          1       0.5269
+8         China      [PROPN]           China        [PROPN]      1.0000          1       0.5230
+9     Carnivora      [PROPN]      carnívoros         [NOUN]      0.9351          1       0.5199
 
 ```
 
-The values represent the similarities between the source terms and the target terms.
-
-This list is extracted from a similarity matrix of all source ngrams and all target ngrams. We can see here a sample of the matrix:
-
-![Similarity matrix generated in Spyder for visualization purposes](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/max_seq_similarities_small.png)
 
 ### Extracting terms from bilingual documents
 
-Furthermore, tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
+tm2tb can also extract and align terms from bilingual documents. Let's take a small translation file:
 
 ```
                                                  src                                                trg
@@ -163,34 +161,25 @@ Furthermore, tm2tb can also extract and match terms from bilingual documents. Le
 ```
 
 ```python
-# Read the file
-file_path = 'tests/panda_bear_english_spanish.csv'
-bitext = model.read_bitext(file_path)
-```
+>>> path = 'tests/panda_bear_english_spanish.csv'
+>>> bitext = BitextReader(path).read_bitext()   # Read bitext
+>>> extractor = BitermExtractor(bitext)         # Instantiate extractor with bitext
+>>> biterms = extractor.extract_terms()         # Extract terms
+>>> print(biterms[:10])
 
-```python
->>> print(model.get_ngrams(bitext))
 
-[('panda bear', 'oso panda', 0.8826)
-('Ursidae', 'Ursidae', 1.0)
-('Gansu', 'Gansu', 1.0)
-('form of birds', 'forma de aves', 0.9635)
-('panda', 'panda', 1.0)
-('eggs', 'huevos', 0.95)
-('food', 'alimentos', 0.9574)
-('decades', 'décadas', 0.9721)
-('bear species', 'especies de osos', 0.8191)
-('classification', 'clasificación', 0.9525)
-('bamboo leaves', 'hojas de bambú', 0.9245)
-('family', 'familia', 0.9907)
-('rodents', 'roedores', 0.8565)
-('ancestor', 'ancestro', 0.958)
-('studies', 'estudios', 0.9732)
-('oranges', 'naranjas', 0.9387)
-('diet', 'dieta', 0.9723)
-('species', 'especie', 0.9479)
-('shrub leaves', 'hojas de arbustos', 0.9162)
-('captivity', 'cautiverio', 0.7633)]
+         src_term       src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
+0     giant panda    [ADJ, NOUN]   panda gigante   [PROPN, ADJ]      0.9911          8       0.6490
+1    Giant pandas    [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5819
+2           panda         [NOUN]           panda         [NOUN]      1.0000          8       0.5665
+3       true bear    [ADJ, NOUN]   oso auténtico    [NOUN, ADJ]      0.9284          1       0.5542
+4       red panda    [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5447
+5  taxonomic c...    [ADJ, NOUN]  clasificaci...    [NOUN, ADJ]      0.9840          1       0.5412
+6       Carnivora        [PROPN]       Carnivora        [PROPN]      1.0000          1       0.5388
+7          pandas         [NOUN]          pandas         [NOUN]      1.0000          1       0.5355
+8  family Ursidae  [NOUN, PROPN]  familia Urs...  [NOUN, PROPN]      0.9952          1       0.5346
+9           China        [PROPN]           China        [PROPN]      1.0000          2       0.5340
+
 ```
 In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
 
@@ -199,37 +188,78 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 ### Selecting the n-gram range
 
-You can select the minimum and maximum length of the n-grams: 
+You can select the minimum and maximum length of the terms: 
 
 ```python
->>> print(model.get_ngrams(bitext, ngrams_min=1, ngrams_max=5))
 
-[('panda', 'pandas', 0.9422)
-('red panda', 'panda rojo', 0.9807)
-('Giant pandas', 'panda gigante', 0.9019)
-('native to South Central China', 'originario del centro-sur de China', 0.8912)
-('diet', 'dieta', 0.9723)
-('fish', 'pescado', 0.925)
-('China', 'China', 1.0)
-('name', 'nombre', 0.9702)
-('order', 'orden', 0.9591)
-('oranges', 'naranjas', 0.9387)
-('carrion', 'carroña', 0.8236)]
+>>> extractor = TermExtractor(en_sentence)  
+>>> terms = extractor.extract_terms(span_range=(2,3))
+>>> print(terms[:10])
+
+             term        pos_tags    rank  frequency
+0     giant panda     [ADJ, NOUN]  0.7819          3
+1     bear native     [NOUN, ADJ]  0.3705          1
+2      panda bear    [NOUN, NOUN]  0.2920          1
+3    Giant pandas     [ADJ, NOUN]  0.2852          1
+4       red panda     [ADJ, NOUN]  0.2308          1
+5  order Carni...   [NOUN, PROPN]  0.1472          1
+6  South Centr...  [PROPN, PRO...  0.1196          1
+7   Central China  [PROPN, PROPN]  0.1149          1
+8      bold black      [ADJ, ADJ]  0.0929          1
+9      white coat     [ADJ, NOUN]  0.0792          1
+
 ```
 
 ### Using Part-of-Speech tags
 
-You can pass a list of part-of-speech tags to delimit the selection of terms. For example, we can get only adjectives:
+You can pass a list of part-of-speech tags to delimit the selection of terms. 
+For example, we can get only adjectives:
 
 ```python
->>> print(model.get_ngrams((src_sentence, trg_sentence), include_pos=['ADJ']))
+>>> extractor = TermExtractor(en_sentence)  
+>>> terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+>>> print(terms[:10])
 
-[('giant', 'gigante', 0.936)
-('rotund', 'rotundo', 0.8959)
-('native', 'originario', 0.8423)
-('white', 'blanco', 0.9537)
-('red', 'rojo', 0.9698)
-('black', 'negro', 0.9099)]
+         term    pos_tags    rank  frequency
+0       giant       [ADJ]  0.4319          3
+1       Giant       [ADJ]  0.1653          1
+2        wild       [ADJ]  0.1091          1
+3  bold black  [ADJ, ADJ]  0.0929          1
+4      simply       [ADV]  0.0550          1
+5        also       [ADV]  0.0468          1
+6         red       [ADJ]  0.0452          1
+7      native       [ADJ]  0.0437          1
+8       other       [ADJ]  0.0383          1
+9      rotund       [ADJ]  0.0353          1
+```
+
+You can pass these arguments in the same way for biterm extraction:
+
+```python
+>>> extractor = BitermExtractor((en_sentence, es_sentence)) 
+>>> biterms = extractor.extract_terms(span_range=(2,3))
+>>> print(biterms[:10])
+
+       src_term     src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
+0   giant panda  [ADJ, NOUN]   panda gigante    [NOUN, ADJ]      0.9911          1       0.6385
+1   bear native  [NOUN, ADJ]  oso originario    [NOUN, ADJ]      0.9156          1       0.5607
+2  Giant pandas  [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5521
+3     red panda  [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5420
+
+```
+
+```python
+>>> extractor = BitermExtractor((en_sentence, es_sentence)) 
+>>> biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+>>> print(biterms[:10])
+
+       src_term src_tags        trg_term trg_tags  similarity  frequency  biterm_rank
+0         giant    [ADJ]        gigantes    [ADJ]      0.9166          1       0.5595
+1         black    [ADJ]           negro    [ADJ]      0.9051          1       0.5057
+2        rotund    [ADJ]         rotundo    [ADJ]      0.9466          1       0.5053
+3          more    [ADJ]             más    [ADV]      0.9293          1       0.5033
+4         white    [ADJ]          blanco    [ADJ]      0.9480          1       0.5027
+5  occasionally    [ADV]  ocasionalmente    [ADV]      0.9909          1       0.5013
 
 ```
 
