@@ -15,6 +15,7 @@ from typing import Union
 from itertools import groupby
 from itertools import product
 import numpy as np
+import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from tm2tb import TermExtractor
 
@@ -38,7 +39,7 @@ class BitermExtractor:
     def __init__(self, input_: Union[tuple, list]):
         self.input_ = input_
 
-    def extract_terms(self, similarity_min=.9, **kwargs):
+    def extract_terms(self, similarity_min=.9, return_as_table=True, **kwargs):
         """
 
         Extract biterms from a pair of translated texts.
@@ -80,6 +81,8 @@ class BitermExtractor:
         if isinstance(self.input_, list):
             terms = self.extract_terms_from_bitext(similarity_min,
                                                    **kwargs)
+        if return_as_table is True:
+            terms = self._return_as_table(terms)
         return terms
 
     def extract_terms_from_bisentence(self, similarity_min, **kwargs):
@@ -107,13 +110,13 @@ class BitermExtractor:
 
         src_sentence = bisentence[0]
         src_extractor = TermExtractor(src_sentence)
-        src_terms = src_extractor.extract_terms(return_as_tuples=False,
+        src_terms = src_extractor.extract_terms(return_as_table=False,
                                                 **kwargs)
         src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_sentence = bisentence[1]
         trg_extractor = TermExtractor(trg_sentence)
-        trg_terms = trg_extractor.extract_terms(return_as_tuples=False,
+        trg_terms = trg_extractor.extract_terms(return_as_table=False,
                                                 **kwargs)
         trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
@@ -172,9 +175,8 @@ class BitermExtractor:
 
         def validate_if_bitext_is_bilingual(bitext):
             """
-            Validate if bitext is bilingual.
+            If source and target rows are equal, it is pointless to extract biterms.
             Return bitext if source and target rows are different.
-            If it is not an actual bitext, bilingual terms can't be extracted.
             """
             n = 0
             for row in bitext:
@@ -182,19 +184,19 @@ class BitermExtractor:
                     n += 1
             if len(bitext) == n:
                 raise ValueError('Source rows are identical to target rows!')
-            else:
-                return bitext
+            #else:
+            return bitext
 
         bitext = validate_if_bitext_is_bilingual(bitext)
         src_text, trg_text = zip(*bitext)
 
         src_extractor = TermExtractor(list(src_text))
-        src_terms = src_extractor.extract_terms(return_as_tuples=False,
+        src_terms = src_extractor.extract_terms(return_as_table=False,
                                                 **kwargs)
         src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_extractor = TermExtractor(list(trg_text))
-        trg_terms = trg_extractor.extract_terms(return_as_tuples=False,
+        trg_terms = trg_extractor.extract_terms(return_as_table=False,
                                                 **kwargs)
         trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
@@ -353,8 +355,6 @@ class BitermExtractor:
             # downweight non-translatables (terms which are equal)
             if similarity == 1:
                 similarity = similarity * .7
-            # if similarity < 1:
-            #     sim_sigm = (1/(1 + np.exp(-similarity)))
             biterm_rank = ((src_rank + trg_rank)/2) * similarity * freq_sigm
             biterm_rank = round((1/(1 + np.exp(-biterm_rank))), 4)
             return biterm_rank
@@ -368,8 +368,8 @@ class BitermExtractor:
             trg_span = spans[1]
             src_tags = [t.pos_ for t in src_span]
             trg_tags = [t.pos_ for t in trg_span]
-            src_rank = src_span._.similarity
-            trg_rank = trg_span._.similarity
+            src_rank = src_span._.rank
+            trg_rank = trg_span._.rank
             frequency = biterms_freqs_dict[biterm_]
             biterm_rank = get_biterm_rank(frequency, similarity, src_rank, trg_rank)
 
@@ -378,4 +378,13 @@ class BitermExtractor:
                             similarity, frequency, biterm_rank)
 
             biterms.append(biterm)
+        return biterms
+
+    @staticmethod
+    def _return_as_table(biterms):
+        """ Return biterms as pandas dataframe."""
+        biterms = pd.DataFrame(biterms)
+        biterms = biterms.sort_values(by='biterm_rank', ascending=False)
+        biterms.reset_index(drop=True, inplace=True)
+        biterms = biterms.round(4)
         return biterms
