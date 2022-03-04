@@ -1,6 +1,8 @@
 # TM2TB
 
-**tm2tb** is a term extraction module with a focus on bilingual data. It leverages spaCy's part-of-speech tags and multilingual sentence transformer models to extract and align terms from pairs of sentences and bilingual documents.
+**tm2tb** is a term extraction module with a focus on bilingual data.
+
+It uses spaCy's part-of-speech tags and sentence transformer models to extract and align terms from pairs of sentences and bilingual documents.
 
 ## Approach
 
