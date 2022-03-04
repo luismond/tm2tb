@@ -17,7 +17,7 @@ For bilingual documents, terms are extracted from each pair of sentences using t
 - Extract bilingual terms from pairs of sentences or short paragraphs.
 - Extract bilingual terms from documents such as translation memories, and other bilingual files.
 - Extract terms and keywords from single sentences.
-- Use part-of-speech tags to select different patterns of terms and keyphrases.
+- Use part-of-speech tags to select different patterns of terms and phrases.
 
 ## Languages supported
 
@@ -35,7 +35,7 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 
 # Basic examples
 
-### New! Run these examples directly in a [Google Colab notebook.](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
+### New! Run these examples directly in a [Google Colab notebook](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
 
 ### Extracting terms from a sentence
 
@@ -58,8 +58,8 @@ en_sentence = (
 
 ```python
 
->>> extractor = TermExtractor(en_sentence)  # instantiate extractor with sentence
->>> terms = extractor.extract_terms()       # extract terms
+>>> extractor = TermExtractor(en_sentence)  # Instantiate extractor with sentence
+>>> terms = extractor.extract_terms()       # Extract terms
 >>> print(terms[:10])
 
             term        pos_tags    rank  frequency
@@ -188,7 +188,7 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 ## More examples with options
 
-### Selecting the n-gram range
+### Selecting the terms length
 
 You can select the minimum and maximum length of the terms:
 
@@ -284,12 +284,13 @@ This will install the following libraries:
 pip==21.3.1
 setuptools==60.2.0
 wheel==0.37.1
-spacy==3.2.1
 langdetect==1.0.9
 pandas==1.3.5
 xmltodict==0.12.0
 openpyxl==3.0.9
 sentence-transformers==2.1.0
+tokenizers==0.11.4
+spacy==3.2.1
 ```
 
 Also, the following spaCy models will be downloaded and installed:
@@ -300,19 +301,27 @@ fr_core_news_md-3.2.0
 de_core_news_md-3.2.0
 ```
 
-**Note about spaCy models:**
+### spaCy models
 
-tm2tb comes pre-packaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.2.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.2.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.2.0).
+tm2tb includes 4 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.2.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.2.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.2.0).
 
 These models are optimized for efficiency and are lightweight (about 45 MB each).
 
-You can download larger models for better Part-of-Speech tagging accuracy (or models for additional languages), and add them to `tm2tb.spacy_models.py`.
+You can download larger models for better Part-of-Speech tagging accuracy (or for additional languages), and add them to `tm2tb.spacy_models.py`.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
-**Note about transformers models:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and saved.
+### Sentence transformer models
 
-LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
+TM2TB is compatible with the following multilingual sentence transformer models:
+
+distiluse-base-multilingual-cased-v1 (default)
+distiluse-base-multilingual-cased-v2
+paraphrase-multilingual-MiniLM-L12-v2
+paraphrase-multilingual-mpnet-base-v2
+LaBSE
+
+These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
 ## tm2tb.com
 For bilingual documents, the functionality of tm2tb is also available through a web app: www.tm2tb.com
@@ -332,9 +341,9 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 ## Credits
 
 ### Libraries
-- `spaCy`: Tokenization, POS-tagging
-- `sentence-transformers`: Sentence and n-gram embeddings
+- `spaCy`: Tokenization, Part-of-Speech tagging
+- `sentence-transformers`: sentence and terms embeddings
 - `xmltodict`: parsing of XML file formats (.mqxliff, .tmx, etc.)
 
 ### Other credits:
-- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like ngrams-to-sentence similarity and the implementation of Maximal Marginal Relevance.
+- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like terms-to-sentence similarity and the implementation of Maximal Marginal Relevance.
