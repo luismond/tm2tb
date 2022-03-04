@@ -292,23 +292,23 @@ sentence-transformers==2.1.0
 
 Also, the following spaCy models will be downloaded and installed:
 ```
-en_core_web_sm-3.2.0
-es_core_news_sm-3.2.0
-fr_core_news_sm-3.2.0
-de_core_news_sm-3.2.0
+en_core_web_md-3.2.0
+es_core_news_md-3.2.0
+fr_core_news_md-3.2.0
+de_core_news_md-3.2.0
 ```
 
 **Note about spaCy models:**
 
-tm2tb comes pre-packaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_sm-3.2.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_sm-3.2.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_sm-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_sm-3.2.0).
+tm2tb comes pre-packaged with 4 small spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.2.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.2.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.2.0).
 
-These models are optimized for efficiency and are lightweight (about 30 MB each).
+These models are optimized for efficiency and are lightweight (about 45 MB each).
 
 You can download larger models for better Part-of-Speech tagging accuracy (or models for additional languages), and add them to `tm2tb.spacy_models.py`.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
-**Note about transformers models:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and cached.
+**Note about transformers models:** When you first run the module, the sentence transformer model [LaBSE](https://tfhub.dev/google/LaBSE/1) will be downloaded and saved.
 
 LaBSE is a *language-agnostic* BERT sentence embedding model. It can embed sentences or short paragraphs regardless of language. It is downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
