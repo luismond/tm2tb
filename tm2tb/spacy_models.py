@@ -1,11 +1,15 @@
 """
-spaCy model selection
-tm2tb comes pre-packaged with 4 mid-sized spaCy language models,
-for English, Spanish, German and French.
+spaCy model selection.
+
+TM2TB comes with 4 spaCy language models (English, Spanish, German and French).
+
+In order to support additional languages,
+the corresponding spaCy model must be installed.
 Check the available spaCy language models here: https://spacy.io/models
 """
+
 # Disable unneeded pipeline components
-disabled_comps = ['lemmatizer', 'ner','entity_linker', 'trf_data', 'textcat']
+disabled_comps = ['lemmatizer', 'ner', 'entity_linker', 'trf_data', 'textcat']
 print('loading spacy models...')
 
 try:
@@ -32,9 +36,10 @@ try:
 except ModuleNotFoundError:
     print('No French model found')
 
+
 def get_spacy_model(lang):
     """
-    Get spaCy model from one of the supported languages'
+    Get spaCy model from one of the supported languages.
 
     Parameters
     ----------
@@ -56,15 +61,14 @@ def get_spacy_model(lang):
 
         DESCRIPTION. spaCy language model
     """
-
     try:
-        if lang=='en':
+        if lang == 'en':
             spacy_model = model_en
-        if lang=='es':
+        if lang == 'es':
             spacy_model = model_es
-        if lang=='fr':
+        if lang == 'fr':
             spacy_model = model_fr
-        if lang=='de':
+        if lang == 'de':
             spacy_model = model_de
     except Exception:
         raise ValueError("No spaCy language models found!")
