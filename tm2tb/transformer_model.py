@@ -34,6 +34,8 @@ class TransformerModel:
         self.path = 'sbert_models'
         self.model_name = model_name
         self.model_path = os.path.join(self.path, self.model_name)
+        if not self.path in os.listdir():
+            os.mkdir(self.path)
 
     def load(self):
         """Load model from path or download it from HuggingFace Model Hub."""
