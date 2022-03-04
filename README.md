@@ -35,6 +35,8 @@ So far, English, Spanish, German and French have been tested. I plan to add more
 
 # Basic examples
 
+### New! Run this examples directly in a [Google Colab notebook.](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
+
 ### Extracting terms from a sentence
 
 ```python
@@ -188,7 +190,7 @@ In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. 
 
 ### Selecting the n-gram range
 
-You can select the minimum and maximum length of the terms: 
+You can select the minimum and maximum length of the terms:
 
 ```python
 
@@ -212,7 +214,7 @@ You can select the minimum and maximum length of the terms:
 
 ### Using Part-of-Speech tags
 
-You can pass a list of part-of-speech tags to delimit the selection of terms. 
+You can pass a list of part-of-speech tags to delimit the selection of terms.
 For example, we can get only adjectives:
 
 ```python
@@ -236,7 +238,7 @@ For example, we can get only adjectives:
 You can pass these arguments in the same way for biterm extraction:
 
 ```python
->>> extractor = BitermExtractor((en_sentence, es_sentence)) 
+>>> extractor = BitermExtractor((en_sentence, es_sentence))
 >>> biterms = extractor.extract_terms(span_range=(2,3))
 >>> print(biterms[:10])
 
@@ -249,7 +251,7 @@ You can pass these arguments in the same way for biterm extraction:
 ```
 
 ```python
->>> extractor = BitermExtractor((en_sentence, es_sentence)) 
+>>> extractor = BitermExtractor((en_sentence, es_sentence))
 >>> biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
 >>> print(biterms[:10])
 
