@@ -217,7 +217,7 @@ You can select the minimum and maximum length of the terms:
 ### Using Part-of-Speech tags
 
 You can pass a list of part-of-speech tags to delimit the selection of terms.
-For example, we can get only adjectives:
+For example, we can get only adjectives and adverbs:
 
 ```python
 >>> extractor = TermExtractor(en_sentence)  
