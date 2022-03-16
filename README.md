@@ -317,11 +317,11 @@ Check the available spaCy language models [here](https://spacy.io/models).
 
 TM2TB is compatible with the following multilingual sentence transformer models:
 
-distiluse-base-multilingual-cased-v1 (default)
-distiluse-base-multilingual-cased-v2
-paraphrase-multilingual-MiniLM-L12-v2
-paraphrase-multilingual-mpnet-base-v2
-LaBSE
+- distiluse-base-multilingual-cased-v1 (default)
+- distiluse-base-multilingual-cased-v2
+- paraphrase-multilingual-MiniLM-L12-v2
+- paraphrase-multilingual-mpnet-base-v2
+- LaBSE
 
 These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
