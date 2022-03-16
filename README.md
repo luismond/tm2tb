@@ -326,7 +326,7 @@ TM2TB is compatible with the following multilingual sentence transformer models:
 These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
 ## tm2tb.com
-For bilingual documents, the functionality of tm2tb is also available through a web app: www.tm2tb.com
+The functionality of tm2tb is also available through a web app: www.tm2tb.com
 
 ![](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/brave_WQMk3qISa9.png)
 ![](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/brave_SzdkJmvNrL.png)
