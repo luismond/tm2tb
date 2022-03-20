@@ -43,7 +43,7 @@ class TransformerModel:
             print('Loading sentence transformer model:\n{}'.format(self.model_name))
             model = SentenceTransformer(self.model_path)
         else:
-            model = SentenceTransformer(self.model_name)
             print('Downloading sentence transformer model:\n{}'.format(self.model_name))
+            model = SentenceTransformer(self.model_name)
             model.save(self.model_path)
         return model
