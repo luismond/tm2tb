@@ -348,7 +348,8 @@ class BitermExtractor:
 
         BiTerm = namedtuple('BiTerm', ['src_term', 'src_tags', 'src_rank',
                                        'trg_term', 'trg_tags', 'trg_rank',
-                                       'similarity', 'frequency', 'biterm_rank'])
+                                       'similarity', 'frequency', 'biterm_rank',
+                                       'src_docs_idx', 'trg_docs_idx'])
 
         def get_biterm_rank(frequency, similarity, src_rank, trg_rank):
             freq_sigm = 1/(1 + np.exp(-frequency))
@@ -372,10 +373,12 @@ class BitermExtractor:
             trg_rank = trg_span._.rank
             frequency = biterms_freqs_dict[biterm_]
             biterm_rank = get_biterm_rank(frequency, similarity, src_rank, trg_rank)
-
+            src_docs_idx = src_span._.docs_idx
+            trg_docs_idx = trg_span._.docs_idx
             biterm = BiTerm(src_term, src_tags, src_rank,
                             trg_term, trg_tags, trg_rank,
-                            similarity, frequency, biterm_rank)
+                            similarity, frequency, biterm_rank,
+                            src_docs_idx, trg_docs_idx)
 
             biterms.append(biterm)
         if len(biterms)==0:
