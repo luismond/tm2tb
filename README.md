@@ -273,8 +273,9 @@ You can pass these arguments in the same way for biterm extraction:
 ## Installation
 
 1. Navigate to your desired location, and create a virtual environment.
-python3 -m venv tm2tb-env
-source tm2tb-env/bin/activate
+
+`python3 -m venv tm2tb-env`
+`source tm2tb-env/bin/activate`
 
 2. Clone the repository:
 `git clone https://github.com/luismond/tm2tb`
