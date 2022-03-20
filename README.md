@@ -279,9 +279,11 @@ You can pass these arguments in the same way for biterm extraction:
 `source tm2tb-env/bin/activate`
 
 2. Clone the repository:
+
 `git clone https://github.com/luismond/tm2tb`
 
 3. Install the requirements:
+
 `pip install -r requirements.txt`
 
 This will install the following libraries:
