@@ -165,6 +165,7 @@ tm2tb can also extract and align terms from bilingual documents. Let's take a sm
 ```
 
 ```python
+>>> from tm2tb import BitextReader
 >>> path = 'tests/panda_bear_english_spanish.csv'
 >>> bitext = BitextReader(path).read_bitext()   # Read bitext
 >>> extractor = BitermExtractor(bitext)         # Instantiate extractor with bitext
