@@ -248,7 +248,8 @@ class TermExtractor:
         if incl_pos is None or len(incl_pos) == 0:
             incl_pos = ['NOUN', 'PROPN', 'ADJ']
         if excl_pos is None or len(excl_pos) == 0:
-            excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
+            excl_pos = ['X', 'SPACE', 'PUNCT', 'INTJ', 'SYM']
+            #excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
 
         # Define span rules
         def incl_pos_(span):
@@ -259,11 +260,13 @@ class TermExtractor:
 
         def alpha_edges(span):
             return span[0].text.isalpha() and span[-1].text.isalpha()
-        # Register span extensions
+        
+        # Register span rules
         Span.set_extension("incl_pos_edges", getter=incl_pos_, force=True)
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
-
+        
+        # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
         Span.set_extension("rank", default=None, force=True)
         Span.set_extension("span_id", default=None, force=True)
