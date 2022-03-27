@@ -18,15 +18,17 @@ en_sentence = (
     " of its diet. Giant pandas in the wild will occasionally eat other grasses,"
     " wild tubers, or even meat in the form of birds, rodents, or carrion."
     " In captivity, they may receive honey, eggs, fish, shrub leaves,"
-    " oranges, or bananas."
+    " oranges, or bananas.\n"
     )
-
-extractor = TermExtractor(en_sentence)  # Instantiate extractor with sentence
-terms = extractor.extract_terms()       # Extract terms
 
 print('Extract terms from a sentence in English:\n')
 print(en_sentence)
+
+input('Press any key to extract terms.\n')
+extractor = TermExtractor(en_sentence)  # Instantiate extractor with sentence
+terms = extractor.extract_terms()       # Extract terms
 print(terms[:10])
+
 input('Press any key to continue.\n')
 
 # Extracting terms from a sentence in Spanish
@@ -40,31 +42,40 @@ es_sentence = (
     " hojas de bambú. En la naturaleza, los pandas gigantes comen ocasionalmente"
     " otras hierbas, tubérculos silvestres o incluso carne de aves, roedores o"
     " carroña. En cautividad, pueden alimentarse de miel, huevos, pescado, hojas"
-    " de arbustos, naranjas o plátanos."
+    " de arbustos, naranjas o plátanos.\n"
     )
 
-extractor = TermExtractor(es_sentence)  # Instantiate extractor with sentence
-terms = extractor.extract_terms()       # Extract terms
+
 print('Extract terms from a sentence in Spanish:\n')
 print(es_sentence)
+
+input('Press any key to extract terms.\n')
+extractor = TermExtractor(es_sentence)  # Instantiate extractor with sentence
+terms = extractor.extract_terms()       # Extract terms
 print(terms[:10])
+
 input('Press any key to continue.\n')
 
 # Extract and align terms from both sentences
+print('Extract and align terms from both sentences:\n')
+
+input('Press any key to extract terms.\n')
 extractor = BitermExtractor((en_sentence, es_sentence)) # Instantiate extractor with sentences
 biterms = extractor.extract_terms()                     # Extract biterms
-print('Extract and align terms from both sentences:\n')
 print(biterms[:10])
-input('Press any key to continue.\n')
 
 
 # Extract terms from a bilingual document
 path = 'tests/panda_bear_english_spanish.csv'
+print('Extract terms from a bilingual document:')
+print('Document path: {}'.format(path))
+
 bitext = BitextReader(path).read_bitext() # Read bitext
 extractor = BitermExtractor(bitext)       # Instantiate extractor with bitext
 biterms = extractor.extract_terms()       # Extract biterms
-print('Extract terms from a bilingual document:')
-print('Document path: {}'.format(path))
+
+input('Press any key to extract terms.\n')
+
 print(biterms[:10])
 
 # Selecting the terms length (terms)
@@ -82,3 +93,10 @@ biterms = extractor.extract_terms(span_range=(2,3))
 # Selecting the parts-of-speech tags (biterms)
 extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+
+# Selecting the minimum similarity value of biterms
+extractor = BitermExtractor((en_sentence, es_sentence))
+biterms = extractor.extract_terms(similarity_min=0.5)
+
+#By default, tm2tb presents the most-similar term results. That is, terms whose similarity is above .9
+# You can explore the less-similar results passing a value between 0 and 1 for the `similarity_min` parameter.
