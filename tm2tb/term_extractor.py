@@ -248,8 +248,7 @@ class TermExtractor:
         if incl_pos is None or len(incl_pos) == 0:
             incl_pos = ['NOUN', 'PROPN', 'ADJ']
         if excl_pos is None or len(excl_pos) == 0:
-            excl_pos = ['X', 'SPACE', 'PUNCT', 'INTJ', 'SYM']
-            #excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
+            excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
 
         # Define span rules
         def incl_pos_(span):
