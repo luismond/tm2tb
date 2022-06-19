@@ -76,11 +76,9 @@ class BitermExtractor:
                        similarity=0.9823, frequency=1)]
         """
         if isinstance(self.input_, tuple):
-            terms = self.extract_terms_from_bisentence(similarity_min,
-                                                       **kwargs)
+            terms = self.extract_terms_from_bisentence(similarity_min, **kwargs)
         if isinstance(self.input_, list):
-            terms = self.extract_terms_from_bitext(similarity_min,
-                                                   **kwargs)
+            terms = self.extract_terms_from_bitext(similarity_min, **kwargs)
         if return_as_table is True:
             terms = self._return_as_table(terms)
         return terms
@@ -110,14 +108,12 @@ class BitermExtractor:
 
         src_sentence = bisentence[0]
         src_extractor = TermExtractor(src_sentence)
-        src_terms = src_extractor.extract_terms(return_as_table=False,
-                                                **kwargs)
+        src_terms = src_extractor.extract_terms(return_as_table=False, **kwargs)
         src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_sentence = bisentence[1]
         trg_extractor = TermExtractor(trg_sentence)
-        trg_terms = trg_extractor.extract_terms(return_as_table=False,
-                                                **kwargs)
+        trg_terms = trg_extractor.extract_terms(return_as_table=False, **kwargs)
         trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
         similarity_matrix = self._get_similarity_matrix(src_terms, trg_terms)
@@ -134,15 +130,11 @@ class BitermExtractor:
                 biterms_sims_dict[(src_term.text, trg_term.text)] = round(similarity, 4)
                 biterms_spans_dict[(src_term.text, trg_term.text)] = (src_term, trg_term)
 
-        biterms_dicts = ChainMap(biterms_freqs_dict,
-                                 biterms_sims_dict,
-                                 biterms_spans_dict)
-
+        biterms_dicts = ChainMap(biterms_freqs_dict, biterms_sims_dict, biterms_spans_dict)
         biterms = self._build_biterms(biterms_dicts)
         biterms = self._prune_biterms(biterms, 'src')
         biterms = self._prune_biterms(biterms, 'trg')
-        biterms = sorted(biterms,
-                         key=lambda biterm: biterm.similarity, reverse=True)
+        biterms = sorted(biterms, key=lambda biterm: biterm.similarity, reverse=True)
         return biterms
 
     def extract_terms_from_bitext(self, similarity_min, **kwargs):
@@ -191,13 +183,11 @@ class BitermExtractor:
         src_text, trg_text = zip(*bitext)
 
         src_extractor = TermExtractor(list(src_text))
-        src_terms = src_extractor.extract_terms(return_as_table=False,
-                                                **kwargs)
+        src_terms = src_extractor.extract_terms(return_as_table=False, **kwargs)
         src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_extractor = TermExtractor(list(trg_text))
-        trg_terms = trg_extractor.extract_terms(return_as_table=False,
-                                                **kwargs)
+        trg_terms = trg_extractor.extract_terms(return_as_table=False, **kwargs)
         trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
         similarity_matrix = self._get_similarity_matrix(src_terms, trg_terms)
@@ -211,27 +201,20 @@ class BitermExtractor:
             src_spans = src_trg_spans[0]
             trg_spans = src_trg_spans[1]
             for src_span, trg_span in list(product(src_spans, trg_spans)):
-                similarity = similarity_matrix[src_span._.span_id,
-                                               trg_span._.span_id]
+                similarity = similarity_matrix[src_span._.span_id, trg_span._.span_id]
                 if similarity > similarity_min:
                     biterms_freqs_dict[(src_span.text, trg_span.text)] += 1
-                    biterms_sims_dict[(
-                        src_span.text, trg_span.text)] = round(similarity, 4)
-                    biterms_spans_dict[(src_span.text, trg_span.text)] = (
-                        src_span, trg_span)
+                    biterms_sims_dict[(src_span.text, trg_span.text)] = round(similarity, 4)
+                    biterms_spans_dict[(src_span.text, trg_span.text)] = (src_span, trg_span)
 
-        biterms_dicts = ChainMap(biterms_freqs_dict,
-                                 biterms_sims_dict,
-                                 biterms_spans_dict)
+        biterms_dicts = ChainMap(biterms_freqs_dict, biterms_sims_dict, biterms_spans_dict)
         biterms = self._build_biterms(biterms_dicts)
         biterms = self._prune_biterms(biterms, 'src')
         biterms = self._prune_biterms(biterms, 'trg')
-        biterms = sorted(biterms, key=lambda biterm: biterm.biterm_rank,
-                         reverse=True)
+        biterms = sorted(biterms, key=lambda biterm: biterm.biterm_rank, reverse=True)
         return biterms
 
     @staticmethod
-    #@property
     def _get_similarity_matrix(src_spans, trg_spans):
         """
         Generate a similarity matrix of source and target term candidates.
@@ -280,8 +263,7 @@ class BitermExtractor:
             bitext_spans_dict[doc_id].append(span)
 
         # Keep only bitext rows with span candidates on both sides.
-        bitext_spans_dict = {
-            k: v for (k, v) in bitext_spans_dict.items() if len(v) > 1}
+        bitext_spans_dict = {k: v for (k, v) in bitext_spans_dict.items() if len(v) > 1}
         return bitext_spans_dict
 
     @staticmethod
@@ -311,9 +293,7 @@ class BitermExtractor:
         biterms_ = []
         for _, group in groupby(biterms, keyfunc):
             # Sort biterms group by similarity
-            group = sorted(group,
-                           key=lambda group: group.similarity,
-                           reverse=True)
+            group = sorted(group, key=lambda group: group.similarity, reverse=True)
             # Take first biterm
             best_biterm = list(group)[0]
             biterms_.append(best_biterm)
