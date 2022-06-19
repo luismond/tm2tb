@@ -80,7 +80,6 @@ class TermExtractor:
         if isinstance(self.input_, list):
             terms = self.extract_terms_from_text(**kwargs)
         if return_as_table is True:
-            #terms = self._return_spans_as_tuples(terms)
             terms = self._return_as_table(terms)
         return terms
 
@@ -259,12 +258,12 @@ class TermExtractor:
 
         def alpha_edges(span):
             return span[0].text.isalpha() and span[-1].text.isalpha()
-        
+
         # Register span rules
         Span.set_extension("incl_pos_edges", getter=incl_pos_, force=True)
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
-        
+
         # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
         Span.set_extension("rank", default=None, force=True)
@@ -398,10 +397,8 @@ class TermExtractor:
                 spans_docs_dict.pop(span)
                 spans_texts_dict.pop(span)
         if len(spans_texts_dict) == 0:
-            raise ValueError('No terms left with frequency {}'.format(freq_min))
-        spans_dicts = ChainMap(spans_freqs_dict,
-                               spans_docs_dict,
-                               spans_texts_dict)
+            raise ValueError(f"No terms left with frequency {freq_min}")
+        spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
         return spans_dicts
 
     def _get_doc_embedding(self):
@@ -429,8 +426,7 @@ class TermExtractor:
         """
         top_docs_idx = set(itertools.chain(*list(spans_docs_dict.values())))
         top_docs_texts = list(text_docs[i].text for i in top_docs_idx)
-        docs_embeddings = trf_model.encode([text for text in top_docs_texts
-                                            if len(text) > 0])
+        docs_embeddings = trf_model.encode([text for text in top_docs_texts if len(text) > 0])
         docs_embeddings_avg = sum(docs_embeddings)/len(docs_embeddings)
         return docs_embeddings_avg.reshape(1, -1)
 
