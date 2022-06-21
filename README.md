@@ -2,7 +2,7 @@
 
 **tm2tb** is a term extraction module with a focus on bilingual data.
 
-It uses spaCy's part-of-speech tags and sentence transformer models to extract and align terms from pairs of sentences and bilingual documents.
+It uses spaCy's part-of-speech tags and sentence transformer models to extract and match terms from pairs of sentences and bilingual documents.
 
 ## Approach
 
@@ -119,7 +119,7 @@ es_sentence = (
 ```
 ### Extracting terms from pairs of sentences
 
-The special thing about tm2tb is that it can extract and align the terms from both sentences:
+The special thing about tm2tb is that it can extract and match the terms from both sentences:
 
 ```python
 >>> from tm2tb import BitermExtractor
@@ -145,7 +145,7 @@ The special thing about tm2tb is that it can extract and align the terms from bo
 
 ### Extracting terms from bilingual documents
 
-tm2tb can also extract and align terms from bilingual documents. Let's take a small translation file:
+tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
 
 ```
                                                  src                                                trg
