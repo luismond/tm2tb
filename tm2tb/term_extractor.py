@@ -9,7 +9,6 @@ Functions:
 """
 
 from collections import defaultdict
-from collections import namedtuple
 from collections import ChainMap
 from typing import Union
 import itertools
@@ -19,7 +18,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from spacy.tokens import Span
 from tm2tb import trf_model
 from tm2tb import get_spacy_model
-from tm2tb.utils import detect_lang, preprocess
+from tm2tb.utils import detect_lang
 
 
 class TermExtractor:
@@ -58,7 +57,6 @@ class TermExtractor:
                       return_as_table=True,
                       span_range=(1, 2),
                       freq_min=1,
-                      diversity=.9,
                       incl_pos=None,
                       excl_pos=None):
         """
@@ -66,8 +64,8 @@ class TermExtractor:
 
         Parameters
         ----------
-        return_as_tuples : bool, optional
-            Return the results as named tuples. The default is True.
+        return_as_table : bool, optional
+            Return the results as pandas df. The default is True.
 
         span_range : tuple, optional
             Length range of the terms. The default is (1, 3).
@@ -101,7 +99,7 @@ class TermExtractor:
 
         # Build spans
         top_spans = []
-        for ix in range(len(spans_embeddings)):
+        for ix, emb in enumerate(spans_embeddings):
             span = list(spans_texts_dict.values())[ix]
             similarity = round(float(spans_doc_sims.reshape(1, -1)[0][ix]), 4)
             span._.similarity = similarity
@@ -109,7 +107,7 @@ class TermExtractor:
             span._.rank = span._.similarity
             span._.span_id = ix
             span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[ix]
+            span._.embedding = emb#spans_embeddings[ix]
             top_spans.append(span)
 
         top_spans = sorted(top_spans, key=lambda span: span._.span_id)
@@ -177,11 +175,11 @@ class TermExtractor:
                                for n in range(span_range[0], span_range[1]+1))
             spans = (doc[n:n_] for (n, n_) in span_ranges)
             for span in spans:
-                if span._.incl_pos_edges is True and span._.excl_pos_any is True \
+                if span._.incl_pos_edges is True and span._.excl_pos_any is True\
                     and span._.alpha_edges is True and len(span.text) > 1:
-                        spans_freqs_dict[span.text] += 1
-                        spans_texts_dict[span.text] = span
-                        spans_docs_dict[span.text].add(self.docs.index(span.doc))
+                    spans_freqs_dict[span.text] += 1
+                    spans_texts_dict[span.text] = span
+                    spans_docs_dict[span.text].add(self.docs.index(span.doc))
 
         for span, freq in spans_freqs_dict.items():
             if freq < freq_min:
