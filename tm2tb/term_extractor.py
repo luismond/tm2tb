@@ -41,6 +41,14 @@ class TermExtractor:
         self.input_ = input_
         self.lang = detect_lang(self.input_)
 
+        # Register additional span attributes
+        Span.set_extension("similarity", default=None, force=True)
+        Span.set_extension("rank", default=None, force=True)
+        Span.set_extension("span_id", default=None, force=True)
+        Span.set_extension("embedding", default=None, force=True)
+        Span.set_extension("frequency", default=None, force=True)
+        Span.set_extension("docs_idx", default=None, force=True)
+
     def extract_terms(self, return_as_table=True, **kwargs):
         """
         Extract terms from one sentence or multiple sentences.
@@ -264,13 +272,7 @@ class TermExtractor:
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
-        # Register additional span attributes
-        Span.set_extension("similarity", default=None, force=True)
-        Span.set_extension("rank", default=None, force=True)
-        Span.set_extension("span_id", default=None, force=True)
-        Span.set_extension("embedding", default=None, force=True)
-        Span.set_extension("frequency", default=None, force=True)
-        Span.set_extension("docs_idx", default=None, force=True)
+
 
     def _get_doc(self):
         """
