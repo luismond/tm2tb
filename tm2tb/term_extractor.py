@@ -38,8 +38,12 @@ class TermExtractor:
     """
 
     def __init__(self, input_: Union[str, list]):
-        self.input_ = input_
+        if isinstance(input_, str):
+            self.input_ = [input_]
+        if isinstance(input_, list):
+            self.input_ = input_
         self.lang = detect_lang(self.input_)
+        self.spacy_model = get_spacy_model(self.lang)
 
         # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
@@ -49,65 +53,20 @@ class TermExtractor:
         Span.set_extension("frequency", default=None, force=True)
         Span.set_extension("docs_idx", default=None, force=True)
 
-    def extract_terms(self, return_as_table=True, **kwargs):
+    def extract_terms(self,
+                      return_as_table=True,
+                      span_range=(1, 2),
+                      freq_min=1,
+                      incl_pos=None,
+                      excl_pos=None):
         """
         Extract terms from one sentence or multiple sentences.
-
-        If the input is a string, it calls `extract_terms_from_sentence`.
-        If the input is a list, it calls `extract_terms_from_text`.
 
         Parameters
         ----------
         return_as_tuples : bool, optional
             Return the results as named tuples. The default is True.
-        **kwargs : dict
-            span_range : tuple, optional
-                Length range of the terms. The default is (1, 3).
 
-            freq_min : int, optional
-                Minimum ocurrence frequency of the terms. The default is 1.
-
-            incl_pos : list, optional
-                See `_set_span_extensions`
-
-            excl_pos : list, optional
-                See `_set_span_extensions`
-
-        Returns
-        -------
-        terms : list of named tuples
-            A list of tuples representing the best terms from the sentence.
-
-            For example:
-            [Term(term='hello', rank=0.2992, frequency=1),
-             Term(term='world', rank=0.2422, frequency=2)]
-
-        """
-        if isinstance(self.input_, str):
-            terms = self.extract_terms_from_sentence(**kwargs)
-        if isinstance(self.input_, list):
-            terms = self.extract_terms_from_text(**kwargs)
-        if return_as_table is True:
-            terms = self._return_as_table(terms)
-        return terms
-
-    def extract_terms_from_sentence(self,
-                                    span_range=(1, 2),
-                                    freq_min=1,
-                                    incl_pos=None,
-                                    excl_pos=None):
-        """
-        Extract the best terms from one sentence.
-
-        The sentence is used to construct a spaCy Doc.
-        Spans from the document are selected using the given parameters.
-        A language model is used to embed the spans and the sentence.
-        The embeddings are used to get the similarity between spans and sentence.
-        The similarity, the embedding and the frequency
-        are added to each candidate span as custom attributes.
-
-        Parameters
-        ----------
         span_range : tuple, optional
             Length range of the terms. The default is (1, 3).
 
@@ -122,71 +81,10 @@ class TermExtractor:
 
         Returns
         -------
-        top_spans : list of spans of type 'spacy.tokens.span.Span'
-            Spans from the document, representing the best terms or keywords.
-
-            Span custom attributes:
-                span._.sim: float
-                    Span similarity value between the span and the document.
-
-                span._.freq: int
-                    How many times the span occurs in the document.
-
-                span._.id: int
-                    Unique span identifier
-
-                span._.docs_idx: set
-                    Indices of documents where the span occurs.
-                    (For multiple sentences).
-
-                span._.embedding: numpy.ndarray
-                    Vector obtained from language model
-
-            For the default span attributes, see https://spacy.io/api/span
-
+        terms : list of named tuples
+            A list of tuples representing the best terms from the input.
         """
-        sent_doc = self._get_doc()
-        self._set_span_extensions(incl_pos, excl_pos)
-        doc_spans = self._get_doc_spans(sent_doc, span_range)
-        spans_dicts = self._get_spans_dicts(doc_spans, [sent_doc], freq_min)
-        doc_embedding = self._get_doc_embedding().reshape(1, -1)
-        spans_embeddings = self._get_spans_embeddings(spans_dicts)
-        sim_matrix = self._get_spans_doc_similarities(spans_embeddings,
-                                                      doc_embedding)
-        best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts,
-                                                                 spans_embeddings,
-                                                                 sim_matrix)
-        top_spans = self._build_top_spans(sim_matrix,
-                                          spans_dicts,
-                                          spans_embeddings,
-                                          best_spans_idx,
-                                          candidate_spans_idx)
 
-        return top_spans
-
-    def extract_terms_from_text(self,
-                                span_range=(1, 2),
-                                freq_min=1,
-                                incl_pos=None,
-                                excl_pos=None):
-        """
-        Extract terms from multiple sentences.
-
-        It does not iterate over each sentence.
-        All sentences are processed at once by using spacy.pipe.
-        See https://spacy.io/api/language#pipe
-
-        The text embedding is calculated averaging all sentences embeddings.
-        The terms are ranked by their similarity to the text embedding.
-
-        Parameters
-        ----------
-        Same parameters as `extract_terms_from_sentence`
-
-        Returns
-        -------
-        Same result as `extract_terms_from_sentence`
-        """
         text_docs = self._get_docs()
         self._set_span_extensions(incl_pos, excl_pos)
         docs_spans = self._get_docs_spans(text_docs, span_range)
@@ -204,6 +102,8 @@ class TermExtractor:
                                           spans_embeddings,
                                           best_spans_idx,
                                           candidate_spans_idx)
+        if return_as_table is True:
+            top_spans = self._return_as_table(top_spans)
         return top_spans
 
     @staticmethod
@@ -255,7 +155,7 @@ class TermExtractor:
         if incl_pos is None or len(incl_pos) == 0:
             incl_pos = ['NOUN', 'PROPN', 'ADJ']
         if excl_pos is None or len(excl_pos) == 0:
-            excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
+            excl_pos = [tag for tag in pos_tags if tag not in incl_pos and not tag=='ADP']
 
         # Define span rules
         def incl_pos_(span):
@@ -272,21 +172,19 @@ class TermExtractor:
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
+    # def _get_doc(self):
+    #     """
+    #     Construct a Doc object from a sentence.
 
-
-    def _get_doc(self):
-        """
-        Construct a Doc object from a sentence.
-
-        Returns
-        -------
-        TYPE: spacy.tokens.doc.Doc
-            spaCy doc
-            (See https://spacy.io/api/doc)
-        """
-        # Fetch spaCy language model
-        spacy_model = get_spacy_model(self.lang)
-        return spacy_model(preprocess(self.input_))
+    #     Returns
+    #     -------
+    #     TYPE: spacy.tokens.doc.Doc
+    #         spaCy doc
+    #         (See https://spacy.io/api/doc)
+    #     """
+    #     # Fetch spaCy language model
+    #     spacy_model = get_spacy_model(self.lang)
+    #     return spacy_model(preprocess(self.input_))
 
     def _get_docs(self):
         """
@@ -403,9 +301,9 @@ class TermExtractor:
         spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
         return spans_dicts
 
-    def _get_doc_embedding(self):
-        """Embed one sentence using a language model."""
-        return trf_model.encode(self.input_)
+    # def _get_doc_embedding(self):
+    #     """Embed one sentence using a language model."""
+    #     return trf_model.encode(self.input_)
 
     @staticmethod
     def _get_docs_embeddings_avg(text_docs, spans_docs_dict):
