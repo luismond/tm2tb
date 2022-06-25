@@ -44,6 +44,7 @@ class TermExtractor:
             self.input_ = input_
         self.lang = detect_lang(self.input_)
         self.spacy_model = get_spacy_model(self.lang)
+        self.docs = list(self.spacy_model.pipe(self.input_))
 
         # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
@@ -85,29 +86,21 @@ class TermExtractor:
             A list of tuples representing the best terms from the input.
         """
 
-        text_docs = self._get_docs()
-        self._set_span_extensions(incl_pos, excl_pos)
-        docs_spans = self._get_docs_spans(text_docs, span_range)
-        spans_dicts = self._get_spans_dicts(docs_spans, text_docs, freq_min)
-        docs_embeddings_avg = self._get_docs_embeddings_avg(text_docs,
-                                                            spans_dicts.maps[1])
-        spans_embeddings = self._get_spans_embeddings(spans_dicts)
-        sim_matrix = self._get_spans_doc_similarities(spans_embeddings,
-                                                      docs_embeddings_avg)
-        best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts,
-                                                                 spans_embeddings,
-                                                                 sim_matrix)
-        top_spans = self._build_top_spans(sim_matrix,
-                                          spans_dicts,
-                                          spans_embeddings,
-                                          best_spans_idx,
-                                          candidate_spans_idx)
+        #docs = list(self.spacy_model.pipe(self.input_))
+        self._set_span_rules(incl_pos, excl_pos)
+        docs_spans = self._get_docs_spans(span_range)
+        spans_dicts = self._get_spans_dicts(docs_spans, freq_min)
+        docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts.maps[1])
+        spans_embeddings = trf_model.encode(list(spans_dicts.maps[2].keys()))
+        sim_matrix = cosine_similarity(spans_embeddings, docs_embeddings_avg)
+        best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts, spans_embeddings, sim_matrix)
+        top_spans = self._build_top_spans(sim_matrix, spans_dicts, spans_embeddings, best_spans_idx, candidate_spans_idx)
         if return_as_table is True:
             top_spans = self._return_as_table(top_spans)
         return top_spans
 
     @staticmethod
-    def _set_span_extensions(incl_pos=None, excl_pos=None):
+    def _set_span_rules(incl_pos=None, excl_pos=None):
         """
         Set custom attributes and properties on the document Spans.
 
@@ -172,38 +165,6 @@ class TermExtractor:
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
-    # def _get_doc(self):
-    #     """
-    #     Construct a Doc object from a sentence.
-
-    #     Returns
-    #     -------
-    #     TYPE: spacy.tokens.doc.Doc
-    #         spaCy doc
-    #         (See https://spacy.io/api/doc)
-    #     """
-    #     # Fetch spaCy language model
-    #     spacy_model = get_spacy_model(self.lang)
-    #     return spacy_model(preprocess(self.input_))
-
-    def _get_docs(self):
-        """
-        Construct a list of Doc objects from a text.
-
-        Piping all sentences to the language model is faster
-        than constructing a Doc from each sentence.
-        See https://spacy.io/api/language#pipe
-
-        Returns
-        -------
-        TYPE: list
-            List of spacy.tokens.doc.Doc
-
-        """
-        text = [preprocess(sent) for sent in self.input_]
-        spacy_model = get_spacy_model(self.lang)
-        return list(spacy_model.pipe(text))
-
     @staticmethod
     def _get_doc_spans(doc, span_range):
         """
@@ -234,7 +195,7 @@ class TermExtractor:
                 and sp._.alpha_edges is True
                 and len(sp.text) > 1]
 
-    def _get_docs_spans(self, docs, span_range):
+    def _get_docs_spans(self, span_range):
         """
         Iterate over `_get_doc_spans`. to get spans from each sentence.
 
@@ -253,11 +214,10 @@ class TermExtractor:
             List of 'spacy.tokens.span.Span'
 
         """
-        docs_spans = [self._get_doc_spans(doc, span_range) for doc in docs]
+        docs_spans = [self._get_doc_spans(doc, span_range) for doc in self.docs]
         return set(itertools.chain(*docs_spans))
 
-    @staticmethod
-    def _get_spans_dicts(spans_list, docs, freq_min=1):
+    def _get_spans_dicts(self, spans_list, freq_min=1):
         """
         Construct three dictionaries.
 
@@ -291,7 +251,7 @@ class TermExtractor:
         for span in spans_list:
             spans_freqs_dict[span.text] += 1
             spans_texts_dict[span.text] = span
-            spans_docs_dict[span.text].add(docs.index(span.doc))
+            spans_docs_dict[span.text].add(self.docs.index(span.doc))
         for span, freq in spans_freqs_dict.items():
             if freq < freq_min:
                 spans_docs_dict.pop(span)
@@ -301,12 +261,8 @@ class TermExtractor:
         spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
         return spans_dicts
 
-    # def _get_doc_embedding(self):
-    #     """Embed one sentence using a language model."""
-    #     return trf_model.encode(self.input_)
 
-    @staticmethod
-    def _get_docs_embeddings_avg(text_docs, spans_docs_dict):
+    def _get_docs_embeddings_avg(self, spans_docs_dict):
         """
         Embed only the sentences in which candidate spans occur.
 
@@ -325,20 +281,11 @@ class TermExtractor:
             Array representing the the text embedding average.
         """
         top_docs_idx = set(itertools.chain(*list(spans_docs_dict.values())))
-        top_docs_texts = list(text_docs[i].text for i in top_docs_idx)
+        top_docs_texts = list(self.docs[i].text for i in top_docs_idx)
         docs_embeddings = trf_model.encode([text for text in top_docs_texts if len(text) > 0])
         docs_embeddings_avg = sum(docs_embeddings)/len(docs_embeddings)
         return docs_embeddings_avg.reshape(1, -1)
 
-    @staticmethod
-    def _get_spans_embeddings(spans_dicts):
-        """Embed the spans using the language model."""
-        return trf_model.encode(list(spans_dicts.maps[2].keys()))
-
-    @staticmethod
-    def _get_spans_doc_similarities(spans_embeddings, doc_embedding):
-        """Calculate the similarities of the spans and the sentence(s)."""
-        return cosine_similarity(spans_embeddings, doc_embedding)
 
     @staticmethod
     def _get_mmr_idxs(spans_dicts, spans_embeddings, spans_doc_sims):
