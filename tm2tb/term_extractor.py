@@ -87,16 +87,21 @@ class TermExtractor:
         """
 
         self._set_span_rules(incl_pos, excl_pos)
-        docs_spans = self._get_docs_spans(span_range)
 
         spans_freqs_dict = defaultdict(int) #All spans and their frequencies.
         spans_docs_dict = defaultdict(set) #All spans and the documents in which they occur.
         spans_texts_dict = defaultdict(set) #All spans and their string representation.
 
-        for span in docs_spans:
-            spans_freqs_dict[span.text] += 1
-            spans_texts_dict[span.text] = span
-            spans_docs_dict[span.text].add(self.docs.index(span.doc))
+        for doc in self.docs:
+            span_ranges = list((i, i+n) for i in range(len(doc)) for n in range(span_range[0], span_range[1]+1))
+            spans = (doc[n:n_] for (n, n_) in span_ranges)
+            for span in spans:
+                if span._.incl_pos_edges is True and span._.excl_pos_any is True \
+                    and span._.alpha_edges is True and len(span.text) > 1:
+                        spans_freqs_dict[span.text] += 1
+                        spans_texts_dict[span.text] = span
+                        spans_docs_dict[span.text].add(self.docs.index(span.doc))
+
         for span, freq in spans_freqs_dict.items():
             if freq < freq_min:
                 spans_docs_dict.pop(span)
@@ -207,38 +212,6 @@ class TermExtractor:
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
-    def _get_docs_spans(self, span_range):
-        """
-        Iterate over `_get_doc_spans`. to get spans from each sentence.
-
-        It unpacks all the retrieved spans to return a flattened list of spans.
-
-        Parameters
-        ----------
-        docs : list
-            List of spacy.tokens.doc.Doc
-        span_range : tuple
-            Represents the min/max span length range.
-
-        Returns
-        -------
-        docs_spans : list
-            List of 'spacy.tokens.span.Span'
-
-        """
-        def get_doc_spans(doc, span_range):
-            span_ranges = list((i, i+n) for i in range(len(doc))
-                               for n in range(span_range[0], span_range[1]+1))
-            spans = (doc[n:n_] for (n, n_) in span_ranges)
-
-            return [sp for sp in spans
-                    if sp._.incl_pos_edges is True
-                    and sp._.excl_pos_any is True
-                    and sp._.alpha_edges is True
-                    and len(sp.text) > 1]
-
-        docs_spans = [get_doc_spans(doc, span_range) for doc in self.docs]
-        return set(itertools.chain(*docs_spans))
 
     def _get_docs_embeddings_avg(self, spans_docs_dict):
         """
