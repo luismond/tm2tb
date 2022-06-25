@@ -113,15 +113,15 @@ class TermExtractor:
 
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_docs_dict)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
-        sim_matrix = cosine_similarity(spans_embeddings, docs_embeddings_avg)
-        best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts, spans_embeddings, sim_matrix)
+        span_doc_sims = cosine_similarity(spans_embeddings, docs_embeddings_avg)
+        best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts, spans_embeddings, span_doc_sims)
 
         # add best spans
         top_spans = []
         for idx in best_spans_idx:
             # Retrieve the span object
             span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(sim_matrix.reshape(1, -1)[0][idx]), 4)
+            similarity = round(float(span_doc_sims.reshape(1, -1)[0][idx]), 4)
             span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
             span._.rank = span._.similarity * 1/(1 + np.exp(-span._.frequency))
@@ -133,7 +133,7 @@ class TermExtractor:
         # add second-best spans, but downweight their rank
         for idx in candidate_spans_idx:
             span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(sim_matrix.reshape(1, -1)[0][idx]), 4)
+            similarity = round(float(span_doc_sims.reshape(1, -1)[0][idx]), 4)
             span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
             span._.rank = (span._.similarity * 1/(1 + np.exp(-span._.frequency))) * .5
@@ -287,15 +287,6 @@ class TermExtractor:
             best_spans_idx.append(mmr_idx)
             candidates_idx.remove(mmr_idx)
         return best_spans_idx, candidates_idx
-
-    @staticmethod
-    def _return_spans_as_tuples(spans):
-        """Take a list spaCy spans, format it as named tuples."""
-        Term = namedtuple('Term', ['term', 'similarity', 'frequency'])
-        terms = []
-        for span in spans:
-            terms.append(Term(span.text, span._.similarity, span._.frequency))
-        return terms
 
     @staticmethod
     def _return_as_table(spans):
