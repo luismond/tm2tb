@@ -86,15 +86,57 @@ class TermExtractor:
             A list of tuples representing the best terms from the input.
         """
 
-        #docs = list(self.spacy_model.pipe(self.input_))
         self._set_span_rules(incl_pos, excl_pos)
         docs_spans = self._get_docs_spans(span_range)
-        spans_dicts = self._get_spans_dicts(docs_spans, freq_min)
-        docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts.maps[1])
-        spans_embeddings = trf_model.encode(list(spans_dicts.maps[2].keys()))
+
+        spans_freqs_dict = defaultdict(int) #All spans and their frequencies.
+        spans_docs_dict = defaultdict(set) #All spans and the documents in which they occur.
+        spans_texts_dict = defaultdict(set) #All spans and their string representation.
+
+        for span in docs_spans:
+            spans_freqs_dict[span.text] += 1
+            spans_texts_dict[span.text] = span
+            spans_docs_dict[span.text].add(self.docs.index(span.doc))
+        for span, freq in spans_freqs_dict.items():
+            if freq < freq_min:
+                spans_docs_dict.pop(span)
+                spans_texts_dict.pop(span)
+        if len(spans_texts_dict) == 0:
+            raise ValueError(f"No terms left with frequency {freq_min}")
+
+        spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
+
+        docs_embeddings_avg = self._get_docs_embeddings_avg(spans_docs_dict)
+        spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
         sim_matrix = cosine_similarity(spans_embeddings, docs_embeddings_avg)
         best_spans_idx, candidate_spans_idx = self._get_mmr_idxs(spans_dicts, spans_embeddings, sim_matrix)
-        top_spans = self._build_top_spans(sim_matrix, spans_dicts, spans_embeddings, best_spans_idx, candidate_spans_idx)
+
+        # add best spans
+        top_spans = []
+        for idx in best_spans_idx:
+            # Retrieve the span object
+            span = list(spans_texts_dict.values())[idx]
+            similarity = round(float(sim_matrix.reshape(1, -1)[0][idx]), 4)
+            span._.similarity = similarity
+            span._.frequency = spans_freqs_dict[span.text]
+            span._.rank = span._.similarity * 1/(1 + np.exp(-span._.frequency))
+            span._.span_id = idx
+            span._.docs_idx = spans_docs_dict[span.text]
+            span._.embedding = spans_embeddings[idx]
+            top_spans.append(span)
+
+        # add second-best spans, but downweight their rank
+        for idx in candidate_spans_idx:
+            span = list(spans_texts_dict.values())[idx]
+            similarity = round(float(sim_matrix.reshape(1, -1)[0][idx]), 4)
+            span._.similarity = similarity
+            span._.frequency = spans_freqs_dict[span.text]
+            span._.rank = (span._.similarity * 1/(1 + np.exp(-span._.frequency))) * .5
+            span._.span_id = idx
+            span._.docs_idx = spans_docs_dict[span.text]
+            span._.embedding = spans_embeddings[idx]
+            top_spans.append(span)
+
         if return_as_table is True:
             top_spans = self._return_as_table(top_spans)
         return top_spans
@@ -148,7 +190,7 @@ class TermExtractor:
         if incl_pos is None or len(incl_pos) == 0:
             incl_pos = ['NOUN', 'PROPN', 'ADJ']
         if excl_pos is None or len(excl_pos) == 0:
-            excl_pos = [tag for tag in pos_tags if tag not in incl_pos and not tag=='ADP']
+            excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
 
         # Define span rules
         def incl_pos_(span):
@@ -164,36 +206,6 @@ class TermExtractor:
         Span.set_extension("incl_pos_edges", getter=incl_pos_, force=True)
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
-
-    @staticmethod
-    def _get_doc_spans(doc, span_range):
-        """
-        Select spans from a sentence using the given parameters and attributes.
-
-        For example, it gets spans of length 1-3 whose tokens are nouns.
-
-        Parameters
-        ----------
-        doc : spacy.tokens.doc.Doc
-            Container representing one sentence
-        span_range : tuple
-            Represents the min/max span length range.
-
-        Returns
-        -------
-        spans : list
-            List of containers of type 'spacy.tokens.span.Span'
-
-        """
-        span_ranges = list((i, i+n) for i in range(len(doc))
-                           for n in range(span_range[0], span_range[1]+1))
-        spans = (doc[n:n_] for (n, n_) in span_ranges)
-
-        return [sp for sp in spans
-                if sp._.incl_pos_edges is True
-                and sp._.excl_pos_any is True
-                and sp._.alpha_edges is True
-                and len(sp.text) > 1]
 
     def _get_docs_spans(self, span_range):
         """
@@ -214,53 +226,19 @@ class TermExtractor:
             List of 'spacy.tokens.span.Span'
 
         """
-        docs_spans = [self._get_doc_spans(doc, span_range) for doc in self.docs]
+        def get_doc_spans(doc, span_range):
+            span_ranges = list((i, i+n) for i in range(len(doc))
+                               for n in range(span_range[0], span_range[1]+1))
+            spans = (doc[n:n_] for (n, n_) in span_ranges)
+
+            return [sp for sp in spans
+                    if sp._.incl_pos_edges is True
+                    and sp._.excl_pos_any is True
+                    and sp._.alpha_edges is True
+                    and len(sp.text) > 1]
+
+        docs_spans = [get_doc_spans(doc, span_range) for doc in self.docs]
         return set(itertools.chain(*docs_spans))
-
-    def _get_spans_dicts(self, spans_list, freq_min=1):
-        """
-        Construct three dictionaries.
-
-            `spans_freqs_dict`: All spans and their frequencies.
-            `spans_docs_dict`: All spans and the documents in which they occur.
-            `spans_texts_dict`: All spans and their string representation.
-
-        Parameters
-        ----------
-        spans_list : list
-            List of 'spacy.tokens.span.Span'
-        docs : list
-            List of spacy.tokens.doc.Doc
-        freq_min : TYPE, optional
-            Minimum frequency value. The default is 1.
-
-        Raises
-        ------
-        ValueError
-            Error raised when no spans are found above the minimum frequency.
-
-        Returns
-        -------
-        spans_dicts : collections.ChainMap
-            DESCRIPTION. Map representing the three dictionaries.
-
-        """
-        spans_freqs_dict = defaultdict(int)
-        spans_docs_dict = defaultdict(set)
-        spans_texts_dict = defaultdict(set)
-        for span in spans_list:
-            spans_freqs_dict[span.text] += 1
-            spans_texts_dict[span.text] = span
-            spans_docs_dict[span.text].add(self.docs.index(span.doc))
-        for span, freq in spans_freqs_dict.items():
-            if freq < freq_min:
-                spans_docs_dict.pop(span)
-                spans_texts_dict.pop(span)
-        if len(spans_texts_dict) == 0:
-            raise ValueError(f"No terms left with frequency {freq_min}")
-        spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
-        return spans_dicts
-
 
     def _get_docs_embeddings_avg(self, spans_docs_dict):
         """
@@ -285,7 +263,6 @@ class TermExtractor:
         docs_embeddings = trf_model.encode([text for text in top_docs_texts if len(text) > 0])
         docs_embeddings_avg = sum(docs_embeddings)/len(docs_embeddings)
         return docs_embeddings_avg.reshape(1, -1)
-
 
     @staticmethod
     def _get_mmr_idxs(spans_dicts, spans_embeddings, spans_doc_sims):
@@ -336,74 +313,7 @@ class TermExtractor:
             # Update best spans & candidates
             best_spans_idx.append(mmr_idx)
             candidates_idx.remove(mmr_idx)
-
         return best_spans_idx, candidates_idx
-
-    @staticmethod
-    def _build_top_spans(span_doc_similarities,
-                         spans_dicts,
-                         spans_embeddings,
-                         best_spans_idx,
-                         candidate_spans_idx):
-        """
-        Gather the generated data from the spans.
-        Add the data to each span using custom span attributes.
-        (See https://spacy.io/api/span)
-
-        Parameters
-        ----------
-        span_doc_similarities : numpy.ndarray
-            DESCRIPTION. Array representing similarity values
-            between candidate spans and the document.
-
-        spans_dicts : collections.ChainMap
-            DESCRIPTION. See `_get_spans_dicts`
-
-        spans_embeddings : numpy.ndarray
-            DESCRIPTION. Array of embeddings for each span.
-
-        best_spans_idx :
-            DESCRIPTION. List of indexes of best spans
-
-        candidate_spans_idx :
-            DESCRIPTION. List of indexes of second-best spans
-
-        Returns
-        -------
-        top_spans : list of spans of type 'spacy.tokens.span.Span'
-
-        """
-        spans_freqs_dict = spans_dicts.maps[0]
-        spans_docs_dict = spans_dicts.maps[1]
-        spans_texts_dict = spans_dicts.maps[2]
-
-        # add best spans
-        top_spans = []
-        for idx in best_spans_idx:
-            # Retrieve the span object
-            span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(span_doc_similarities.reshape(1, -1)[0][idx]), 4)
-            span._.similarity = similarity
-            span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = span._.similarity * 1/(1 + np.exp(-span._.frequency))
-            span._.span_id = idx
-            span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[idx]
-            top_spans.append(span)
-
-        # add second-best spans, but downweight their rank
-        for idx in candidate_spans_idx:
-            span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(span_doc_similarities.reshape(1, -1)[0][idx]), 4)
-            span._.similarity = similarity
-            span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = (span._.similarity * 1/(1 + np.exp(-span._.frequency))) * .5
-            span._.span_id = idx
-            span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[idx]
-            top_spans.append(span)
-
-        return top_spans
 
     @staticmethod
     def _return_spans_as_tuples(spans):
