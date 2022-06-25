@@ -184,11 +184,9 @@ class BitermExtractor:
 
         src_extractor = TermExtractor(list(src_text))
         src_terms = src_extractor.extract_terms(return_as_table=False, **kwargs)
-        src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_extractor = TermExtractor(list(trg_text))
         trg_terms = trg_extractor.extract_terms(return_as_table=False, **kwargs)
-        trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
         similarity_matrix = self._get_similarity_matrix(src_terms, trg_terms)
         bitext_spans_dict = self._get_bitext_spans_dict(src_terms, trg_terms)
