@@ -98,83 +98,25 @@ class TermExtractor:
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
         spans_doc_sims = cosine_similarity(spans_embeddings, docs_embeddings_avg)
-        # Construct a similarity matrix of spans
-        spans_sims = cosine_similarity(spans_embeddings)
 
-        # MMR
-        top_n = round(len(list(spans_texts_dict.keys()))/2)
-        # Choose best span to initialize the best spans index
-        best_spans_idx = [np.argmax(spans_doc_sims)]
-        # Initialize the candidates index
-        candidates_idx = [i for i in range(len(spans_embeddings)) if i != best_spans_idx[0]]
-        # Iteratively, select the best span, add it to best_spans_idx and remove it from candidates_idx
-        for _ in range(min(top_n - 1, len(spans_embeddings) - 1)):
-            candidate_sims = spans_doc_sims[candidates_idx, :]
-            rest_spans_sims = np.max(spans_sims[candidates_idx][:, best_spans_idx], axis=1)
-            # Calculate Maximum Marginal Relevance
-            mmr = (1-diversity) * candidate_sims - diversity * rest_spans_sims.reshape(-1, 1)
-            # Get best candidate
-            mmr_idx = candidates_idx[np.argmax(mmr)]
-            # Update best spans & candidates
-            best_spans_idx.append(mmr_idx)
-            candidates_idx.remove(mmr_idx)
-
-        # add best spans
+        # Build spans
         top_spans = []
-        for idx in best_spans_idx:
-            # Retrieve the span object
-            span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][idx]), 4)
+        for ix in range(len(spans_embeddings)):
+            span = list(spans_texts_dict.values())[ix]
+            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][ix]), 4)
             span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = span._.similarity * 1/(1 + np.exp(-span._.frequency))
-            span._.span_id = idx
+            span._.rank = span._.similarity
+            span._.span_id = ix
             span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[idx]
+            span._.embedding = spans_embeddings[ix]
             top_spans.append(span)
 
-        # add second-best spans, but downweight their rank
-        for idx in candidates_idx:
-            span = list(spans_texts_dict.values())[idx]
-            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][idx]), 4)
-            span._.similarity = similarity
-            span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = (span._.similarity * 1/(1 + np.exp(-span._.frequency))) * .5
-            span._.span_id = idx
-            span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[idx]
-            top_spans.append(span)
+        top_spans = sorted(top_spans, key=lambda span: span._.span_id)
 
         if return_as_table is True:
             top_spans = self._return_as_table(top_spans)
         return top_spans
-
-    def _get_spans_dicts(self, span_range, freq_min):
-        """Collect spans and add them to span dicts."""
-        spans_freqs_dict = defaultdict(int) #All spans and their frequencies.
-        spans_docs_dict = defaultdict(set) #All spans and the documents in which they occur.
-        spans_texts_dict = defaultdict(set) #All spans and their string representation.
-
-        for doc in self.docs:
-            span_ranges = list((i, i+n) for i in range(len(doc)) \
-                               for n in range(span_range[0], span_range[1]+1))
-            spans = (doc[n:n_] for (n, n_) in span_ranges)
-            for span in spans:
-                if span._.incl_pos_edges is True and span._.excl_pos_any is True \
-                    and span._.alpha_edges is True and len(span.text) > 1:
-                        spans_freqs_dict[span.text] += 1
-                        spans_texts_dict[span.text] = span
-                        spans_docs_dict[span.text].add(self.docs.index(span.doc))
-
-        for span, freq in spans_freqs_dict.items():
-            if freq < freq_min:
-                spans_docs_dict.pop(span)
-                spans_texts_dict.pop(span)
-        if len(spans_texts_dict) == 0:
-            raise ValueError(f"No terms left with frequency {freq_min}")
-
-        spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
-        return spans_dicts
 
     @staticmethod
     def _set_span_rules(incl_pos=None, excl_pos=None):
@@ -183,25 +125,7 @@ class TermExtractor:
 
         The attributes are used to filter the list of candidate spans.
 
-        Tags are simple UPOS part-of-speech tags:
-
-        ADJ: adjective
-        ADP: adposition
-        ADV: adverb
-        AUX: auxiliary
-        CCONJ: coordinating conjunction
-        DET: determiner
-        INTJ: interjection
-        NOUN: noun
-        NUM: numeral
-        PART: particle
-        PRON: pronoun
-        PROPN: proper noun
-        PUNCT: punctuation
-        SCONJ: subordinating conjunction
-        SYM: symbol
-        VERB: verb
-        X: other
+        Tags are simple UPOS part-of-speech tags.
 
         Parameters
         ----------
@@ -242,6 +166,32 @@ class TermExtractor:
         Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
         Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
 
+    def _get_spans_dicts(self, span_range, freq_min):
+        """Collect spans and add them to span dicts."""
+        spans_freqs_dict = defaultdict(int) #All spans and their frequencies.
+        spans_docs_dict = defaultdict(set) #All spans and the documents in which they occur.
+        spans_texts_dict = defaultdict(set) #All spans and their string representation.
+
+        for doc in self.docs:
+            span_ranges = list((i, i+n) for i in range(len(doc)) \
+                               for n in range(span_range[0], span_range[1]+1))
+            spans = (doc[n:n_] for (n, n_) in span_ranges)
+            for span in spans:
+                if span._.incl_pos_edges is True and span._.excl_pos_any is True \
+                    and span._.alpha_edges is True and len(span.text) > 1:
+                        spans_freqs_dict[span.text] += 1
+                        spans_texts_dict[span.text] = span
+                        spans_docs_dict[span.text].add(self.docs.index(span.doc))
+
+        for span, freq in spans_freqs_dict.items():
+            if freq < freq_min:
+                spans_docs_dict.pop(span)
+                spans_texts_dict.pop(span)
+        if len(spans_texts_dict) == 0:
+            raise ValueError(f"No terms left with frequency {freq_min}")
+
+        spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
+        return spans_dicts
 
     def _get_docs_embeddings_avg(self, spans_dicts):
         top_docs_idx = set(itertools.chain(*list(spans_dicts.maps[1].values())))
@@ -266,3 +216,40 @@ class TermExtractor:
         terms.reset_index(drop=True, inplace=True)
         terms = terms.round(4)
         return terms
+
+    @staticmethod
+    def _mmr_rank(spans_embeddings, spans_doc_sims, diversity, spans_dicts):
+        spans_freqs_dict = spans_dicts.maps[0]
+        spans_docs_dict = spans_dicts.maps[1]
+        spans_texts_dict = spans_dicts.maps[2]
+        # Construct a similarity matrix of spans
+        spans_sims = cosine_similarity(spans_embeddings)
+        top_spans = []
+        top_n = len(spans_embeddings)
+        # Choose best span to initialize the best spans index
+        best_spans_idx = [np.argmax(spans_doc_sims)]
+        # Initialize the candidates index
+        candidates_idx = [i for i in range(len(spans_embeddings)) if i != best_spans_idx[0]]
+        # Iteratively, select the best span, add it to best_spans_idx and remove it from candidates_idx
+        for ix in range(min(top_n - 1, len(spans_embeddings) - 1)):
+            candidate_sims = spans_doc_sims[candidates_idx, :]
+            rest_spans_sims = np.max(spans_sims[candidates_idx][:, best_spans_idx], axis=1)
+            # Calculate Maximum Marginal Relevance
+            mmr = (1-diversity) * candidate_sims - diversity * rest_spans_sims.reshape(-1, 1)
+            # Get best candidate
+            mmr_idx = candidates_idx[np.argmax(mmr)]
+            # Update best spans & candidates
+            best_spans_idx.append(mmr_idx)
+            candidates_idx.remove(mmr_idx)
+
+            span = list(spans_texts_dict.values())[mmr_idx]
+            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][mmr_idx]), 4)
+            span._.similarity = similarity
+            span._.frequency = spans_freqs_dict[span.text]
+            span._.rank = span._.similarity# * 1/(1 + np.exp(-span._.frequency))
+            span._.span_id = ix
+            span._.docs_idx = spans_docs_dict[span.text]
+            span._.embedding = spans_embeddings[mmr_idx]
+            top_spans.append(span)
+        top_spans = sorted(top_spans, key=lambda span: span._.span_id)
+        return top_spans
