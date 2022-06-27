@@ -288,29 +288,29 @@ You can pass these arguments in the same way for biterm extraction:
 
 This will install the following libraries:
 ```
-pip==21.3.1
-setuptools==60.2.0
+pip==22.1.2
+setuptools==62.6.0
 wheel==0.37.1
 langdetect==1.0.9
-pandas==1.3.5
+pandas==1.4.3
 xmltodict==0.12.0
 openpyxl==3.0.9
-sentence-transformers==2.1.0
-tokenizers==0.11.4
-spacy==3.2.1
+sentence-transformers==2.2.2
+tokenizers==0.12.1
+spacy==3.3.0
 ```
 
 Also, the following spaCy models will be downloaded and installed:
 ```
-en_core_web_md-3.2.0
-es_core_news_md-3.2.0
-fr_core_news_md-3.2.0
-de_core_news_md-3.2.0
+en_core_web_md-3.3.0
+es_core_news_md-3.3.0
+fr_core_news_md-3.3.0
+de_core_news_md-3.3.0
 ```
 
 ### spaCy models
 
-tm2tb includes 4 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.2.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.2.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.2.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.2.0).
+tm2tb includes 4 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0).
 
 These models are optimized for efficiency and are lightweight (about 45 MB each).
 
@@ -322,11 +322,11 @@ Check the available spaCy language models [here](https://spacy.io/models).
 
 TM2TB is compatible with the following multilingual sentence transformer models:
 
-- distiluse-base-multilingual-cased-v1 (default)
+- distiluse-base-multilingual-cased-v1 (smallest, default model)
 - distiluse-base-multilingual-cased-v2
 - paraphrase-multilingual-MiniLM-L12-v2
 - paraphrase-multilingual-mpnet-base-v2
-- LaBSE
+- LaBSE (largest, but best model)
 
 These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
