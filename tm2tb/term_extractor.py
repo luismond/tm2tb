@@ -47,6 +47,7 @@ class TermExtractor:
 
         # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
+        Span.set_extension("stop_similarity", default=None, force=True)
         Span.set_extension("rank", default=None, force=True)
         Span.set_extension("span_id", default=None, force=True)
         Span.set_extension("embedding", default=None, force=True)
@@ -57,6 +58,7 @@ class TermExtractor:
                       return_as_table=True,
                       span_range=(1, 2),
                       freq_min=1,
+                      max_stopword_similarity=.55,
                       incl_pos=None,
                       excl_pos=None):
         """
@@ -96,19 +98,26 @@ class TermExtractor:
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
         spans_doc_sims = cosine_similarity(spans_embeddings, docs_embeddings_avg)
+        stops_embeddings_avg = np.load(f'stops_vectors/{self.lang}.npy')
+        spans_stops_sims = cosine_similarity(spans_embeddings, stops_embeddings_avg)
 
         # Build spans
         top_spans = []
         for ix, emb in enumerate(spans_embeddings):
             span = list(spans_texts_dict.values())[ix]
             similarity = round(float(spans_doc_sims.reshape(1, -1)[0][ix]), 4)
-            span._.similarity = similarity
-            span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = span._.similarity
-            span._.span_id = ix
-            span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = emb#spans_embeddings[ix]
-            top_spans.append(span)
+            stop_similarity = round(float(spans_stops_sims.reshape(1, -1)[0][ix]), 4)
+            if stop_similarity <= max_stopword_similarity:
+                span._.similarity = similarity
+                span._.frequency = spans_freqs_dict[span.text]
+                span._.rank = span._.similarity
+                span._.span_id = ix
+                span._.docs_idx = spans_docs_dict[span.text]
+                span._.embedding = emb
+                top_spans.append(span)
+
+        for i, span in enumerate(top_spans):
+            span._.span_id = i
 
         top_spans = sorted(top_spans, key=lambda span: span._.span_id)
 
