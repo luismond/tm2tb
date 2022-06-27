@@ -84,7 +84,7 @@ terms = extractor.extract_terms(span_range=(2,3))
 
 # Selecting the parts-of-speech tags (terms)
 extractor = TermExtractor(en_sentence)
-terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+terms = extractor.extract_terms(incl_pos=['PROPN', 'ADV'])
 
 # Selecting the terms length (biterms)
 extractor = BitermExtractor((en_sentence, es_sentence))
@@ -92,7 +92,7 @@ biterms = extractor.extract_terms(span_range=(2,3))
 
 # Selecting the parts-of-speech tags (biterms)
 extractor = BitermExtractor((en_sentence, es_sentence))
-biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+biterms = extractor.extract_terms(incl_pos=['NOUN', 'PROPN'])
 
 # Selecting the minimum similarity value of biterms
 extractor = BitermExtractor((en_sentence, es_sentence))
