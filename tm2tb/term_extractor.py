@@ -113,10 +113,10 @@ class TermExtractor:
             stop_similarity = round(float(spans_stops_sims.reshape(1, -1)[0][ix]), 4)
             if stop_similarity <= max_stopword_similarity:
                 span._.similarity = similarity
-                span._.frequency = spans_freqs_dict[span.text]
+                span._.frequency = spans_freqs_dict[span._.true_case]
                 span._.rank = span._.similarity
                 span._.span_id = ix
-                span._.docs_idx = spans_docs_dict[span.text]
+                span._.docs_idx = spans_docs_dict[span._.true_case]
                 span._.embedding = emb
                 top_spans.append(span)
 
@@ -195,7 +195,10 @@ class TermExtractor:
                         if tok.pos_ == 'PROPN':
                             tok._.true_case = tok.text
                         else:
-                            tok._.true_case = tok.text.lower()
+                            if tok.is_upper is True:
+                                tok._.true_case = tok.text
+                            else:
+                                tok._.true_case = tok.text.lower()
                     span._.true_case = ''.join([''.join((tok._.true_case, tok.whitespace_)) for tok in span]).strip()
                         
                     spans_freqs_dict[span._.true_case] += 1
