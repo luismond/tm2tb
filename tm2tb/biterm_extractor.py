@@ -126,9 +126,9 @@ class BitermExtractor:
             similarity = similarity_matrix[src_term._.span_id,
                                            trg_term._.span_id]
             if similarity > similarity_min:
-                biterms_freqs_dict[(src_term.text, trg_term.text)] += 1
-                biterms_sims_dict[(src_term.text, trg_term.text)] = round(similarity, 4)
-                biterms_spans_dict[(src_term.text, trg_term.text)] = (src_term, trg_term)
+                biterms_freqs_dict[(src_term._.true_case, trg_term._.true_case)] += 1
+                biterms_sims_dict[(src_term._.true_case, trg_term._.true_case)] = round(similarity, 4)
+                biterms_spans_dict[(src_term._.true_case, trg_term._.true_case)] = (src_term, trg_term)
 
         biterms_dicts = ChainMap(biterms_freqs_dict, biterms_sims_dict, biterms_spans_dict)
         biterms = self._build_biterms(biterms_dicts)

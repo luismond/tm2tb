@@ -15,7 +15,7 @@ import itertools
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-from spacy.tokens import Span
+from spacy.tokens import Token, Span, Doc
 from tm2tb import trf_model
 from tm2tb import get_spacy_model
 from tm2tb.utils import detect_lang
@@ -44,6 +44,7 @@ class TermExtractor:
         self.lang = detect_lang(self.input_)
         self.spacy_model = get_spacy_model(self.lang)
         self.docs = list(self.spacy_model.pipe(self.input_))
+        self.emb_dims = trf_model.get_sentence_embedding_dimension()
 
         # Register additional span attributes
         Span.set_extension("similarity", default=None, force=True)
@@ -53,6 +54,9 @@ class TermExtractor:
         Span.set_extension("embedding", default=None, force=True)
         Span.set_extension("frequency", default=None, force=True)
         Span.set_extension("docs_idx", default=None, force=True)
+        Span.set_extension("true_case", default=None, force=True)
+        Token.set_extension("true_case", default=None, force=True)
+ 
 
     def extract_terms(self,
                       return_as_table=True,
@@ -98,7 +102,7 @@ class TermExtractor:
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
         spans_doc_sims = cosine_similarity(spans_embeddings, docs_embeddings_avg)
-        stops_embeddings_avg = np.load(f'stops_vectors/{self.lang}.npy')
+        stops_embeddings_avg = np.load(f'stops_vectors/{self.emb_dims}/{self.lang}.npy')
         spans_stops_sims = cosine_similarity(spans_embeddings, stops_embeddings_avg)
 
         # Build spans
@@ -186,9 +190,17 @@ class TermExtractor:
             for span in spans:
                 if span._.incl_pos_edges is True and span._.excl_pos_any is True\
                     and span._.alpha_edges is True and len(span.text) > 1:
-                    spans_freqs_dict[span.text] += 1
-                    spans_texts_dict[span.text] = span
-                    spans_docs_dict[span.text].add(self.docs.index(span.doc))
+
+                    for tok in span:
+                        if tok.pos_ == 'PROPN':
+                            tok._.true_case = tok.text
+                        else:
+                            tok._.true_case = tok.text.lower()
+                    span._.true_case = ''.join([''.join((tok._.true_case, tok.whitespace_)) for tok in span]).strip()
+                        
+                    spans_freqs_dict[span._.true_case] += 1
+                    spans_texts_dict[span._.true_case] = span
+                    spans_docs_dict[span._.true_case].add(self.docs.index(span.doc))
 
         for span, freq in spans_freqs_dict.items():
             if freq < freq_min:
@@ -212,7 +224,7 @@ class TermExtractor:
         """Take a list spaCy spans, return it as pandas dataframe."""
         terms = []
         for span in spans:
-            text = span.text
+            text = span._.true_case
             tags = [t.pos_ for t in span]
             freq = span._.frequency
             rank = span._.rank
