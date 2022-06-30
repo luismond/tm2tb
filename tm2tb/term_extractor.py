@@ -63,6 +63,7 @@ class TermExtractor:
                       span_range=(1, 2),
                       freq_min=1,
                       max_stopword_similarity=.55,
+                      collapse_similarity=True,
                       incl_pos=None,
                       excl_pos=None):
         """
@@ -120,9 +121,11 @@ class TermExtractor:
                 span._.embedding = emb
                 top_spans.append(span)
 
+        if collapse_similarity is True:
+            top_spans = self._collapse_similarity(top_spans)
+
         for i, span in enumerate(top_spans):
             span._.span_id = i
-
         top_spans = sorted(top_spans, key=lambda span: span._.span_id)
 
         if return_as_table is True:
@@ -221,6 +224,37 @@ class TermExtractor:
         docs_embeddings = trf_model.encode([text for text in top_docs_texts if len(text) > 0])
         docs_embeddings_avg = sum(docs_embeddings)/len(docs_embeddings)
         return docs_embeddings_avg.reshape(1, -1)
+
+    @staticmethod
+    def _collapse_similarity(spans):
+        # Sort spans by rank
+        spans = sorted(spans, key=lambda span: span._.similarity, reverse=True)
+        # Take their saved vectors
+        span_embs = [s._.embedding for s in spans]
+        # Make terms similarity matrix
+        sm = cosine_similarity(span_embs, span_embs)
+        # Use the terms' true case repr
+        spans_texts = [sp._.true_case for sp in spans]
+        seen_values = set()
+        # For each idx in matrix axis 0
+        index = list(range(sm.shape[0]))
+        for idx in index:
+            # Key term
+            key = spans_texts[idx]
+            # If it hasn't been seen
+            if key not in seen_values:
+                # Take the sim values of all other terms except itself
+                row = sm[:, idx:]
+                values_idx = [i for i in index if row[i][0] > .9 if spans_texts[i]!=key]
+                values = [spans_texts[i] for i in values_idx]         
+                if len(values)>0:
+                    #For each of these top values
+                    for i in values_idx:
+                        # See them
+                        seen_values.add(spans_texts[i])
+                        #Remove them from index
+                        index.remove(i)            
+        return [spans[i] for i in index]
 
     @staticmethod
     def _return_as_table(spans):
