@@ -6,7 +6,7 @@ __version__ = "1.5.0"
 
 from tm2tb.transformer_model import TransformerModel
 
-trf_model = TransformerModel("distiluse-base-multilingual-cased-v1").load()
+trf_model = TransformerModel("LaBSE").load()
 from tm2tb.spacy_models import get_spacy_model
 from tm2tb.bitext_reader import BitextReader
 from tm2tb.term_extractor import TermExtractor
