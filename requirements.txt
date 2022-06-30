@@ -8,7 +8,7 @@ openpyxl==3.0.9
 sentence-transformers==2.2.2
 tokenizers==0.12.1
 spacy==3.3.0
-https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.3.0/en_core_web_lg-3.3.0.tar.gz#egg=en_core_web_lg
-https://github.com/explosion/spacy-models/releases/download/es_core_news_lg-3.3.0/es_core_news_lg-3.3.0.tar.gz#egg=es_core_news_lg
-https://github.com/explosion/spacy-models/releases/download/fr_core_news_lg-3.3.0/fr_core_news_lg-3.3.0.tar.gz#egg=fr_core_news_lg
-https://github.com/explosion/spacy-models/releases/download/de_core_news_lg-3.3.0/de_core_news_lg-3.3.0.tar.gz#egg=de_core_news_lg
+https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.3.0/en_core_web_md-3.3.0.tar.gz#egg=en_core_web_md
+https://github.com/explosion/spacy-models/releases/download/es_core_news_md-3.3.0/es_core_news_md-3.3.0.tar.gz#egg=es_core_news_md
+https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.3.0/fr_core_news_md-3.3.0.tar.gz#egg=fr_core_news_md
+https://github.com/explosion/spacy-models/releases/download/de_core_news_md-3.3.0/de_core_news_md-3.3.0.tar.gz#egg=de_core_news_md
