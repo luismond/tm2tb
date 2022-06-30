@@ -302,19 +302,19 @@ spacy==3.3.0
 
 Also, the following spaCy models will be downloaded and installed:
 ```
-en_core_web_md-3.3.0
-es_core_news_md-3.3.0
-fr_core_news_md-3.3.0
-de_core_news_md-3.3.0
+en_core_web_lg-3.3.0
+es_core_news_lg-3.3.0
+fr_core_news_lg-3.3.0
+de_core_news_lg-3.3.0
 ```
 
 ### spaCy models
 
-tm2tb includes 4 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0).
+tm2tb includes 4 large spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0).
 
-These models are optimized for efficiency and are lightweight (about 45 MB each).
+If they are too large for your environment, you can download smaller models, but the Part-of-Speech tagging accuracy will be lower.
 
-You can download larger models for better Part-of-Speech tagging accuracy (or for additional languages), and add them to `tm2tb.spacy_models.py`.
+To add more languages, add them to `tm2tb.spacy_models.py`.
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
@@ -322,11 +322,11 @@ Check the available spaCy language models [here](https://spacy.io/models).
 
 TM2TB is compatible with the following multilingual sentence transformer models:
 
-- distiluse-base-multilingual-cased-v1 (smallest, default model)
+- LaBSE (best model for translated phrase mining, but please note it is almost 2 GB in size)
+- distiluse-base-multilingual-cased-v1
 - distiluse-base-multilingual-cased-v2
 - paraphrase-multilingual-MiniLM-L12-v2
 - paraphrase-multilingual-mpnet-base-v2
-- LaBSE (largest, but best model)
 
 These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
 
@@ -350,7 +350,7 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 ### Libraries
 - `spaCy`: Tokenization, Part-of-Speech tagging
 - `sentence-transformers`: sentence and terms embeddings
-- `xmltodict`: parsing of XML file formats (.mqxliff, .tmx, etc.)
+- `xmltodict`: parsing of XML file formats (.mqxliff, .mxliff, .tmx, etc.)
 
 ### Other credits:
 - [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like terms-to-sentence similarity and the implementation of Maximal Marginal Relevance.
