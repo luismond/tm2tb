@@ -15,7 +15,7 @@ import itertools
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-from spacy.tokens import Token, Span, Doc
+from spacy.tokens import Token, Span
 from tm2tb import trf_model
 from tm2tb import get_spacy_model
 from tm2tb.utils import detect_lang
@@ -56,7 +56,7 @@ class TermExtractor:
         Span.set_extension("docs_idx", default=None, force=True)
         Span.set_extension("true_case", default=None, force=True)
         Token.set_extension("true_case", default=None, force=True)
- 
+
 
     def extract_terms(self,
                       return_as_table=True,
@@ -203,7 +203,6 @@ class TermExtractor:
                             else:
                                 tok._.true_case = tok.text.lower()
                     span._.true_case = ''.join([''.join((tok._.true_case, tok.whitespace_)) for tok in span]).strip()
-                        
                     spans_freqs_dict[span._.true_case] += 1
                     spans_texts_dict[span._.true_case] = span
                     spans_docs_dict[span._.true_case].add(self.docs.index(span.doc))
@@ -245,7 +244,7 @@ class TermExtractor:
             if key not in seen_values:
                 # Take the sim values of all other terms except itself
                 row = sm[:, idx:]
-                values_idx = [i for i in index if row[i][0] > .9 if spans_texts[i]!=key]
+                values_idx = [i for i in index if row[i][0] > .9 and spans_texts[i]!=key]
                 values = [spans_texts[i] for i in values_idx]         
                 if len(values)>0:
                     #For each of these top values
@@ -253,7 +252,7 @@ class TermExtractor:
                         # See them
                         seen_values.add(spans_texts[i])
                         #Remove them from index
-                        index.remove(i)            
+                        index.remove(i)
         return [spans[i] for i in index]
 
     @staticmethod
