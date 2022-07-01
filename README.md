@@ -272,11 +272,9 @@ You can pass these arguments in the same way for biterm extraction:
 
 ## Installation
 
-1. Navigate to your desired location, and create a virtual environment.
+1. Create a virtual environment.
 
-`python3 -m venv tm2tb-env`
-
-`source tm2tb-env/bin/activate`
+`pipenv shell`
 
 2. Clone the repository:
 
@@ -284,7 +282,7 @@ You can pass these arguments in the same way for biterm extraction:
 
 3. Install the requirements:
 
-`pip install -r requirements.txt`
+`pipenv install`
 
 This will install the following libraries:
 ```
