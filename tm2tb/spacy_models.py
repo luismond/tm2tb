@@ -36,6 +36,11 @@ try:
 except ModuleNotFoundError:
     print('No French model found')
 
+try:
+    import pt_core_news_md
+    model_pt = pt_core_news_md.load(exclude=disabled_comps)
+except ModuleNotFoundError:
+    print('No French model found')
 
 def get_spacy_model(lang):
     """
@@ -44,7 +49,7 @@ def get_spacy_model(lang):
     Parameters
     ----------
     lang : string
-        Two-character language identifier ('en', 'es', 'de' or 'fr')
+        Two-character language identifier ('en', 'es', 'de' 'pt', or 'fr')
 
     Raises
     ------
@@ -70,6 +75,8 @@ def get_spacy_model(lang):
             spacy_model = model_fr
         if lang == 'de':
             spacy_model = model_de
+        if lang == 'pt':
+            spacy_model = model_pt
     except Exception:
         raise ValueError("No spaCy language models found!")
     return spacy_model
