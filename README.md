@@ -272,7 +272,9 @@ You can pass these arguments in the same way for biterm extraction:
 
 ## Installation
 
-1. Create a virtual environment.
+1. Install pipenv and create a virtual environment.
+
+`pip install pip`
 
 `pipenv shell`
 
