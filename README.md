@@ -274,7 +274,7 @@ You can pass these arguments in the same way for biterm extraction:
 
 1. Install pipenv and create a virtual environment.
 
-`pip install pip`
+`pip install pipenv`
 
 `pipenv shell`
 
