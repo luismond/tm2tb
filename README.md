@@ -311,7 +311,7 @@ pt_core_news_md-3.3.0
 
 ### spaCy models
 
-tm2tb includes 4 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0) and [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0).
+tm2tb includes 5 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0) and [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0)
 
 If they are too large for your environment, you can download smaller models, but the Part-of-Speech tagging accuracy will be lower.
 
