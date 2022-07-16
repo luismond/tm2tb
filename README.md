@@ -306,6 +306,7 @@ en_core_web_md-3.3.0
 es_core_news_md-3.3.0
 fr_core_news_md-3.3.0
 de_core_news_md-3.3.0
+pt_core_news_md-3.3.0
 ```
 
 ### spaCy models
