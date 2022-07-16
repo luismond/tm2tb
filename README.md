@@ -324,6 +324,7 @@ Check the available spaCy language models [here](https://spacy.io/models).
 TM2TB is compatible with the following multilingual sentence transformer models:
 
 - LaBSE (best model for translated phrase mining, but please note it is almost 2 GB in size)
+- setu4993/smaller-LaBSE (a smaller LaBSE model that supports only 15 languages)
 - distiluse-base-multilingual-cased-v1
 - distiluse-base-multilingual-cased-v2
 - paraphrase-multilingual-MiniLM-L12-v2
