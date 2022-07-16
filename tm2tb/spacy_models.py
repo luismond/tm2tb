@@ -1,46 +1,29 @@
 """
 spaCy model selection.
 
-TM2TB comes with 4 spaCy language models (English, Spanish, German and French).
+TM2TB comes with 5 spaCy language models (English, Spanish, German, French and Portuguese).
 
-In order to support additional languages,
-the corresponding spaCy model must be installed.
+In order to support additional languages, the corresponding spaCy model must be installed.
 Check the available spaCy language models here: https://spacy.io/models
 """
+import es_core_news_md
+import en_core_web_md
+import de_core_news_md
+import fr_core_news_md
+import pt_core_news_md
 
 # Disable unneeded pipeline components
 disabled_comps = ['lemmatizer', 'ner', 'entity_linker', 'trf_data', 'textcat']
+
+spacy_models = {
+    'es': es_core_news_md.load(),
+    'en': en_core_web_md.load(),
+    'de': de_core_news_md.load(),
+    'fr': fr_core_news_md.load(),
+    'pt': pt_core_news_md.load()
+    }
+
 print('Loading spacy models...')
-
-try:
-    import es_core_news_md
-    model_es = es_core_news_md.load(exclude=disabled_comps)
-except ModuleNotFoundError:
-    print('No Spanish model found')
-
-try:
-    import en_core_web_md
-    model_en = en_core_web_md.load(exclude=disabled_comps)
-except ModuleNotFoundError:
-    print('No English model found')
-
-try:
-    import de_core_news_md
-    model_de = de_core_news_md.load(exclude=disabled_comps)
-except ModuleNotFoundError:
-    print('No German model found')
-
-try:
-    import fr_core_news_md
-    model_fr = fr_core_news_md.load(exclude=disabled_comps)
-except ModuleNotFoundError:
-    print('No French model found')
-
-try:
-    import pt_core_news_md
-    model_pt = pt_core_news_md.load(exclude=disabled_comps)
-except ModuleNotFoundError:
-    print('No French model found')
 
 def get_spacy_model(lang):
     """
@@ -63,20 +46,12 @@ def get_spacy_model(lang):
                     spacy.lang.es.Spanish
                     spacy.lang.de.German
                     spacy.lang.fr.French
-
-        DESCRIPTION. spaCy language model
+                    spacy.lang.pt.Portuguese
     """
-    try:
-        if lang == 'en':
-            spacy_model = model_en
-        if lang == 'es':
-            spacy_model = model_es
-        if lang == 'fr':
-            spacy_model = model_fr
-        if lang == 'de':
-            spacy_model = model_de
-        if lang == 'pt':
-            spacy_model = model_pt
-    except Exception:
-        raise ValueError("No spaCy language models found!")
+    
+    supported_languages = ['es', 'en', 'de', 'fr', 'pt']
+    if lang not in supported_languages:
+        raise ValueError(f"Sorry, {lang} model isn't installed.\nPlease install the spaCy language model first.")
+    spacy_model = spacy_models[lang]
     return spacy_model
+    
