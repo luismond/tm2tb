@@ -30,7 +30,7 @@ def detect_lang(input_: Union[str, list]):
         DESCRIPTION. Two-character language identifier.
 
     """
-    supported_languages = ['en', 'es', 'de', 'fr', 'pt']
+    supported_languages = ['en', 'es', 'de', 'fr', 'pt', 'it']
     if isinstance(input_, str):
         lang = detect(input_)
         if lang not in supported_languages:

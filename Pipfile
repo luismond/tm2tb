@@ -16,6 +16,7 @@ es-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/do
 fr-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.3.0/fr_core_news_md-3.3.0.tar.gz"}
 de-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/de_core_news_md-3.3.0/de_core_news_md-3.3.0.tar.gz"}
 pt-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/pt_core_news_md-3.3.0/pt_core_news_md-3.3.0.tar.gz"}
+it-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/it_core_news_md-3.3.0/it_core_news_md-3.3.0.tar.gz"}
 
 [dev-packages]
 

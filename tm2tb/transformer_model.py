@@ -20,6 +20,8 @@ class TransformerModel:
     Models compatible with TM2TB:
 
         LaBSE (best performance, specifically suited for bitext extraction).
+        
+        setu4993/smaller-LaBSE (a smaller LaBSE model that supports only 15 languages)
 
         distiluse-base-multilingual-cased-v1
 

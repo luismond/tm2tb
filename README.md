@@ -23,7 +23,7 @@ For bilingual documents, terms are extracted from each pair of sentences using t
 
 ## Languages supported
 
-So far, English, Spanish, German and French have been tested. I plan to add more languages (as long as they are supported by spaCy).
+So far, TM2TB supports English, Spanish, German, French, Portuguese and Italian. Chinese and Russian are currently in beta testing.
 
 ## Bilingual file formats supported
 
@@ -307,11 +307,12 @@ es_core_news_md-3.3.0
 fr_core_news_md-3.3.0
 de_core_news_md-3.3.0
 pt_core_news_md-3.3.0
+it_core_news_md-3.3.0
 ```
 
 ### spaCy models
 
-tm2tb includes 5 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0) and [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0)
+tm2tb includes 6 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0), [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0), and [Italian](https://github.com/explosion/spacy-models/releases/it_core_news_md-3.3.0)
 
 If they are too large for your environment, you can download smaller models, but the Part-of-Speech tagging accuracy will be lower.
 
@@ -331,6 +332,8 @@ TM2TB is compatible with the following multilingual sentence transformer models:
 - paraphrase-multilingual-mpnet-base-v2
 
 These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
+
+Please note that there is always a compromise between speed and accuracy. Smaller models will be faster, but less accurate. Larger models will be slower, but more accurate.
 
 ## tm2tb.com
 The functionality of tm2tb is also available through a web app: www.tm2tb.com
