@@ -11,6 +11,7 @@ openpyxl = "==3.1.2"
 sentence-transformers = "==2.2.2"
 tokenizers = "==0.14.1"
 spacy = "==3.3.0"
+pytest = "==7.4.3"
 en-core-web-md = {file = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.3.0/en_core_web_md-3.3.0.tar.gz"}
 es-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/es_core_news_md-3.3.0/es_core_news_md-3.3.0.tar.gz"}
 fr-core-news-md = {file = "https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.3.0/fr_core_news_md-3.3.0.tar.gz"}
