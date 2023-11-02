@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7de6cf0355a7b3913396800f85c1d73d552648a3fa14c09316cb299924cf5214"
+            "sha256": "30d1b95592246ee17490783de01c2acbaa6632ae091f494940c499c8ea92d475"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -242,6 +242,14 @@
             "markers": "python_version >= '3.6'",
             "version": "==1.1.0"
         },
+        "exceptiongroup": {
+            "hashes": [
+                "sha256:097acd85d473d75af5bb98e41b61ff7fe35efe6675e4f9370ec6ec5126d160e9",
+                "sha256:343280667a4585d195ca1cf9cef84a4e178c4b6cf2274caef9859782b567d5e3"
+            ],
+            "markers": "python_version < '3.11'",
+            "version": "==1.1.3"
+        },
         "filelock": {
             "hashes": [
                 "sha256:521f5f56c50f8426f5e03ad3b281b490a87ef15bc6c526f168290f0c7148d44e",
@@ -280,6 +288,14 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==3.4"
+        },
+        "iniconfig": {
+            "hashes": [
+                "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3",
+                "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==2.0.0"
         },
         "it-core-news-md": {
             "file": "https://github.com/explosion/spacy-models/releases/download/it_core_news_md-3.3.0/it_core_news_md-3.3.0.tar.gz",
@@ -695,6 +711,14 @@
             "markers": "python_version >= '3.8'",
             "version": "==10.1.0"
         },
+        "pluggy": {
+            "hashes": [
+                "sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12",
+                "sha256:d89c696a773f8bd377d18e5ecda92b7a3793cbe66c87060a6fb58c7b6e1061f7"
+            ],
+            "markers": "python_version >= '3.8'",
+            "version": "==1.3.0"
+        },
         "preshed": {
             "hashes": [
                 "sha256:0de63a560f10107a3f0a9e252cc3183b8fdedcb5f81a86938fd9f1dcf8a64adf",
@@ -768,6 +792,14 @@
             ],
             "markers": "python_full_version >= '3.6.1'",
             "version": "==1.8.2"
+        },
+        "pytest": {
+            "hashes": [
+                "sha256:0d009c083ea859a71b76adf7c1d502e4bc170b80a8ef002da5806527b9591fac",
+                "sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5"
+            ],
+            "index": "pypi",
+            "version": "==7.4.3"
         },
         "python-dateutil": {
             "hashes": [
@@ -1420,6 +1452,14 @@
             ],
             "index": "pypi",
             "version": "==0.14.1"
+        },
+        "tomli": {
+            "hashes": [
+                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
+                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
+            ],
+            "markers": "python_version < '3.11'",
+            "version": "==2.0.1"
         },
         "torch": {
             "hashes": [
