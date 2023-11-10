@@ -66,7 +66,7 @@ print(biterms[:10])
 
 
 # Extract terms from a bilingual document
-path = 'tests/panda_bear_english_spanish.csv'
+path = 'data/panda_bear_english_spanish.csv'
 print('Extract terms from a bilingual document:')
 print('Document path: {}'.format(path))
 
