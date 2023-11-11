@@ -2,6 +2,39 @@
 from tm2tb import TermExtractor
 from tm2tb import BitermExtractor
 from tm2tb import BitextReader
+import json
+from tm2tb_api import app
+
+app.testing = True
+
+
+def test_api():
+    with app.test_client() as client:
+        data =     {
+            "src":
+            ["The giant panda also known as the panda bear (or simply the panda),"
+             " is a bear native to South Central China.",
+            "It is characterised by its bold black-and-white coat and rotund body."],
+        
+            "trg":
+            ["El panda gigante, tambien conocido como oso panda (o simplemente panda),"
+             " es un oso nativo del centro sur de China.",
+            "Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto."]
+            }
+        
+
+        response = client.post(
+            headers =  {"Content-Type":"application/json"},
+            json = json.dumps(data),
+            )
+        
+        print(response.text)
+    
+        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.311,\"1\":0.298,\"2\":0.2274},\"trg_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"trg_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"trg_rank\":{\"0\":0.4429,\"1\":0.3563,\"2\":0.3021},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":0.5668,\"1\":0.5418,\"2\":0.5338}}"
+
+        
+        assert response.text == json.dumps(expected_response)
+    
 
 EN_SENTENCE = (
     "The giant panda, also known as the panda bear (or simply the panda)"

@@ -1,5 +1,4 @@
 """tm2tb API"""
-import os
 import json
 import pandas as pd
 from flask import Flask
@@ -7,6 +6,7 @@ from flask import request
 from tm2tb import BitermExtractor
 
 app = Flask(__name__)
+
 
 @app.route("/", methods=["POST"])
 def post_file():
@@ -23,10 +23,10 @@ def post_file():
 
     """
     bitext = pd.read_json(request.json)
-    freq_min = int(request.args.get("freq_min"))
-    span_range = request.args.getlist("span_range")
-    incl_pos = request.args.getlist("incl_pos")
-    excl_pos = request.args.getlist("excl_pos")
+    freq_min = 1
+    span_range = (1, 3)
+    incl_pos = ['ADJ', 'PROPN', 'NOUN']
+    excl_pos = ['SPACE', 'SYM']
     biterms_json = get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos)
     return json.dumps(biterms_json)
 
