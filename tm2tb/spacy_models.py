@@ -56,6 +56,6 @@ def get_spacy_model(lang):
 
     supported_languages = ['es', 'en', 'de', 'fr', 'pt', 'it']
     if lang not in supported_languages:
-        raise ValueError(f"Sorry, {lang} model isn't installed.\nPlease install the spaCy language model first.")
+        raise ValueError(f"{lang} model has not been installed!")
     spacy_model = spacy_models[lang]
     return spacy_model

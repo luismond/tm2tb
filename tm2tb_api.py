@@ -32,8 +32,8 @@ def post_file():
 
 
 def get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos):
+    """Take bitext and parameters, return the json result."""
     try:
-        """Take bitext and parameters, return the json result."""
         bitext = list(zip(bitext["src"], bitext["trg"]))
         span_range = tuple((int(span_range[0]), int(span_range[1])))
         extractor = BitermExtractor(bitext)
@@ -45,7 +45,7 @@ def get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos):
         )
         result = biterms.to_json()
     except Exception as e:
-        result = "error: {}".format(str(e))
+        result = f"error: {str(e)}"
         print(result)
     return result
 

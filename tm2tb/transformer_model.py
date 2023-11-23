@@ -38,16 +38,16 @@ class TransformerModel:
         self.path = 'sbert_models'
         self.model_name = model_name
         self.model_path = os.path.join(self.path, self.model_name)
-        if not self.path in os.listdir():
+        if self.path not in os.listdir():
             os.mkdir(self.path)
 
     def load(self):
         """Load model from path or download it from HuggingFace Model Hub."""
         if self.model_name in os.listdir(self.path):
-            print('Loading sentence transformer model:\n{}'.format(self.model_name))
+            print(f'Loading sentence transformer model:\n{self.model_name}')
             model = SentenceTransformer(self.model_path)
         else:
-            print('Downloading sentence transformer model:\n{}'.format(self.model_name))
+            print(f'Downloading sentence transformer model:\n{self.model_name}')
             model = SentenceTransformer(self.model_name)
             model.save(self.model_path)
         return model

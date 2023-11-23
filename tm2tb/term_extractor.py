@@ -57,7 +57,6 @@ class TermExtractor:
         Span.set_extension("true_case", default=None, force=True)
         Token.set_extension("true_case", default=None, force=True)
 
-
     def extract_terms(self,
                       return_as_table=True,
                       span_range=(1, 2),
@@ -187,13 +186,12 @@ class TermExtractor:
         spans_texts_dict = defaultdict(set)  # All spans and their string representation.
 
         for doc in self.docs:
-            span_ranges = list((i, i+n) for i in range(len(doc)) \
+            span_ranges = list((i, i+n) for i in range(len(doc))
                                for n in range(span_range[0], span_range[1]+1))
             spans = (doc[n:n_] for (n, n_) in span_ranges)
             for span in spans:
                 if span._.incl_pos_edges is True and span._.excl_pos_any is True\
                     and span._.alpha_edges is True and len(span.text) > 1:
-
                     for tok in span:
                         if tok.pos_ == 'PROPN':
                             tok._.true_case = tok.text
@@ -244,14 +242,13 @@ class TermExtractor:
             if key not in seen_values:
                 # Take the sim values of all other terms except itself
                 row = sm[:, idx:]
-                values_idx = [i for i in index if row[i][0] > .9 and spans_texts[i]!=key]
-                values = [spans_texts[i] for i in values_idx]         
-                if len(values)>0:
-                    #For each of these top values
+                values_idx = [i for i in index if row[i][0] > .9 and spans_texts[i] != key]
+                values = [spans_texts[i] for i in values_idx]
+                if len(values) > 0:
+                    # For each of these top values
                     for i in values_idx:
-                        # See them
                         seen_values.add(spans_texts[i])
-                        #Remove them from index
+                        # Remove them from index
                         index.remove(i)
         return [spans[i] for i in index]
 
@@ -285,7 +282,7 @@ class TermExtractor:
         best_spans_idx = [np.argmax(spans_doc_sims)]
         # Initialize the candidates index
         candidates_idx = [i for i in range(len(spans_embeddings)) if i != best_spans_idx[0]]
-        # Iteratively, select the best span, add it to best_spans_idx and remove it from candidates_idx
+        # Select the best span, add it to best_spans_idx and remove it from candidates_idx
         for ix in range(min(top_n - 1, len(spans_embeddings) - 1)):
             candidate_sims = spans_doc_sims[candidates_idx, :]
             rest_spans_sims = np.max(spans_sims[candidates_idx][:, best_spans_idx], axis=1)
@@ -301,7 +298,7 @@ class TermExtractor:
             similarity = round(float(spans_doc_sims.reshape(1, -1)[0][mmr_idx]), 4)
             span._.similarity = similarity
             span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = span._.similarity# * 1/(1 + np.exp(-span._.frequency))
+            span._.rank = span._.similarity
             span._.span_id = ix
             span._.docs_idx = spans_docs_dict[span.text]
             span._.embedding = spans_embeddings[mmr_idx]

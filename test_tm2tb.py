@@ -1,40 +1,12 @@
 """TM2TB unit tests"""
+import json
 from tm2tb import TermExtractor
 from tm2tb import BitermExtractor
 from tm2tb import BitextReader
-import json
 from tm2tb_api import app
 
 app.testing = True
 
-
-def test_api():
-    with app.test_client() as client:
-        data =     {
-            "src":
-            ["The giant panda also known as the panda bear (or simply the panda),"
-             " is a bear native to South Central China.",
-            "It is characterised by its bold black-and-white coat and rotund body."],
-        
-            "trg":
-            ["El panda gigante, tambien conocido como oso panda (o simplemente panda),"
-             " es un oso nativo del centro sur de China.",
-            "Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto."]
-            }
-        
-
-        response = client.post(
-            headers =  {"Content-Type":"application/json"},
-            json = json.dumps(data),
-            )
-        
-        print(response.text)
-    
-        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.311,\"1\":0.298,\"2\":0.2274},\"trg_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"trg_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"trg_rank\":{\"0\":0.4429,\"1\":0.3563,\"2\":0.3021},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":0.5668,\"1\":0.5418,\"2\":0.5338}}"
-
-        
-        assert response.text == json.dumps(expected_response)
-    
 
 EN_SENTENCE = (
     "The giant panda, also known as the panda bear (or simply the panda)"
@@ -61,6 +33,36 @@ ES_SENTENCE = (
     " carroña. En cautividad, pueden alimentarse de miel, huevos, pescado, hojas"
     " de arbustos, naranjas o plátanos.\n"
     )
+
+
+def test_api():
+    """Send a bitext request and test the biterm response."""
+    with app.test_client() as client:
+        data = {
+            "src":
+                [
+                    "The giant panda also known as the panda bear (or simply the panda),"
+                    " is a bear native to South Central China.",
+                    "It is characterised by its bold black-and-white coat and rotund body."
+                    ],
+
+            "trg":
+                [
+                    "El panda gigante, tambien conocido como oso panda (o simplemente panda),"
+                    " es un oso nativo del centro sur de China.",
+                    "Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto."
+                    ]
+            }
+
+        response = client.post(
+            headers={"Content-Type": "application/json"},
+            json=json.dumps(data),
+            )
+
+        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.311,\"1\":0.298,\"2\":0.2274},\"trg_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"trg_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"trg_rank\":{\"0\":0.4429,\"1\":0.3563,\"2\":0.3021},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":0.5668,\"1\":0.5418,\"2\":0.5338}}"
+
+        assert response.text == json.dumps(expected_response)
+
 
 def test_en_sentence():
     """Test term extraction from English sentence."""
@@ -93,7 +95,7 @@ def test_en_sentence():
                 8: ['PROPN'],
                 9: ['NOUN', 'ADJ'],
                 },
-        'rank': 
+        'rank':
             {
                 0: 0.4033,
                 1: 0.3816,
@@ -154,7 +156,7 @@ def test_es_sentence():
                 8: ['NOUN', 'ADJ'],
                 9: ['PROPN']
                 },
-        'rank': 
+        'rank':
             {
                 0: 0.5167,
                 1: 0.4662,
@@ -183,6 +185,7 @@ def test_es_sentence():
             }
     assert terms == result
 
+
 def test_bilingual_sentences():
     """Test bilingual term extraction from English/Spanish sentences."""
     extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE))
@@ -208,7 +211,7 @@ def test_bilingual_sentences():
                 5: ['PROPN'],
                 6: ['ADJ', 'NOUN']
                 },
-        'src_rank': 
+        'src_rank':
             {
                 0: 0.3816,
                 1: 0.3691,
@@ -231,12 +234,12 @@ def test_bilingual_sentences():
         'trg_tags':
             {
                 0: ['PROPN', 'ADJ'],
-                1: ['PROPN','PROPN'],
+                1: ['PROPN', 'PROPN'],
                 2: ['PROPN'],
                 3: ['NOUN'],
                 4: ['PROPN'],
                 5: ['PROPN'],
-                6: ['NOUN','ADJ']
+                6: ['NOUN', 'ADJ']
                 },
         'trg_rank':
             {
@@ -281,6 +284,7 @@ def test_bilingual_sentences():
             }
 
     assert biterms == result
+
 
 def test_bilingual_document():
     """Test bilingual term extraction from English/Spanish document."""
@@ -399,4 +403,3 @@ def test_bilingual_document():
             }
         }
     assert biterms == result
-        

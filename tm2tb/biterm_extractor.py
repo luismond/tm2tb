@@ -143,7 +143,7 @@ class BitermExtractor:
         Extract biterms from a bitext (multiple bilingual sentences).
 
         It does not iterate over each bisentence, since it would be slow.
-        
+
         It calls the TermExtractor class to get all the source/target terms.
         It produces a similarity matrix of all source and target terms.
         It looks up the biterm co-ocurrences (biterms that occur in the same bisentence)
