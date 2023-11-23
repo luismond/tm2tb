@@ -1,8 +1,11 @@
-from langdetect import detect, LangDetectException
+"""tm2tb utils for language detection and text cleaning"""
+
+import re
 from collections import Counter as cnt
 from typing import Union
 from random import randint
-import re
+from langdetect import detect, LangDetectException
+
 
 def detect_lang(input_: Union[str, list]):
     """
@@ -37,7 +40,7 @@ def detect_lang(input_: Union[str, list]):
             raise ValueError('Language not supported!')
     if isinstance(input_, list):
         text = input_
-        if len(text)<=50:
+        if len(text) <= 50:
             text_sample = text
         else:
             rand_start = randint(0, (len(text)-1)-50)
@@ -49,7 +52,7 @@ def detect_lang(input_: Union[str, list]):
                 detections.append(detect(sentence))
             except LangDetectException:
                 pass
-        if len(detections)==0:
+        if len(detections) == 0:
             raise ValueError('Insufficient data to detect language')
         lang = cnt(detections).most_common(1)[0][0]
         if lang not in supported_languages:
@@ -80,7 +83,7 @@ def preprocess(sentence):
         """
         ords = [9, 10, 13, 32, 160]
         for char in sentence:
-            if ord(char) in ords or char =='&nbsp;':
+            if ord(char) in ords or char == '&nbsp;':
                 sentence = sentence.replace(char, ' ')
         return sentence
 
