@@ -28,7 +28,13 @@ class BitermExtractor:
     Attributes
     ----------
     input_ : Union[tuple, list]
-        DESCRIPTION. Tuple or list of tuples
+        Tuple or list of tuples
+
+    src_lang: str
+        Two-character source language identifier
+
+    trg_lang: str
+        Two-character target language identifier
 
     Methods
     -------
@@ -36,8 +42,10 @@ class BitermExtractor:
 
     """
 
-    def __init__(self, input_: Union[tuple, list]):
+    def __init__(self, input_: Union[tuple, list], src_lang=None, trg_lang=None):
         self.input_ = input_
+        self.src_lang = src_lang
+        self.trg_lang = trg_lang
 
     def extract_terms(self, similarity_min=.9, return_as_table=True, **kwargs):
         """
@@ -107,12 +115,12 @@ class BitermExtractor:
         bisentence = self.input_
 
         src_sentence = bisentence[0]
-        src_extractor = TermExtractor(src_sentence)
+        src_extractor = TermExtractor(src_sentence, lang=self.src_lang)
         src_terms = src_extractor.extract_terms(return_as_table=False, **kwargs)
         src_terms = sorted(src_terms, key=lambda span: span._.span_id)
 
         trg_sentence = bisentence[1]
-        trg_extractor = TermExtractor(trg_sentence)
+        trg_extractor = TermExtractor(trg_sentence, lang=self.trg_lang)
         trg_terms = trg_extractor.extract_terms(return_as_table=False, **kwargs)
         trg_terms = sorted(trg_terms, key=lambda span: span._.span_id)
 
@@ -181,10 +189,10 @@ class BitermExtractor:
         bitext = validate_if_bitext_is_bilingual(bitext)
         src_text, trg_text = zip(*bitext)
 
-        src_extractor = TermExtractor(list(src_text))
+        src_extractor = TermExtractor(list(src_text), lang=self.src_lang)
         src_terms = src_extractor.extract_terms(return_as_table=False, **kwargs)
 
-        trg_extractor = TermExtractor(list(trg_text))
+        trg_extractor = TermExtractor(list(trg_text), lang=self.trg_lang)
         trg_terms = trg_extractor.extract_terms(return_as_table=False, **kwargs)
 
         similarity_matrix = self._get_similarity_matrix(src_terms, trg_terms)

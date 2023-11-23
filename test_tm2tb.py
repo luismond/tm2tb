@@ -125,6 +125,67 @@ def test_en_sentence():
     assert terms == result
 
 
+def test_en_sentence_lang_code():
+    """Test term extraction from English sentence passing a lang code."""
+    extractor = TermExtractor(EN_SENTENCE, lang='en')
+    terms = extractor.extract_terms()[:10].to_dict()
+    result = {
+        'term':
+            {
+                0: 'panda',
+                1: 'giant panda',
+                2: 'panda bear',
+                3: 'red panda',
+                4: 'Carnivora',
+                5: 'Central China',
+                6: 'bananas',
+                7: 'rodents',
+                8: 'Central',
+                9: 'bear native',
+                },
+        'pos_tags':
+            {
+                0: ['NOUN'],
+                1: ['ADJ', 'NOUN'],
+                2: ['NOUN', 'NOUN'],
+                3: ['ADJ', 'NOUN'],
+                4: ['PROPN'],
+                5: ['PROPN', 'PROPN'],
+                6: ['NOUN'],
+                7: ['NOUN'],
+                8: ['PROPN'],
+                9: ['NOUN', 'ADJ'],
+                },
+        'rank':
+            {
+                0: 0.4033,
+                1: 0.3816,
+                2: 0.3699,
+                3: 0.3691,
+                4: 0.2483,
+                5: 0.214,
+                6: 0.1941,
+                7: 0.1701,
+                8: 0.1585,
+                9: 0.149,
+                },
+        'frequency':
+            {
+                0: 6,
+                1: 3,
+                2: 1,
+                3: 1,
+                4: 1,
+                5: 1,
+                6: 1,
+                7: 1,
+                8: 1,
+                9: 1,
+                }
+            }
+    assert terms == result
+
+
 def test_es_sentence():
     """Test term extraction from Spanish sentence."""
     extractor = TermExtractor(ES_SENTENCE)
@@ -189,6 +250,106 @@ def test_es_sentence():
 def test_bilingual_sentences():
     """Test bilingual term extraction from English/Spanish sentences."""
     extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE))
+    biterms = extractor.extract_terms()[:10].to_dict()
+    result = {
+        'src_term':
+            {
+                0: 'giant panda',
+                1: 'red panda',
+                2: 'panda',
+                3: 'oranges',
+                4: 'bamboo',
+                5: 'China',
+                6: 'rotund body'
+                },
+        'src_tags':
+            {
+                0: ['ADJ', 'NOUN'],
+                1: ['ADJ', 'NOUN'],
+                2: ['NOUN'],
+                3: ['NOUN'],
+                4: ['NOUN'],
+                5: ['PROPN'],
+                6: ['ADJ', 'NOUN']
+                },
+        'src_rank':
+            {
+                0: 0.3816,
+                1: 0.3691,
+                2: 0.4033,
+                3: 0.1098,
+                4: 0.092,
+                5: 0.139,
+                6: 0.0514
+                },
+        'trg_term':
+            {
+                0: 'panda gigante',
+                1: 'panda rojo',
+                2: 'panda',
+                3: 'naranjas',
+                4: 'bambú',
+                5: 'China',
+                6: 'cuerpo rotundo'
+                },
+        'trg_tags':
+            {
+                0: ['PROPN', 'ADJ'],
+                1: ['PROPN', 'PROPN'],
+                2: ['PROPN'],
+                3: ['NOUN'],
+                4: ['PROPN'],
+                5: ['PROPN'],
+                6: ['NOUN', 'ADJ']
+                },
+        'trg_rank':
+            {
+                0: 0.5167,
+                1: 0.4662,
+                2: 0.4657,
+                3: 0.184,
+                4: 0.1914,
+                5: 0.1794,
+                6: 0.1649
+                },
+        'similarity':
+            {
+                0: 0.9757999777793884,
+                1: 0.9807000160217285,
+                2: 1.0,
+                3: 0.9387000203132629,
+                4: 0.9236999750137329,
+                5: 1.0,
+                6: 0.9478999972343445
+                },
+        'frequency':
+            {
+                0: 1,
+                1: 1,
+                2: 1,
+                3: 1,
+                4: 1,
+                5: 1,
+                6: 1
+                },
+        'biterm_rank':
+            {
+                0: 0.5794,
+                1: 0.5743,
+                2: 0.5554,
+                3: 0.5252,
+                4: 0.5239,
+                5: 0.5204,
+                6: 0.5187
+                }
+            }
+
+    assert biterms == result
+
+
+def test_bilingual_sentences_lang_codes():
+    """Test bilingual term extraction from English/Spanish sentences passing language codes."""
+    extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE), src_lang='en', trg_lang='es')
     biterms = extractor.extract_terms()[:10].to_dict()
     result = {
         'src_term':
