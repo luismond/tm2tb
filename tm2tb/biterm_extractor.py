@@ -88,8 +88,8 @@ class BitermExtractor:
 
         Extract bilingual terms from a source sentence and a target sentence.
 
-        Call the class TermExtractor to extract terms from each sentence.
-        Compare the embeddings of both terms lists and align them.
+        Call the TermExtractor class to extract terms from each sentence.
+        Compare the embeddings of both terms lists and match them.
 
         Parameters
         ----------
@@ -143,10 +143,10 @@ class BitermExtractor:
         Extract biterms from a bitext (multiple bilingual sentences).
 
         It does not iterate over each bisentence, since it would be slow.
-        It calls the TermExtractor class to get *all* the source/target terms.
+        
+        It calls the TermExtractor class to get all the source/target terms.
         It produces a similarity matrix of all source and target terms.
-        It looks up the biterm co-ocurrences
-        (biterms that occur in the same bisentence)
+        It looks up the biterm co-ocurrences (biterms that occur in the same bisentence)
         It retrieves the most similar biterms from the co-ocurrrent biterms.
         It keeps the best target term for each source term and viceversa.
 
@@ -172,11 +172,10 @@ class BitermExtractor:
             """
             n = 0
             for row in bitext:
-                if row[0]==row[1]:
+                if row[0] == row[1]:
                     n += 1
             if len(bitext) == n:
                 raise ValueError('Source rows are identical to target rows!')
-            #else:
             return bitext
 
         bitext = validate_if_bitext_is_bilingual(bitext)
@@ -227,8 +226,8 @@ class BitermExtractor:
         Returns
         -------
         similarity_matrix : numpy.ndarray
-            Similarity matrix produced by calculating the cosine similarity
-                         of the source and the target spans embeddings.
+
+        Similarity matrix representing the cosine similarity of the source and the target spans embeddings.
 
         """
         src_embeddings = [span._.embedding for span in src_spans]
@@ -274,7 +273,7 @@ class BitermExtractor:
         biterms : list
             List of named tuples.
         side : str
-            String representing which "side" to prune: "src" or "trg".
+            String representing which side to prune ("src" or "trg").
 
         Returns
         -------
@@ -315,9 +314,13 @@ class BitermExtractor:
         biterms : list
             List of named tuples representing the extracted bilingual terms.
             For example:
-                [BiTerm(src_term='world', src_tags=['NOUN'],
-                       trg_term='mundo', trg_tags=['NOUN'],
-                       similarity=0.9823, frequency=1)]
+                [
+                    BiTerm(
+                        src_term='world', src_tags=['NOUN'],
+                        trg_term='mundo', trg_tags=['NOUN'],
+                        similarity=0.9823, frequency=1
+                        )
+                    ]
 
         """
         biterms_freqs_dict = biterms_dicts.maps[0]
@@ -356,13 +359,13 @@ class BitermExtractor:
                             similarity, frequency, biterm_rank)
 
             biterms.append(biterm)
-        if len(biterms)==0:
+        if len(biterms) == 0:
             raise ValueError('No biterms found.')
         return biterms
 
     @staticmethod
     def _return_as_table(biterms):
-        """ Return biterms as pandas dataframe."""
+        """Return biterms as pandas dataframe."""
         biterms = pd.DataFrame(biterms)
         biterms = biterms.sort_values(by='biterm_rank', ascending=False)
         biterms.reset_index(drop=True, inplace=True)

@@ -4,6 +4,7 @@ Load transformer model
 import os
 from sentence_transformers import SentenceTransformer
 
+
 class TransformerModel:
     """
     Load a multilingual sentence-transformer model.
@@ -20,7 +21,7 @@ class TransformerModel:
     Models compatible with TM2TB:
 
         LaBSE (best performance, specifically suited for bitext extraction).
-        
+
         setu4993/smaller-LaBSE (a smaller LaBSE model that supports only 15 languages)
 
         distiluse-base-multilingual-cased-v1
@@ -32,6 +33,7 @@ class TransformerModel:
         paraphrase-multilingual-mpnet-base-v2
 
     """
+
     def __init__(self, model_name):
         self.path = 'sbert_models'
         self.model_name = model_name

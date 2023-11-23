@@ -10,7 +10,7 @@ def detect_lang(input_: Union[str, list]):
     (See https://pypi.org/project/langdetect/)
     The languages supported depends on the spaCy language modules installed.
 
-    For one sentence, it simply passes the sentence to the langdetect module.
+    For one sentence, it passes the sentence to the langdetect module.
     For multiple sentences, it takes the most common language detected from a sample of sentences.
     This is done to speed-up the process.
 
@@ -60,7 +60,7 @@ def detect_lang(input_: Union[str, list]):
 def preprocess(sentence):
     """
     Minimal preprocessing function.
-    It just normalizes spaces and new line characters.
+    It normalizes spaces and new line characters.
 
     Parameters
     ----------
@@ -85,19 +85,15 @@ def preprocess(sentence):
         return sentence
 
     def normalize_space_seqs(sentence):
-        """
-        Finds sequences of more than one space, returns one space.
-        """
+        """Finds sequences of more than one space, returns one space."""
         sentence = re.sub(r"(\s+)", ' ', sentence)
         return sentence
 
     def normalize_newline(sentence):
-        """
-        Replaces hard coded newlines with normal newline symbol.
-        """
+        """Replaces hard coded newlines with normal newline symbol."""
         def repl(sentence):
             groups = sentence.groups()
-            return '{}{}{}'.format(groups[0],"\n", groups[2])
+            return '{}{}{}'.format(groups[0], "\n", groups[2])
         pattern = r"(.)(\n|\\n|\\\n|\\\\n|\\\\\n)(.)"
         return re.sub(pattern, repl, sentence)
 

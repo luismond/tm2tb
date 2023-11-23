@@ -6,6 +6,7 @@ TM2TB comes with 5 spaCy language models (English, Spanish, German, French and P
 In order to support additional languages, the corresponding spaCy model must be installed.
 Check the available spaCy language models here: https://spacy.io/models
 """
+
 import es_core_news_md
 import en_core_web_md
 import de_core_news_md
@@ -26,6 +27,7 @@ spacy_models = {
     }
 
 print('Loading spacy models...')
+
 
 def get_spacy_model(lang):
     """
@@ -51,10 +53,9 @@ def get_spacy_model(lang):
                     spacy.lang.pt.Portuguese
                     spacy.lang.it.Italian
     """
-    
+
     supported_languages = ['es', 'en', 'de', 'fr', 'pt', 'it']
     if lang not in supported_languages:
         raise ValueError(f"Sorry, {lang} model isn't installed.\nPlease install the spaCy language model first.")
     spacy_model = spacy_models[lang]
     return spacy_model
-    

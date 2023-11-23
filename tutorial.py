@@ -98,5 +98,5 @@ biterms = extractor.extract_terms(incl_pos=['NOUN', 'PROPN'])
 extractor = BitermExtractor((en_sentence, es_sentence))
 biterms = extractor.extract_terms(similarity_min=0.5)
 
-#By default, tm2tb presents the most-similar term results. That is, terms whose similarity is above .9
-# You can explore the less-similar results passing a value between 0 and 1 for the `similarity_min` parameter.
+#  By default, tm2tb presents the most-similar term results (terms whose similarity is above .9).
+#  You can explore the less-similar results passing a value lower than .9 to the `similarity_min` parameter.
