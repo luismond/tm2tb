@@ -29,6 +29,8 @@ class TermExtractor:
     ----------
     input_ : Union[str, list]
         String or list of strings
+    lang: str
+        Two-character language identifier
 
     Methods
     -------
@@ -36,12 +38,15 @@ class TermExtractor:
 
     """
 
-    def __init__(self, input_: Union[str, list]):
+    def __init__(self, input_: Union[str, list], lang=None):
         if isinstance(input_, str):
             self.input_ = [input_]
         if isinstance(input_, list):
             self.input_ = input_
-        self.lang = detect_lang(self.input_)
+        if lang is None:
+            self.lang = detect_lang(self.input_)
+        else:
+            self.lang = lang
         self.spacy_model = get_spacy_model(self.lang)
         self.docs = list(self.spacy_model.pipe(self.input_))
         self.emb_dims = trf_model.get_sentence_embedding_dimension()

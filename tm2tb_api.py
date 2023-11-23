@@ -27,16 +27,26 @@ def post_file():
     span_range = (1, 3)
     incl_pos = ['ADJ', 'PROPN', 'NOUN']
     excl_pos = ['SPACE', 'SYM']
-    biterms_json = get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos)
+    src_lang = 'en'
+    trg_lang = 'es'
+    biterms_json = get_json_biterms(
+        bitext,
+        freq_min,
+        span_range,
+        incl_pos,
+        excl_pos,
+        src_lang=src_lang,
+        trg_lang=trg_lang
+        )
     return json.dumps(biterms_json)
 
 
-def get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos):
+def get_json_biterms(bitext, freq_min, span_range, incl_pos, excl_pos, src_lang=None, trg_lang=None):
     """Take bitext and parameters, return the json result."""
     try:
         bitext = list(zip(bitext["src"], bitext["trg"]))
         span_range = tuple((int(span_range[0]), int(span_range[1])))
-        extractor = BitermExtractor(bitext)
+        extractor = BitermExtractor(bitext, src_lang=src_lang, trg_lang=trg_lang)
         biterms = extractor.extract_terms(
             freq_min=freq_min,
             span_range=span_range,
