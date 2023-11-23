@@ -11,15 +11,15 @@ app = Flask(__name__)
 @app.route("/", methods=["POST"])
 def post_file():
     """
-    TM2TB server API.
+    TM2TB API.
 
     Input:
-    Json string represents a client-submitted bitext.
+    Json string representing a bitext.
 
     Returns
     -------
     TYPE: str
-        json string representing the extracted terms
+        json string representing the extracted biterms.
 
     """
     bitext = pd.read_json(request.json)

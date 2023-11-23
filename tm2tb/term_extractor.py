@@ -23,7 +23,7 @@ from tm2tb.utils import detect_lang
 
 class TermExtractor:
     """
-    Class representing a simple term/keyword extractor.
+    Class representing a monolingual term extractor.
 
     Attributes
     ----------
@@ -182,9 +182,9 @@ class TermExtractor:
 
     def _get_spans_dicts(self, span_range, freq_min):
         """Collect spans and add them to span dicts."""
-        spans_freqs_dict = defaultdict(int) #All spans and their frequencies.
-        spans_docs_dict = defaultdict(set) #All spans and the documents in which they occur.
-        spans_texts_dict = defaultdict(set) #All spans and their string representation.
+        spans_freqs_dict = defaultdict(int)  # All spans and their frequencies.
+        spans_docs_dict = defaultdict(set)  # All spans and the documents in which they occur.
+        spans_texts_dict = defaultdict(set)  # All spans and their string representation.
 
         for doc in self.docs:
             span_ranges = list((i, i+n) for i in range(len(doc)) \
