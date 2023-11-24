@@ -1,11 +1,14 @@
 """
 Extract terms from a sentence or multiple sentences.
 
-Classes:
+Classes
+-------
     TermExtractor
 
-Functions:
-    extract_terms(Union[str, list])
+Methods
+-------
+    extract_terms()
+
 """
 
 from collections import defaultdict
@@ -30,11 +33,11 @@ class TermExtractor:
     input_ : Union[str, list]
         String or list of strings
     lang: str
-        Two-character language identifier
+        Optional two-character language identifier
 
     Methods
     -------
-    extract_terms(self, return_as_tuples=bool, **kwargs)
+    extract_terms(self, **kwargs)
 
     """
 
@@ -76,26 +79,25 @@ class TermExtractor:
         Parameters
         ----------
         return_as_table : bool, optional
-            Return the results as pandas df. The default is True.
+            Return the results as pandas dataframe, the default is True
 
         span_range : tuple, optional
-            Length range of the terms. The default is (1, 3).
+            Length range of the terms. The default is (1, 2)
 
         freq_min : int, optional
-            Minimum ocurrence frequency of the terms. The default is 1.
+            Minimum ocurrence frequency of the terms. The default is 1
 
         incl_pos : list, optional
-            See `_set_span_extensions`
+            List of part-of-speech tags to be included. See `_set_span_extensions`
 
         excl_pos : list, optional
-            See `_set_span_extensions`
+            List of part-of-speech tags to be excluded. See `_set_span_extensions`
 
         Returns
         -------
-        terms : list of named tuples
-            A list of tuples representing the best terms from the input.
+        terms : list of spaCy spans or a Pandas dataframe
+            A collection representing the extracted terms
         """
-
         # Spans
         self._set_span_rules(incl_pos, excl_pos)
         spans_dicts = self._get_spans_dicts(span_range, freq_min)
@@ -112,15 +114,15 @@ class TermExtractor:
 
         # Build spans
         top_spans = []
-        for ix, emb in enumerate(spans_embeddings):
-            span = list(spans_texts_dict.values())[ix]
-            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][ix]), 4)
-            stop_similarity = round(float(spans_stops_sims.reshape(1, -1)[0][ix]), 4)
+        for idx, emb in enumerate(spans_embeddings):
+            span = list(spans_texts_dict.values())[idx]
+            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][idx]), 4)
+            stop_similarity = round(float(spans_stops_sims.reshape(1, -1)[0][idx]), 4)
             if stop_similarity <= max_stopword_similarity:
                 span._.similarity = similarity
                 span._.frequency = spans_freqs_dict[span._.true_case]
                 span._.rank = span._.similarity
-                span._.span_id = ix
+                span._.span_id = idx
                 span._.docs_idx = spans_docs_dict[span._.true_case]
                 span._.embedding = emb
                 top_spans.append(span)
@@ -128,8 +130,8 @@ class TermExtractor:
         if collapse_similarity is True:
             top_spans = self._collapse_similarity(top_spans)
 
-        for i, span in enumerate(top_spans):
-            span._.span_id = i
+        for idx, span in enumerate(top_spans):
+            span._.span_id = idx
         top_spans = sorted(top_spans, key=lambda span: span._.span_id)
 
         if return_as_table is True:
@@ -139,16 +141,14 @@ class TermExtractor:
     @staticmethod
     def _set_span_rules(incl_pos=None, excl_pos=None):
         """
-        Set custom attributes and properties on the document Spans.
+        Set custom attributes and properties on the spans.
 
         The attributes are used to filter the list of candidate spans.
-
-        Tags are simple UPOS part-of-speech tags.
 
         Parameters
         ----------
          incl_pos : list, optional
-             List of POS tags that must be present at the edges of the span.
+             List of POS tags that must exist at the edges of the span.
              If None, the default is ['NOUN', 'PROPN', 'ADJ']
 
          excl_pos : list, optional
@@ -161,54 +161,57 @@ class TermExtractor:
             Returns nothing.
 
         """
-        pos_tags = ['ADJ', 'ADP', 'ADV', 'AUX', 'CCONJ', 'DET',
-                    'INTJ', 'NOUN', 'NUM', 'PART', 'PRON', 'PROPN',
-                    'PUNCT', 'SCONJ', 'SYM', 'VERB', 'X', 'SPACE']
+        pos_tags = [
+            'ADJ', 'ADP', 'ADV', 'AUX', 'CCONJ', 'DET', 'INTJ', 'NOUN', 'NUM',
+            'PART', 'PRON', 'PROPN', 'PUNCT', 'SCONJ', 'SYM', 'VERB', 'X', 'SPACE'
+            ]
         if incl_pos is None or len(incl_pos) == 0:
             incl_pos = ['NOUN', 'PROPN', 'ADJ']
         if excl_pos is None or len(excl_pos) == 0:
             excl_pos = [tag for tag in pos_tags if tag not in incl_pos]
 
         # Define span rules
-        def incl_pos_(span):
+        def _incl_pos(span):
             return span[0].pos_ in incl_pos and span[-1].pos_ in incl_pos
 
-        def excl_pos_(span):
+        def _excl_pos(span):
             return not any(t.pos_ in excl_pos for t in span)
 
-        def alpha_edges(span):
+        def _alpha_edges(span):
             return span[0].text.isalpha() and span[-1].text.isalpha()
 
         # Register span rules
-        Span.set_extension("incl_pos_edges", getter=incl_pos_, force=True)
-        Span.set_extension("excl_pos_any", getter=excl_pos_, force=True)
-        Span.set_extension("alpha_edges", getter=alpha_edges, force=True)
+        Span.set_extension("incl_pos_edges", getter=_incl_pos, force=True)
+        Span.set_extension("excl_pos_any", getter=_excl_pos, force=True)
+        Span.set_extension("alpha_edges", getter=_alpha_edges, force=True)
 
     def _get_spans_dicts(self, span_range, freq_min):
         """Collect spans and add them to span dicts."""
-        spans_freqs_dict = defaultdict(int)  # All spans and their frequencies.
-        spans_docs_dict = defaultdict(set)  # All spans and the documents in which they occur.
-        spans_texts_dict = defaultdict(set)  # All spans and their string representation.
+        spans_freqs_dict = defaultdict(int)  # All spans and their frequencies
+        spans_docs_dict = defaultdict(set)   # All spans and the documents in which they occur
+        spans_texts_dict = defaultdict(set)  # All spans and their string representation
 
         for doc in self.docs:
             span_ranges = list((i, i+n) for i in range(len(doc))
                                for n in range(span_range[0], span_range[1]+1))
+
             spans = (doc[n:n_] for (n, n_) in span_ranges)
             for span in spans:
-                if span._.incl_pos_edges is True and span._.excl_pos_any is True\
-                    and span._.alpha_edges is True and len(span.text) > 1:
-                    for tok in span:
-                        if tok.pos_ == 'PROPN':
-                            tok._.true_case = tok.text
-                        else:
-                            if tok.is_upper is True:
+                if all((span._.incl_pos_edges, span._.excl_pos_any, span._.alpha_edges)):
+                    if len(span.text) > 1:
+                        for tok in span:
+                            if tok.pos_ == 'PROPN':
                                 tok._.true_case = tok.text
                             else:
-                                tok._.true_case = tok.text.lower()
-                    span._.true_case = ''.join([''.join((tok._.true_case, tok.whitespace_)) for tok in span]).strip()
-                    spans_freqs_dict[span._.true_case] += 1
-                    spans_texts_dict[span._.true_case] = span
-                    spans_docs_dict[span._.true_case].add(self.docs.index(span.doc))
+                                if tok.is_upper is True:
+                                    tok._.true_case = tok.text
+                                else:
+                                    tok._.true_case = tok.text.lower()
+                        span._.true_case = ''.join(
+                            [''.join((tok._.true_case, tok.whitespace_)) for tok in span]).strip()
+                        spans_freqs_dict[span._.true_case] += 1
+                        spans_texts_dict[span._.true_case] = span
+                        spans_docs_dict[span._.true_case].add(self.docs.index(span.doc))
 
         for span, freq in spans_freqs_dict.items():
             if freq < freq_min:
@@ -221,6 +224,7 @@ class TermExtractor:
         return spans_dicts
 
     def _get_docs_embeddings_avg(self, spans_dicts):
+        """Get the documents' average embedding."""
         top_docs_idx = set(itertools.chain(*list(spans_dicts.maps[1].values())))
         top_docs_texts = list(self.docs[i].text for i in top_docs_idx)
         docs_embeddings = trf_model.encode([text for text in top_docs_texts if len(text) > 0])
@@ -229,23 +233,27 @@ class TermExtractor:
 
     @staticmethod
     def _collapse_similarity(spans):
+        """
+        Given candidates with differing casing, keep only the highest ranked one.
+
+        For example, "panda bear", "Panda bear" and "Panda Bear"
+
+        """
         # Sort spans by rank
         spans = sorted(spans, key=lambda span: span._.similarity, reverse=True)
         # Take their saved vectors
         span_embs = [s._.embedding for s in spans]
         # Make terms similarity matrix
         sm = cosine_similarity(span_embs, span_embs)
-        # Use the terms' true case repr
+        # Use the terms' true case representation
         spans_texts = [sp._.true_case for sp in spans]
         seen_values = set()
-        # For each idx in matrix axis 0
+        # For each idx in axis 0
         index = list(range(sm.shape[0]))
         for idx in index:
-            # Key term
             key = spans_texts[idx]
-            # If it hasn't been seen
             if key not in seen_values:
-                # Take the sim values of all other terms except itself
+                # Take the sim values of all other terms except itself's
                 row = sm[:, idx:]
                 values_idx = [i for i in index if row[i][0] > .9 and spans_texts[i] != key]
                 values = [spans_texts[i] for i in values_idx]
@@ -276,6 +284,7 @@ class TermExtractor:
 
     @staticmethod
     def _mmr_rank(spans_embeddings, spans_doc_sims, diversity, spans_dicts):
+        """Maximal marginal relevance ranking algorithm."""
         spans_freqs_dict = spans_dicts.maps[0]
         spans_docs_dict = spans_dicts.maps[1]
         spans_texts_dict = spans_dicts.maps[2]
@@ -283,7 +292,7 @@ class TermExtractor:
         spans_sims = cosine_similarity(spans_embeddings)
         top_spans = []
         top_n = len(spans_embeddings)
-        # Choose best span to initialize the best spans index
+        # Choose best span to initialize the best spans' index
         best_spans_idx = [np.argmax(spans_doc_sims)]
         # Initialize the candidates index
         candidates_idx = [i for i in range(len(spans_embeddings)) if i != best_spans_idx[0]]
