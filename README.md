@@ -6,40 +6,41 @@ Given a **T**ranslation **M**emory, it extracts a **T**erm **B**ase
 
 ## What is a Term Base?
 
-In translation projects, a term base is a collection of terms relevant to a project.
-It features words and terms with their corresponding translation to a target language.
+In translation projects, a term base is a collection of terms relevant to a project
+
+It features words and terms with their corresponding translation to a target language
 
 ## What is a Translation Memory?
 
-A translation memory is a file that stores translations from previously translated files.
-Normally it is bilingual, but it can also contain translations from many languages.
+A translation memory is a file that stores translations from previously translated files
 
-## How can I use tm2tb?
+Normally it is bilingual, but it can also contain translations from many languages
 
-In translation projects, bilingual term checks are part of the quality assurance processes.
-- Extract biterms from bitexts, add them to a LQA pipeline, run QA checks
+## Where can I use tm2tb?
 
-In machine translation projects, bilingual term is used to fine-tune MT models
-- Extract biterms from bitexts, add them to a training data pipeline, fine-tune a language model
+Translation and localization: bilingual term lists are used in the quality assurance process
 
-In foreign language teaching, bilingual term lists are used as a teaching resource
-- Extract terms from bilingual data, generate vocabulary cards for students
+Machine translation: bilingual terminology is used to fine-tune MT models
 
-In transcreation projects, equivalent terms are needed to provide creative translations
-- Extract terms from bilingual data, explore their similarity and find matches beyond literal translations
+Foreign language teaching: bilingual term lists are used can be used as a teaching resource
 
-## Approach
+Transcreation: creative, non-literal translations can be extracted as suggestions from bilingual data
+
+## What is tm2tb's recipe?
 
 1. Extract terms from source and target languages
+
 2. Use an AI model to convert the terms to 'vectors' (a complex number, don't worry about this)
+
 3. Use the vectors to find the closest source/target term matches
 
+4. Profit!
 
 <hr/>
 
 ## Languages supported
 
-English, Spanish, German, French, Portuguese, Italian, Chinese, Russian.
+Any language supported by spaCy
 
 ## Bilingual file formats supported
 
@@ -285,9 +286,9 @@ Do the same for bilingual term extraction:
 
 <hr/>
 
-## Installation
+## Installation in a linux OS
 
-1. Install pipenv and create a virtual environment.
+1. Install pipenv and create a virtual environment
 
 `pip install pipenv`
 
@@ -327,13 +328,11 @@ it_core_news_md-3.3.0
 
 ### spaCy models
 
-tm2tb includes 6 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0), [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0), and [Italian](https://github.com/explosion/spacy-models/releases/it_core_news_md-3.3.0)
+By default, tm2tb includes 6 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0), [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0), and [Italian](https://github.com/explosion/spacy-models/releases/it_core_news_md-3.3.0)
 
 If they are too large for your environment, you can download smaller models, but the Part-of-Speech tagging accuracy will be lower.
 
 To add more languages, add them to `tm2tb.spacy_models.py`.
-
-To do: improve the efficiency of language model installation and loading. 
 
 Check the available spaCy language models [here](https://spacy.io/models).
 
