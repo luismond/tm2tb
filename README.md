@@ -1,8 +1,8 @@
 # tm2tb
 
-**tm2tb** is an AI bilingual term extractor. 
+**tm2tb** is a bilingual term extractor. 
 
-It extracts a **T**erm **B**ase from a **T**ranslation **M**emory. 
+Given a **T**ranslation **M**emory, it extracts a **T**erm **B**ase
 
 ## What is a Term Base?
 
