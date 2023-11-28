@@ -42,7 +42,12 @@ class BitermExtractor:
 
     """
 
-    def __init__(self, input_: Union[tuple, list], src_lang=None, trg_lang=None):
+    def __init__(
+            self,
+            input_: Union[tuple, list],
+            src_lang=None,
+            trg_lang=None
+            ):
         self.input_ = input_
         self.src_lang = src_lang
         self.trg_lang = trg_lang
@@ -58,8 +63,9 @@ class BitermExtractor:
         Parameters
         ----------
         similarity_min : int, optional
-            Minimum similarity value between source and target terms.
+            Minimum similarity value of source and target terms.
             The default is .9.
+
         **kwargs : dict
             span_range : tuple, optional
                 Length range of the terms. The default is (1, 3).
@@ -77,11 +83,15 @@ class BitermExtractor:
         Returns
         -------
         terms : list
-            List of named tuples representing the extracted bilingual terms.
+            List of named tuples representing the extracted biterms.
             For example:
-                [BiTerm(src_term='world', src_tags=['NOUN'],
-                       trg_term='mundo', trg_tags=['NOUN'],
-                       similarity=0.9823, frequency=1)]
+                [
+                    BiTerm(
+                        src_term='world', src_tags=['NOUN'],
+                        trg_term='mundo', trg_tags=['NOUN'],
+                        similarity=0.9823, frequency=1
+                        )
+                    ]
         """
         if isinstance(self.input_, tuple):
             terms = self.extract_terms_from_bisentence(similarity_min, **kwargs)
@@ -94,7 +104,7 @@ class BitermExtractor:
     def extract_terms_from_bisentence(self, similarity_min, **kwargs):
         """
 
-        Extract bilingual terms from a source sentence and a target sentence.
+        Extract biterms from a source sentence and a target sentence.
 
         Call the TermExtractor class to extract terms from each sentence.
         Compare the embeddings of both terms lists and match them.
@@ -109,7 +119,7 @@ class BitermExtractor:
         Returns
         -------
         biterms : list
-            List of named tuples representing the extracted bilingual terms.
+            List of named tuples representing the extracted biterms.
 
         """
         bisentence = self.input_
@@ -142,8 +152,7 @@ class BitermExtractor:
         biterms = self._build_biterms(biterms_dicts)
         biterms = self._prune_biterms(biterms, 'src')
         biterms = self._prune_biterms(biterms, 'trg')
-        biterms = sorted(biterms, key=lambda biterm: biterm.similarity, reverse=True)
-        return biterms
+        return sorted(biterms, key=lambda biterm: biterm.similarity, reverse=True)
 
     def extract_terms_from_bitext(self, similarity_min, **kwargs):
         """
@@ -216,8 +225,7 @@ class BitermExtractor:
         biterms = self._build_biterms(biterms_dicts)
         biterms = self._prune_biterms(biterms, 'src')
         biterms = self._prune_biterms(biterms, 'trg')
-        biterms = sorted(biterms, key=lambda biterm: biterm.biterm_rank, reverse=True)
-        return biterms
+        return sorted(biterms, key=lambda biterm: biterm.biterm_rank, reverse=True)
 
     @staticmethod
     def _get_similarity_matrix(src_spans, trg_spans):
@@ -245,12 +253,7 @@ class BitermExtractor:
 
     @staticmethod
     def _get_bitext_spans_dict(src_spans, trg_spans):
-        """
-        Construct a mapping of all the bisentences indices and their biterms.
-
-        (When extracting biterms from multiple bisentences)
-
-        """
+        """Construct a mapping of all the bisentences indices and their biterms."""
         src_doc_spans_dict = defaultdict(set)
         for span in src_spans:
             for doc_id in span._.docs_idx:
@@ -299,7 +302,6 @@ class BitermExtractor:
         for _, group in groupby(biterms, keyfunc):
             # Sort biterms group by similarity
             group = sorted(group, key=lambda group: group.similarity, reverse=True)
-            # Take first biterm
             best_biterm = list(group)[0]
             biterms_.append(best_biterm)
         return biterms_
@@ -341,7 +343,7 @@ class BitermExtractor:
 
         def get_biterm_rank(frequency, similarity, src_rank, trg_rank):
             freq_sigm = 1/(1 + np.exp(-frequency))
-            # downweight non-translatables (terms which are equal)
+            # downweight non-translatables (where source and target terms are the same)
             if similarity == 1:
                 similarity = similarity * .7
             biterm_rank = ((src_rank + trg_rank)/2) * similarity * freq_sigm
