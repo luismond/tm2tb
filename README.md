@@ -1,24 +1,32 @@
 # tm2tb
 
-**tm2tb** is a bilingual term extractor. 
+**tm2tb** extracts terms from bilingual data. 
+
+It identifies terms in both source and target languages.
 
 Given a **T**ranslation **M**emory, it extracts a **T**erm **B**ase
 
 ## What is a Term Base?
 
-In translation projects, a term base is a collection of terms relevant to a project
+In translation projects, a term base is a collection of terms relevant to a project.
 
-It features words and terms with their corresponding translation to a target language
+It is like having a specialized bilingual dictionary.
+
+It includes terms along with their corresponding translations in the target language.
 
 ## What is a Translation Memory?
 
-A translation memory is a file that stores translations from previously translated files
+A Translation Memory is a file that stores translations from previously translated documents.
 
-Normally it is bilingual, but it can also contain translations from many languages
+Typically, it’s bilingual, containing pairs of sentences in the source and target languages.
+
+However, it can also include translations from multiple languages.
 
 ## Where can I use tm2tb?
 
-Translation and localization: bilingual term lists are used in the quality assurance process
+### Translation and localization
+
+Bilingual term lists play a crucial role in quality assurance during translation and localization projects.
 
 Machine translation: bilingual terminology is used to fine-tune MT models
 
