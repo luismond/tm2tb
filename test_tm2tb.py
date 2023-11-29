@@ -686,7 +686,7 @@ def test_bilingual_mxliff():
             8: 'ancestro común',
             9: 'características'}
         }
-    path = 'data/test_bitext_en_es.xlsx'
+    path = 'data/test_bitext_en_es.mxliff'
     bitext = BitextReader(path).read_bitext()
     extractor = BitermExtractor(bitext)
     biterms = extractor.extract_terms()[:10].to_dict()
