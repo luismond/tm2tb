@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:mq="MQXliff" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+<file original="panda_bear_english_spanish.csv" mq:id="3f0ba464-983d-42b7-82cc-51b1c782121b" mq:projectid="2f9dcf24-679f-4fc3-a511-ce332af75b1b" source-language="en" target-language="es" datatype="x-MemoQ.DocConverters.MuLiDelimited.MuLiDelimitedConverter">
+<header>
+<tool tool-id="MQ" tool-name="MemoQ" tool-version="10.4.11" tool-company="Kilgray" />
+<mq:export-path>C:\Users\luism\Downloads\panda_bear_english_spanish_spa.csv</mq:export-path>
+<mq:docinformation mq:isabstract="isabstract" mq:hashistory="true" mq:docname="panda_bear_english_spanish.csv" mq:majorversion="1" mq:minorversion="1" mq:nosplitjoin="false" mq:langindepgroupid="2ba209db-bc2e-40ac-81d2-e9db42988d16" mq:multidocgroupid="97f929fc-070d-4eba-bb79-647d36e08961" mq:origfile="C:\Users\luism\Downloads\panda_bear_english_spanish.csv" mq:numberofwords="255" mq:filterconfigname="custom" mq:filterconfigserverurl="" mq:changetrackingenabledstates="Off,Off,Off,Off">
+<mq:versioninfos mq:majorversion="1"><mq:minorversioninfo mq:minorversion="0" mq:comment="" mq:createdthroughview="false" mq:createreason="Import" mq:creationtime="503401491" mq:creatoruser="luism" mq:tag=""><mq:details mq:type="MinorVersionDetailsImport"><![CDATA[<?xml version="1.0"?>
+<MinorVersionDetailsImport xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FilePath>C:\Users\luism\Downloads\panda_bear_english_spanish.csv</FilePath>
+</MinorVersionDetailsImport>]]></mq:details></mq:minorversioninfo>
+<mq:minorversioninfo mq:minorversion="1" mq:comment="" mq:createdthroughview="false" mq:createreason="BilingualExport" mq:creationtime="503401588" mq:creatoruser="luism" mq:tag=""><mq:details mq:type="MinorVersionDetailsBilingExport"><![CDATA[<?xml version="1.0"?>
+<MinorVersionDetailsBilingExport xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <BilingualType>Xliff</BilingualType>
+  <TargetPath>C:\Users\luism\Downloads\panda_bear_english_spanish.csv_spa.mqxliff</TargetPath>
+  <TwoColumpRtfProperties>MutipleDocuments</TwoColumpRtfProperties>
+  <BilingRtfProperties>EmptySegmentsWithMarkup</BilingRtfProperties>
+  <XliffProperties>IncludePreview</XliffProperties>
+</MinorVersionDetailsBilingExport>]]></mq:details></mq:minorversioninfo>
+</mq:versioninfos>
+<mq:tagdefinition alignhighlight="false" caseinsensitive="false" rawhtml="false" showitags="false" basicformat="false" supersubscript="false" xmlcommands="false"><mq:tagdefelement name="mq:ch" placeholder="false" tagrequired="Normal"><mq:tagdefattribute name="val" filtered="true" required="true" translatable="false" /><mq:tagdefattribute name="invalidxmlchar" filtered="true" required="false" translatable="false" /></mq:tagdefelement><mq:tagdefelement name="mq:rxt" placeholder="false" tagrequired="Normal"><mq:tagdefattribute name="displaytext" filtered="true" required="true" translatable="false" /><mq:tagdefattribute name="val" filtered="true" required="true" translatable="false" /><mq:tagdefattribute name="fmt_b" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_i" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_u" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_sup" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_sub" filtered="true" required="false" translatable="false" /></mq:tagdefelement><mq:tagdefelement name="mq:rxt-req" placeholder="true" tagrequired="Required"><mq:tagdefattribute name="displaytext" filtered="true" required="true" translatable="false" /><mq:tagdefattribute name="val" filtered="true" required="true" translatable="false" /><mq:tagdefattribute name="fmt_b" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_i" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_u" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_sup" filtered="true" required="false" translatable="false" /><mq:tagdefattribute name="fmt_sub" filtered="true" required="false" translatable="false" /></mq:tagdefelement></mq:tagdefinition>
+<mq:doccomments />
+<mq:lqamodel><![CDATA[<XMLSerializedLQAModel xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Version>1</Version><Name /><RevisionID>00000000-0000-0000-0000-000000000000</RevisionID><UseSeverityLevels>false</UseSeverityLevels><UsePenaltyPoints>false</UsePenaltyPoints><RequiresReviewerCommenting>false</RequiresReviewerCommenting><SeverityLevelNames /><ModelEntries /><PassFailCriterion><CountMultipleErrorOccuranceAsOne>false</CountMultipleErrorOccuranceAsOne><CritDefType>PenaltyPoints</CritDefType><PenaltyPointsNominator>0</PenaltyPointsNominator><PenaltyPointPerWordsDenominator>0</PenaltyPointPerWordsDenominator><NormalizedPenaltyScoreLimit>0</NormalizedPenaltyScoreLimit><CritDefinitionRules /></PassFailCriterion><QALQAMapping /><Timestamp>0001-01-01T00:00:00</Timestamp></XMLSerializedLQAModel>]]></mq:lqamodel>
+<mq:externalpreviewinfo>
+<mq:previewidsbylabels>
+<mq:previewidbylabel mq:label="0" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-0" />
+<mq:previewidbylabel mq:label="1" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-1" />
+<mq:previewidbylabel mq:label="2" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-2" />
+<mq:previewidbylabel mq:label="3" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-3" />
+<mq:previewidbylabel mq:label="4" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-4" />
+<mq:previewidbylabel mq:label="5" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-5" />
+<mq:previewidbylabel mq:label="6" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-6" />
+<mq:previewidbylabel mq:label="7" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-7" />
+<mq:previewidbylabel mq:label="8" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-8" />
+<mq:previewidbylabel mq:label="9" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-9" />
+<mq:previewidbylabel mq:label="10" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-10" />
+<mq:previewidbylabel mq:label="11" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-11" />
+<mq:previewidbylabel mq:label="12" mq:previewid="mQ-default-67795780-6499-460d-ac0b-1645d7ae25ad-12" />
+</mq:previewidsbylabels>
+</mq:externalpreviewinfo>
+</mq:docinformation>
+</header>
+<body>
+<trans-unit id="1" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="831d09ff-4289-4cd8-9764-f04b725c547a" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="0" mq:lastlabel="0" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="0">source</source>
+<target xml:space="preserve">target</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="831d09ff-4289-4cd8-9764-f04b725c547a" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="0" mq:lastlabel="0" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="0" mq:hasfollowingobject="hasfollowingobject">source</source>
+<target xml:space="preserve">target</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="2" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="af87b45d-47ec-4134-af32-fa4beea1512a" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="1" mq:lastlabel="1" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="1">The giant panda also known as the panda bear (or simply the panda), is a bear native to South Central China.</source>
+<target xml:space="preserve">El panda gigante, también conocido como oso panda (o simplemente panda), es un oso nativo del centro sur de China.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="af87b45d-47ec-4134-af32-fa4beea1512a" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="1" mq:lastlabel="1" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="1" mq:hasfollowingobject="hasfollowingobject">The giant panda also known as the panda bear (or simply the panda), is a bear native to South Central China.</source>
+<target xml:space="preserve">El panda gigante, también conocido como oso panda (o simplemente panda), es un oso nativo del centro sur de China.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="3" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="672055c9-9dd9-4152-92ec-400dfc6d43c1" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="2" mq:lastlabel="2" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="2">It is characterised by its bold black-and-white coat and rotund body.</source>
+<target xml:space="preserve">Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="672055c9-9dd9-4152-92ec-400dfc6d43c1" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="2" mq:lastlabel="2" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="2" mq:hasfollowingobject="hasfollowingobject">It is characterised by its bold black-and-white coat and rotund body.</source>
+<target xml:space="preserve">Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="4" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="805db8b7-5e55-416e-9e58-626fd0cf12d9" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="3" mq:lastlabel="3" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="3">The name "giant panda" is sometimes used to distinguish it from the red panda, a neighboring musteloid.</source>
+<target xml:space="preserve">El nombre "panda gigante" se usa a veces para distinguirlo del panda rojo, un musteloide similar.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="805db8b7-5e55-416e-9e58-626fd0cf12d9" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="3" mq:lastlabel="3" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="3" mq:hasfollowingobject="hasfollowingobject">The name "giant panda" is sometimes used to distinguish it from the red panda, a neighboring musteloid.</source>
+<target xml:space="preserve">El nombre "panda gigante" se usa a veces para distinguirlo del panda rojo, un musteloide similar.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="5" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="a13d1ff4-241c-4d42-98d3-1be8cd0e9aee" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="4" mq:lastlabel="4" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="4">Though it belongs to the order Carnivora, the giant panda is a folivore, with bamboo leaves and shoots making up more than 99% of its diet.</source>
+<target xml:space="preserve">Aunque pertenece al orden Carnivora, el panda gigante es un folívoro; más del 99 % de su dieta consiste en brotes y hojas de bambú.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="a13d1ff4-241c-4d42-98d3-1be8cd0e9aee" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="4" mq:lastlabel="4" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="4" mq:hasfollowingobject="hasfollowingobject">Though it belongs to the order Carnivora, the giant panda is a folivore, with bamboo leaves and shoots making up more than 99% of its diet.</source>
+<target xml:space="preserve">Aunque pertenece al orden Carnivora, el panda gigante es un folívoro; más del 99 % de su dieta consiste en brotes y hojas de bambú.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="6" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="b301d151-6b36-459f-8c7f-bc1255948739" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="5" mq:lastlabel="5" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="5">Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion.</source>
+<target xml:space="preserve">En la naturaleza, los pandas gigantes comen ocasionalmente otras hierbas, tubérculos silvestres o incluso carne en forma de aves, roedores o carroña.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="b301d151-6b36-459f-8c7f-bc1255948739" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="5" mq:lastlabel="5" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="5" mq:hasfollowingobject="hasfollowingobject">Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion.</source>
+<target xml:space="preserve">En la naturaleza, los pandas gigantes comen ocasionalmente otras hierbas, tubérculos silvestres o incluso carne en forma de aves, roedores o carroña.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="7" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="e1bc44ae-3033-4548-925d-93f50f36470e" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="6" mq:lastlabel="6" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="6">In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.</source>
+<target xml:space="preserve">En cautiverio, pueden alimentarse de miel, huevos, pescado, ñame, hojas de arbustos, naranjas o plátanos, además de alimentos preparados.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="e1bc44ae-3033-4548-925d-93f50f36470e" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="6" mq:lastlabel="6" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="6" mq:hasfollowingobject="hasfollowingobject">In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.</source>
+<target xml:space="preserve">En cautiverio, pueden alimentarse de miel, huevos, pescado, ñame, hojas de arbustos, naranjas o plátanos, además de alimentos preparados.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="8" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="6609141a-a2ef-43f8-be1c-3458881eb9d4" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="7" mq:lastlabel="7" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="7">The giant panda lives in a few mountain ranges in central China, mainly in Sichuan, but also in neighbouring Shaanxi and Gansu.</source>
+<target xml:space="preserve">El panda gigante vive en algunas cadenas montañosas en el centro de China, principalmente en Sichuan, pero también en las ciudades cercanas de Shaanxi y Gansu.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="6609141a-a2ef-43f8-be1c-3458881eb9d4" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="7" mq:lastlabel="7" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="7" mq:hasfollowingobject="hasfollowingobject">The giant panda lives in a few mountain ranges in central China, mainly in Sichuan, but also in neighbouring Shaanxi and Gansu.</source>
+<target xml:space="preserve">El panda gigante vive en algunas cadenas montañosas en el centro de China, principalmente en Sichuan, pero también en las ciudades cercanas de Shaanxi y Gansu.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="9" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="6e09311d-4b19-4519-9c69-a0c713847884" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="8" mq:lastlabel="8" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="8">As a result of farming, deforestation, and other development, the giant panda has been driven out of the lowland areas where it once lived, and it is a conservation-reliant vulnerable species.</source>
+<target xml:space="preserve">Como resultado de la agricultura, la deforestación y otros desarrollos, el panda gigante ha sido desplazado de las zonas de baja altitud que habitaba, y es una especie vulnerable que depende de la conservación.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="6e09311d-4b19-4519-9c69-a0c713847884" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="8" mq:lastlabel="8" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="8" mq:hasfollowingobject="hasfollowingobject">As a result of farming, deforestation, and other development, the giant panda has been driven out of the lowland areas where it once lived, and it is a conservation-reliant vulnerable species.</source>
+<target xml:space="preserve">Como resultado de la agricultura, la deforestación y otros desarrollos, el panda gigante ha sido desplazado de las zonas de baja altitud que habitaba, y es una especie vulnerable que depende de la conservación.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="10" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="9ef68fea-7dfb-46fa-bab4-ee03bba90b07" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="9" mq:lastlabel="9" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="9">For many decades, the precise taxonomic classification of the giant panda was under debate because it shares characteristics with both bears and raccoons.</source>
+<target xml:space="preserve">Durante muchas décadas, se debatió la clasificación taxonómica precisa del panda gigante porque comparte características tanto con los osos como con los mapaches.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="9ef68fea-7dfb-46fa-bab4-ee03bba90b07" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="9" mq:lastlabel="9" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="9" mq:hasfollowingobject="hasfollowingobject">For many decades, the precise taxonomic classification of the giant panda was under debate because it shares characteristics with both bears and raccoons.</source>
+<target xml:space="preserve">Durante muchas décadas, se debatió la clasificación taxonómica precisa del panda gigante porque comparte características tanto con los osos como con los mapaches.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="11" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="c7889693-01a4-4793-8b36-4480a183a105" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="10" mq:lastlabel="10" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="10">However, molecular studies indicate the giant panda is a true bear, part of the family Ursidae.</source>
+<target xml:space="preserve">Sin embargo, los estudios moleculares indican que el panda gigante es un oso auténtico, miembro de la familia Ursidae.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="c7889693-01a4-4793-8b36-4480a183a105" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="10" mq:lastlabel="10" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="10" mq:hasfollowingobject="hasfollowingobject">However, molecular studies indicate the giant panda is a true bear, part of the family Ursidae.</source>
+<target xml:space="preserve">Sin embargo, los estudios moleculares indican que el panda gigante es un oso auténtico, miembro de la familia Ursidae.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="12" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="4164f3e1-ec17-4f1c-8664-296ef1290ae2" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="11" mq:lastlabel="11" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="11">These studies show it diverged about 19 million years ago from the common ancestor of the Ursidae; it is the most basal member of this family and equidistant from all other extant bear species.</source>
+<target xml:space="preserve">Estos estudios muestran que hace unos 19 millones de años divergió del ancestro común de los Ursidae; es el miembro más basal de esta familia y equidistante de todas las demás especies de osos que existen.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="4164f3e1-ec17-4f1c-8664-296ef1290ae2" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="11" mq:lastlabel="11" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="11" mq:hasfollowingobject="hasfollowingobject">These studies show it diverged about 19 million years ago from the common ancestor of the Ursidae; it is the most basal member of this family and equidistant from all other extant bear species.</source>
+<target xml:space="preserve">Estos estudios muestran que hace unos 19 millones de años divergió del ancestro común de los Ursidae; es el miembro más basal de esta familia y equidistante de todas las demás especies de osos que existen.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+<trans-unit id="13" mq:minorversionend="1" mq:minorversionstart="1" mq:status="ManuallyConfirmed" mq:segmentguid="78aa15b4-f05d-4ca4-a583-ccabc90632ee" mq:translatorcommitmatchrate="0" mq:translatorcommitusername="luism" mq:translatorcommittimestamp="2023-11-29T22:14:14Z" mq:lastchangedtimestamp="2023-11-29T22:14:14Z" mq:lastchanginguser="luism" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="12" mq:lastlabel="12" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="12">The giant panda has been referred to as a living fossil.</source>
+<target xml:space="preserve">Se ha hecho referencia al panda gigante como un fósil viviente.</target>
+<mq:minorversions>
+<mq:historical-unit mq:minorversionend="0" mq:minorversionstart="0" mq:status="PartiallyEdited" mq:segmentguid="78aa15b4-f05d-4ca4-a583-ccabc90632ee" mq:lastchangedtimestamp="0001-01-01T00:00:00Z" mq:maxlengthchars="-1" mq:nosplitjoin="true" mq:firstlabel="12" mq:lastlabel="12" mq:autosplitjoinstate="0" mq:lastmodifrole="0" mq:multipleexactmatch="false">
+<source xml:space="preserve" mq:segpart="12" mq:hasfollowingobject="hasfollowingobject">The giant panda has been referred to as a living fossil.</source>
+<target xml:space="preserve">Se ha hecho referencia al panda gigante como un fósil viviente.</target>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff" /><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</mq:historical-unit>
+</mq:minorversions>
+<mq:startingws xml:space="preserve" />
+<mq:endingws xml:space="preserve" />
+<mq:commitinfos xmlns="MQXliff"><commitinfo matchrate="0" role="1000" timestamp="2023-11-29T22:14:14Z" username="luism" editingtime="0" /></mq:commitinfos><mq:nosplitjoins><mq:nosplitjoin type="JoinNext" reason="filter" /><mq:nosplitjoin type="JoinPrevious" reason="filter" /></mq:nosplitjoins>
+<mq:originalsource edited="false" />
+</trans-unit>
+</body>
+</file>
+</xliff>
