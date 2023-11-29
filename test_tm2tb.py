@@ -691,3 +691,219 @@ def test_bilingual_mxliff():
     extractor = BitermExtractor(bitext)
     biterms = extractor.extract_terms()[:10].to_dict()
     assert biterms == result
+
+
+def test_bilingual_mqxliff():
+    """Test bilingual term extraction from English/Spanish .mxliff file."""
+    result = {
+        'biterm_rank': {
+            0: 1.0,
+            1: 0.6263,
+            2: 0.1222,
+            3: 0.0956,
+            4: 0.0801,
+            5: 0.0746,
+            6: 0.0703,
+            7: 0.0679,
+            8: 0.0678,
+            9: 0.0608
+               },
+        'frequency': {0: 8, 1: 8, 2: 1, 3: 2, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1},
+        'similarity': {
+            0: 0.9757999777793884,
+            1: 1.0,
+            2: 0.9807000160217285,
+            3: 1.0,
+            4: 0.9623000025749207,
+            5: 1.0,
+            6: 0.9563999772071838,
+            7: 0.9477999806404114,
+            8: 0.9542999863624573,
+            9: 0.9884999990463257
+            },
+        'src_rank': {
+            0: 1.0,
+            1: 0.8936,
+            2: 0.9733,
+            3: 0.5273,
+            4: 0.5825,
+            5: 0.364,
+            6: 0.5552,
+            7: 0.5204,
+            8: 0.4898,
+            9: 0.3977
+            },
+        'src_tags': {
+            0: ['ADJ', 'NOUN'],
+            1: ['NOUN'],
+            2: ['ADJ', 'NOUN'],
+            3: ['PROPN'],
+            4: ['ADJ', 'NOUN'],
+            5: ['PROPN'],
+            6: ['NOUN', 'PROPN'],
+            7: ['ADJ', 'NOUN'],
+            8: ['ADJ', 'NOUN'],
+            9: ['NOUN']
+            },
+        'src_term': {
+            0: 'giant panda',
+            1: 'panda',
+            2: 'red panda',
+            3: 'Ursidae',
+            4: 'prepared food',
+            5: 'China',
+            6: 'family Ursidae',
+            7: 'common ancestor',
+            8: 'taxonomic classification',
+            9: 'characteristics'
+            },
+        'tgt_rank': {
+            0: 1.0,
+            1: 0.8525,
+            2: 0.9728,
+            3: 0.5388,
+            4: 0.7165,
+            5: 0.4683,
+            6: 0.5918,
+            7: 0.5986,
+            8: 0.6191,
+            9: 0.562
+            },
+        'tgt_tags': {
+            0: ['PROPN', 'ADJ'],
+            1: ['PROPN'],
+            2: ['PROPN', 'PROPN'],
+            3: ['PROPN'],
+            4: ['NOUN', 'ADJ'],
+            5: ['PROPN'],
+            6: ['NOUN', 'PROPN'],
+            7: ['NOUN', 'ADJ'],
+            8: ['NOUN', 'ADJ'],
+            9: ['NOUN']
+            },
+        'tgt_term': {
+            0: 'panda gigante',
+            1: 'panda',
+            2: 'panda rojo',
+            3: 'Ursidae',
+            4: 'alimentos preparados',
+            5: 'China',
+            6: 'familia Ursidae',
+            7: 'ancestro común',
+            8: 'clasificación taxonómica',
+            9: 'características'
+            }
+        }
+    path = 'data/test_bitext_en_es.mqxliff'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == result
+
+
+def test_bilingual_tmx():
+    """Test bilingual term extraction from English/Spanish .mxliff file."""
+    result = {
+        'biterm_rank': {
+            0: 1.0,
+            1: 0.6263,
+            2: 0.1222,
+            3: 0.0956,
+            4: 0.0801,
+            5: 0.0746,
+            6: 0.0703,
+            7: 0.0679,
+            8: 0.0678,
+            9: 0.0608
+               },
+        'frequency': {0: 8, 1: 8, 2: 1, 3: 2, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1},
+        'similarity': {
+            0: 0.9757999777793884,
+            1: 1.0,
+            2: 0.9807000160217285,
+            3: 1.0,
+            4: 0.9623000025749207,
+            5: 1.0,
+            6: 0.9563999772071838,
+            7: 0.9477999806404114,
+            8: 0.9542999863624573,
+            9: 0.9884999990463257
+            },
+        'src_rank': {
+            0: 1.0,
+            1: 0.8936,
+            2: 0.9733,
+            3: 0.5273,
+            4: 0.5825,
+            5: 0.364,
+            6: 0.5552,
+            7: 0.5204,
+            8: 0.4898,
+            9: 0.3977
+            },
+        'src_tags': {
+            0: ['ADJ', 'NOUN'],
+            1: ['NOUN'],
+            2: ['ADJ', 'NOUN'],
+            3: ['PROPN'],
+            4: ['ADJ', 'NOUN'],
+            5: ['PROPN'],
+            6: ['NOUN', 'PROPN'],
+            7: ['ADJ', 'NOUN'],
+            8: ['ADJ', 'NOUN'],
+            9: ['NOUN']
+            },
+        'src_term': {
+            0: 'giant panda',
+            1: 'panda',
+            2: 'red panda',
+            3: 'Ursidae',
+            4: 'prepared food',
+            5: 'China',
+            6: 'family Ursidae',
+            7: 'common ancestor',
+            8: 'taxonomic classification',
+            9: 'characteristics'
+            },
+        'tgt_rank': {
+            0: 1.0,
+            1: 0.8525,
+            2: 0.9728,
+            3: 0.5388,
+            4: 0.7165,
+            5: 0.4683,
+            6: 0.5918,
+            7: 0.5986,
+            8: 0.6191,
+            9: 0.562
+            },
+        'tgt_tags': {
+            0: ['PROPN', 'ADJ'],
+            1: ['PROPN'],
+            2: ['PROPN', 'PROPN'],
+            3: ['PROPN'],
+            4: ['NOUN', 'ADJ'],
+            5: ['PROPN'],
+            6: ['NOUN', 'PROPN'],
+            7: ['NOUN', 'ADJ'],
+            8: ['NOUN', 'ADJ'],
+            9: ['NOUN']
+            },
+        'tgt_term': {
+            0: 'panda gigante',
+            1: 'panda',
+            2: 'panda rojo',
+            3: 'Ursidae',
+            4: 'alimentos preparados',
+            5: 'China',
+            6: 'familia Ursidae',
+            7: 'ancestro común',
+            8: 'clasificación taxonómica',
+            9: 'características'
+            }
+        }
+    path = 'data/test_bitext_en_es.tmx'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == result
