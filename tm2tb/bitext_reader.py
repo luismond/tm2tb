@@ -129,7 +129,7 @@ class XmlReader:
         file_content = self.read_file()
         xml = self.parse_xml(file_content)
         file = xml['xliff']['file']
-        if isinstance(file, OrderedDict) is True:
+        if isinstance(file, dict) is True:
             units = [unit['trans-unit'] for unit in file['body']['group']]
         if isinstance(file, list) is True:  # in case it is a joined file
             units = []

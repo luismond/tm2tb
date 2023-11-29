@@ -66,7 +66,7 @@ biterms = extractor.extract_terms()                      # Extract biterms
 print(biterms[:10])
 
 # Extract terms from a bilingual document
-DOC_PATH = os.path.join('data', 'panda_bear_english_spanish.csv')
+DOC_PATH = os.path.join('data', 'test_bitext_en_es.xlsx')
 print('Extract terms from a bilingual document:')
 print(f'Document path: {DOC_PATH}')
 
