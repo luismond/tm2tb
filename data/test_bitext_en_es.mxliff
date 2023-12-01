@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8'?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:m="http://www.memsource.com/mxlf/2.0" version="1.2" m:level="1" m:version="2.9">
+<file datatype="x-undefined" original="test_en.txt" source-language="en" target-language="es" m:begin-group-id="0" m:end-group-id="11" m:file-format="PLAIN_TEXT" m:job-uid="qIVRP0udaKTvq2Kvhy8Bs5" m:project-uid="OO9TRS3rG1jp1AHCK4rlX4" m:task-id="a0m86dwXdzNeMWIO0_dc1">
+<header>
+<m:in-ctx-preview-skel bilingual="false">
+<![CDATA[<html>
+<head>
+<style>
+body, span {white-space: pre;}
+</style>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<meta charset="UTF-8">
+</head>
+<body>
+<span><span id="m-tgroup_0" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_1" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_2" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_3" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_4" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_5" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_6" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_7" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_8" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_9" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_10" class="m-tgroup"></span></span>
+<span><span id="m-tgroup_11" class="m-tgroup"></span></span>
+
+</body>
+</html>]]>
+</m:in-ctx-preview-skel>
+</header>
+<body>
+
+<group id="0" m:para-id="0">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:0" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272008146" m:modified-by="20016202" m:para-id="0" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>The giant panda also known as the panda bear (or simply the panda), is a bear native to South Central China.</source>
+<target>El panda gigante, también conocido como oso panda (o simplemente panda), es un oso nativo del centro sur de China.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>El panda gigante, también conocido como oso panda (o simplemente panda), es un oso originario del centro-sur de China.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>6458</m:editing-time>
+                            <m:thinking-time>1479</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="1" m:para-id="1">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:1" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272008875" m:modified-by="20016202" m:para-id="1" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>It is characterised by its bold black-and-white coat and rotund body.</source>
+<target>Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Se caracteriza por su atrevido pelaje blanco y negro y su cuerpo redondeado.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>6001</m:editing-time>
+                            <m:thinking-time>1275</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="2" m:para-id="2">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:2" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272009442" m:modified-by="20016202" m:para-id="2" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>The name "giant panda" is sometimes used to distinguish it from the red panda, a neighboring musteloid.</source>
+<target>El nombre "panda gigante" se usa a veces para distinguirlo del panda rojo, un musteloide similar.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>El nombre «panda gigante» se usa a veces para distinguirlo del panda rojo, un musteloide vecino.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>5422</m:editing-time>
+                            <m:thinking-time>914</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="3" m:para-id="3">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:3" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272009953" m:modified-by="20016202" m:para-id="3" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>Though it belongs to the order Carnivora, the giant panda is a folivore, with bamboo leaves and shoots making up more than 99% of its diet.</source>
+<target>Aunque pertenece al orden Carnivora, el panda gigante es un folívoro; más del 99 % de su dieta consiste en brotes y hojas de bambú.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Aunque pertenece al orden de los carnívoros, el panda gigante es un folívoro, con hojas y brotes de bambú que constituyen más del 99% de su dieta.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>4875</m:editing-time>
+                            <m:thinking-time>904</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="4" m:para-id="4">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:4" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272010439" m:modified-by="20016202" m:para-id="4" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>Giant pandas in the wild will occasionally eat other grasses, wild tubers, or even meat in the form of birds, rodents, or carrion.</source>
+<target>En la naturaleza, los pandas gigantes comen ocasionalmente otras hierbas, tubérculos silvestres o incluso carne en forma de aves, roedores o carroña.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Los pandas gigantes en estado salvaje comen ocasionalmente otros pastos, tubérculos silvestres o incluso carne en forma de aves, roedores o carroña.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>5567</m:editing-time>
+                            <m:thinking-time>876</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="5" m:para-id="5">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:5" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272010980" m:modified-by="20016202" m:para-id="5" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>In captivity, they may receive honey, eggs, fish, yams, shrub leaves, oranges, or bananas along with specially prepared food.</source>
+<target>En cautiverio, pueden alimentarse de miel, huevos, pescado, ñame, hojas de arbustos, naranjas o plátanos, además de alimentos preparados.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>En cautiverio, pueden recibir miel, huevos, pescado, ñame, hojas de arbustos, naranjas o plátanos junto con alimentos especialmente preparados.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>4631</m:editing-time>
+                            <m:thinking-time>829</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="6" m:para-id="6">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:6" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272011475" m:modified-by="20016202" m:para-id="6" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>The giant panda lives in a few mountain ranges in central China, mainly in Sichuan, but also in neighbouring Shaanxi and Gansu.</source>
+<target>El panda gigante vive en algunas cadenas montañosas en el centro de China, principalmente en Sichuan, pero también en las ciudades cercanas de Shaanxi y Gansu.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>El panda gigante vive en algunas cadenas montañosas del centro de China, principalmente en Sichuan, pero también en las vecinas Shaanxi y Gansu.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>4901</m:editing-time>
+                            <m:thinking-time>785</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="7" m:para-id="7">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:7" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272012037" m:modified-by="20016202" m:para-id="7" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>As a result of farming, deforestation, and other development, the giant panda has been driven out of the lowland areas where it once lived, and it is a conservation-reliant vulnerable species.</source>
+<target>Como resultado de la agricultura, la deforestación y otros desarrollos, el panda gigante ha sido desplazado de las zonas de baja altitud que habitaba, y es una especie vulnerable que depende de la conservación.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Como resultado de la agricultura, la deforestación y otros desarrollos, el panda gigante ha sido expulsado de las áreas de tierras bajas donde alguna vez vivió, y es una especie vulnerable que depende de la conservación.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>6089</m:editing-time>
+                            <m:thinking-time>1133</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="8" m:para-id="8">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:8" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272012479" m:modified-by="20016202" m:para-id="8" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>For many decades, the precise taxonomic classification of the giant panda was under debate because it shares characteristics with both bears and raccoons.</source>
+<target>Durante muchas décadas, se debatió la clasificación taxonómica precisa del panda gigante porque comparte características tanto con los osos como con los mapaches.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Durante muchas décadas, la clasificación taxonómica precisa del panda gigante fue objeto de debate porque comparte características tanto con los osos como con los mapaches.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>4928</m:editing-time>
+                            <m:thinking-time>1068</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="9" m:para-id="9">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:9" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272013105" m:modified-by="20016202" m:para-id="9" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>However, molecular studies indicate the giant panda is a true bear, part of the family Ursidae.</source>
+<target>Sin embargo, los estudios moleculares indican que el panda gigante es un oso auténtico, miembro de la familia Ursidae.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Sin embargo, los estudios moleculares indican que el panda gigante es un verdadero oso, que forma parte de la familia Ursidae.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>5945</m:editing-time>
+                            <m:thinking-time>1397</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="10" m:para-id="10">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:10" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="0.75" m:level-edited="false" m:locked="false" m:modified-at="1701272013613" m:modified-by="20016202" m:para-id="10" m:score="0.75" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>These studies show it diverged about 19 million years ago from the common ancestor of the Ursidae</source>
+<target>Estos estudios muestran que se separó hace unos 19 millones de años del ancestro común de los Ursidae.</target>
+<alt-trans match-quality="0.75" origin="machine-trans"><target>Estos estudios muestran que se separó hace unos 19 millones de años del ancestro común de los Ursidae.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>4693</m:editing-time>
+                            <m:thinking-time>4691</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+<group id="11" m:para-id="11">
+<context-group>
+</context-group>
+<trans-unit id="a0m86dwXdzNeMWIO0_dc1:11" m:confirmed="1" m:created-at="1701271586624" m:created-by="20016202" m:gross-score="1.0" m:level-edited="false" m:locked="false" m:modified-at="1701272014136" m:modified-by="20016202" m:para-id="11" m:score="1.0" m:trans-origin="mt" m:trans-origin-detail="qe_v2" xml:space="preserve">
+<source>The giant panda has been referred to as a living fossil.</source>
+<target>Se ha hecho referencia al panda gigante como un fósil viviente.</target>
+<alt-trans match-quality="1.0" origin="machine-trans"><target>El panda gigante se conoce como un fósil viviente.</target></alt-trans>
+<alt-trans match-quality="0.0" origin="memsource-tm"><target/></alt-trans>
+<m:editing-stats>
+                            <m:editing-time>18548</m:editing-time>
+                            <m:thinking-time>1016</m:thinking-time>
+            </m:editing-stats>
+</trans-unit>
+</group>
+</body>
+</file>
+<m:extra>
+<m:users>
+<m:user fullname="Luis Mondragon" id="20016202" uid="tuG080DbSEGcnANAz7fls6" username="luismond"/>
+</m:users>
+</m:extra>
+</xliff>

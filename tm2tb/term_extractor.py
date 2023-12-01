@@ -112,7 +112,7 @@ class TermExtractor:
         stops_embeddings_avg = np.load(f'stops_vectors/{self.emb_dims}/{self.lang}.npy')
         spans_stops_sims = cosine_similarity(spans_embeddings, stops_embeddings_avg)
 
-        # Build spans
+        # Add metadata to the spans
         top_spans = []
         for idx, emb in enumerate(spans_embeddings):
             span = list(spans_texts_dict.values())[idx]
@@ -121,11 +121,16 @@ class TermExtractor:
             if stop_similarity <= max_stopword_similarity:
                 span._.similarity = similarity
                 span._.frequency = spans_freqs_dict[span._.true_case]
-                span._.rank = span._.similarity
                 span._.span_id = idx
                 span._.docs_idx = spans_docs_dict[span._.true_case]
                 span._.embedding = emb
                 top_spans.append(span)
+
+        # Ranking
+        similarities = [s._.similarity for s in top_spans]
+        ranks = [sim/max(similarities) for sim in similarities]
+        for n, span in enumerate(top_spans):
+            span._.rank = ranks[n]
 
         if collapse_similarity is True:
             top_spans = self._collapse_similarity(top_spans)
@@ -281,41 +286,3 @@ class TermExtractor:
         terms.reset_index(drop=True, inplace=True)
         terms = terms.round(4)
         return terms
-
-    @staticmethod
-    def _mmr_rank(spans_embeddings, spans_doc_sims, diversity, spans_dicts):
-        """Maximal marginal relevance ranking algorithm."""
-        spans_freqs_dict = spans_dicts.maps[0]
-        spans_docs_dict = spans_dicts.maps[1]
-        spans_texts_dict = spans_dicts.maps[2]
-        # Construct a similarity matrix of spans
-        spans_sims = cosine_similarity(spans_embeddings)
-        top_spans = []
-        top_n = len(spans_embeddings)
-        # Choose best span to initialize the best spans' index
-        best_spans_idx = [np.argmax(spans_doc_sims)]
-        # Initialize the candidates index
-        candidates_idx = [i for i in range(len(spans_embeddings)) if i != best_spans_idx[0]]
-        # Select the best span, add it to best_spans_idx and remove it from candidates_idx
-        for ix in range(min(top_n - 1, len(spans_embeddings) - 1)):
-            candidate_sims = spans_doc_sims[candidates_idx, :]
-            rest_spans_sims = np.max(spans_sims[candidates_idx][:, best_spans_idx], axis=1)
-            # Calculate Maximum Marginal Relevance
-            mmr = (1-diversity) * candidate_sims - diversity * rest_spans_sims.reshape(-1, 1)
-            # Get best candidate
-            mmr_idx = candidates_idx[np.argmax(mmr)]
-            # Update best spans & candidates
-            best_spans_idx.append(mmr_idx)
-            candidates_idx.remove(mmr_idx)
-
-            span = list(spans_texts_dict.values())[mmr_idx]
-            similarity = round(float(spans_doc_sims.reshape(1, -1)[0][mmr_idx]), 4)
-            span._.similarity = similarity
-            span._.frequency = spans_freqs_dict[span.text]
-            span._.rank = span._.similarity
-            span._.span_id = ix
-            span._.docs_idx = spans_docs_dict[span.text]
-            span._.embedding = spans_embeddings[mmr_idx]
-            top_spans.append(span)
-        top_spans = sorted(top_spans, key=lambda span: span._.span_id)
-        return top_spans

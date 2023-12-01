@@ -46,7 +46,7 @@ def test_api():
                     "It is characterised by its bold black-and-white coat and rotund body."
                     ],
 
-            "trg":
+            "tgt":
                 [
                     "El panda gigante, tambien conocido como oso panda (o simplemente panda),"
                     " es un oso nativo del centro sur de China.",
@@ -59,9 +59,9 @@ def test_api():
             json=json.dumps(data),
             )
 
-        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.311,\"1\":0.298,\"2\":0.2274},\"trg_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"trg_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"trg_rank\":{\"0\":0.4429,\"1\":0.3563,\"2\":0.3021},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":0.5668,\"1\":0.5418,\"2\":0.5338}}"
+        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.8615,\"1\":0.8255,\"2\":0.6299},\"tgt_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"tgt_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"tgt_rank\":{\"0\":0.9052,\"1\":0.7282,\"2\":0.6174},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":1.0,\"1\":0.6309,\"2\":0.5065}}"
 
-        assert response.text == json.dumps(expected_response)
+        assert json.loads(response.text) == expected_response
 
 
 def test_en_sentence():
@@ -69,59 +69,44 @@ def test_en_sentence():
     extractor = TermExtractor(EN_SENTENCE)
     terms = extractor.extract_terms()[:10].to_dict()
     result = {
-        'term':
-            {
-                0: 'panda',
-                1: 'giant panda',
-                2: 'panda bear',
-                3: 'red panda',
-                4: 'Carnivora',
-                5: 'Central China',
-                6: 'bananas',
-                7: 'rodents',
-                8: 'Central',
-                9: 'bear native',
-                },
-        'pos_tags':
-            {
-                0: ['NOUN'],
-                1: ['ADJ', 'NOUN'],
-                2: ['NOUN', 'NOUN'],
-                3: ['ADJ', 'NOUN'],
-                4: ['PROPN'],
-                5: ['PROPN', 'PROPN'],
-                6: ['NOUN'],
-                7: ['NOUN'],
-                8: ['PROPN'],
-                9: ['NOUN', 'ADJ'],
-                },
-        'rank':
-            {
-                0: 0.4033,
-                1: 0.3816,
-                2: 0.3699,
-                3: 0.3691,
-                4: 0.2483,
-                5: 0.214,
-                6: 0.1941,
-                7: 0.1701,
-                8: 0.1585,
-                9: 0.149,
-                },
-        'frequency':
-            {
-                0: 6,
-                1: 3,
-                2: 1,
-                3: 1,
-                4: 1,
-                5: 1,
-                6: 1,
-                7: 1,
-                8: 1,
-                9: 1,
-                }
+        'frequency': {0: 6, 1: 3, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1},
+        'pos_tags': {
+            0: ['NOUN'],
+            1: ['ADJ', 'NOUN'],
+            2: ['NOUN', 'NOUN'],
+            3: ['ADJ', 'NOUN'],
+            4: ['PROPN'],
+            5: ['PROPN', 'PROPN'],
+            6: ['NOUN'],
+            7: ['NOUN'],
+            8: ['PROPN'],
+            9: ['NOUN', 'ADJ']
+            },
+        'rank': {
+            0: 1.0,
+            1: 0.9462,
+            2: 0.9172,
+            3: 0.9152,
+            4: 0.6157,
+            5: 0.5306,
+            6: 0.4813,
+            7: 0.4218,
+            8: 0.393,
+            9: 0.3695
+            },
+        'term': {
+            0: 'panda',
+            1: 'giant panda',
+            2: 'panda bear',
+            3: 'red panda',
+            4: 'Carnivora',
+            5: 'Central China',
+            6: 'bananas',
+            7: 'rodents',
+            8: 'Central',
+            9: 'bear native'
             }
+        }
     assert terms == result
 
 
@@ -130,59 +115,44 @@ def test_en_sentence_lang_code():
     extractor = TermExtractor(EN_SENTENCE, lang='en')
     terms = extractor.extract_terms()[:10].to_dict()
     result = {
-        'term':
-            {
-                0: 'panda',
-                1: 'giant panda',
-                2: 'panda bear',
-                3: 'red panda',
-                4: 'Carnivora',
-                5: 'Central China',
-                6: 'bananas',
-                7: 'rodents',
-                8: 'Central',
-                9: 'bear native',
-                },
-        'pos_tags':
-            {
-                0: ['NOUN'],
-                1: ['ADJ', 'NOUN'],
-                2: ['NOUN', 'NOUN'],
-                3: ['ADJ', 'NOUN'],
-                4: ['PROPN'],
-                5: ['PROPN', 'PROPN'],
-                6: ['NOUN'],
-                7: ['NOUN'],
-                8: ['PROPN'],
-                9: ['NOUN', 'ADJ'],
-                },
-        'rank':
-            {
-                0: 0.4033,
-                1: 0.3816,
-                2: 0.3699,
-                3: 0.3691,
-                4: 0.2483,
-                5: 0.214,
-                6: 0.1941,
-                7: 0.1701,
-                8: 0.1585,
-                9: 0.149,
-                },
-        'frequency':
-            {
-                0: 6,
-                1: 3,
-                2: 1,
-                3: 1,
-                4: 1,
-                5: 1,
-                6: 1,
-                7: 1,
-                8: 1,
-                9: 1,
-                }
+        'frequency': {0: 6, 1: 3, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1},
+        'pos_tags': {
+            0: ['NOUN'],
+            1: ['ADJ', 'NOUN'],
+            2: ['NOUN', 'NOUN'],
+            3: ['ADJ', 'NOUN'],
+            4: ['PROPN'],
+            5: ['PROPN', 'PROPN'],
+            6: ['NOUN'],
+            7: ['NOUN'],
+            8: ['PROPN'],
+            9: ['NOUN', 'ADJ']
+            },
+        'rank': {
+            0: 1.0,
+            1: 0.9462,
+            2: 0.9172,
+            3: 0.9152,
+            4: 0.6157,
+            5: 0.5306,
+            6: 0.4813,
+            7: 0.4218,
+            8: 0.393,
+            9: 0.3695
+            },
+        'term': {
+            0: 'panda',
+            1: 'giant panda',
+            2: 'panda bear',
+            3: 'red panda',
+            4: 'Carnivora',
+            5: 'Central China',
+            6: 'bananas',
+            7: 'rodents',
+            8: 'Central',
+            9: 'bear native'
             }
+        }
     assert terms == result
 
 
@@ -191,59 +161,44 @@ def test_es_sentence():
     extractor = TermExtractor(ES_SENTENCE)
     terms = extractor.extract_terms()[:10].to_dict()
     result = {
-        'term':
-            {
-                0: 'panda gigante',
-                1: 'panda rojo',
-                2: 'panda',
-                3: 'oso panda',
-                4: 'gigante',
-                5: 'roedores',
-                6: 'plátanos',
-                7: 'pelaje blanco',
-                8: 'tubérculos silvestres',
-                9: 'bambú'
-                },
-        'pos_tags':
-            {
-                0: ['PROPN', 'ADJ'],
-                1: ['PROPN', 'PROPN'],
-                2: ['PROPN'],
-                3: ['PROPN', 'PROPN'],
-                4: ['ADJ'],
-                5: ['NOUN'],
-                6: ['NOUN'],
-                7: ['NOUN', 'ADJ'],
-                8: ['NOUN', 'ADJ'],
-                9: ['PROPN']
-                },
-        'rank':
-            {
-                0: 0.5167,
-                1: 0.4662,
-                2: 0.4657,
-                3: 0.3908,
-                4: 0.252,
-                5: 0.2398,
-                6: 0.2291,
-                7: 0.199,
-                8: 0.1923,
-                9: 0.1914
-                },
-        'frequency':
-            {
-                0: 3,
-                1: 1,
-                2: 6,
-                3: 1,
-                4: 3,
-                5: 1,
-                6: 1,
-                7: 1,
-                8: 1,
-                9: 1
-                }
+        'frequency': {0: 3, 1: 1, 2: 6, 3: 1, 4: 3, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1},
+        'pos_tags': {
+            0: ['PROPN', 'ADJ'],
+            1: ['PROPN', 'PROPN'],
+            2: ['PROPN'],
+            3: ['PROPN', 'PROPN'],
+            4: ['ADJ'],
+            5: ['NOUN'],
+            6: ['NOUN'],
+            7: ['NOUN', 'ADJ'],
+            8: ['NOUN', 'ADJ'],
+            9: ['PROPN']
+            },
+        'rank': {
+            0: 1.0,
+            1: 0.9023,
+            2: 0.9013,
+            3: 0.7563,
+            4: 0.4877,
+            5: 0.4641,
+            6: 0.4434,
+            7: 0.3851,
+            8: 0.3722,
+            9: 0.3704
+            },
+        'term': {
+            0: 'panda gigante',
+            1: 'panda rojo',
+            2: 'panda',
+            3: 'oso panda',
+            4: 'gigante',
+            5: 'roedores',
+            6: 'plátanos',
+            7: 'pelaje blanco',
+            8: 'tubérculos silvestres',
+            9: 'bambú'
             }
+        }
     assert terms == result
 
 
@@ -252,315 +207,311 @@ def test_bilingual_sentences():
     extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE))
     biterms = extractor.extract_terms()[:10].to_dict()
     result = {
-        'src_term':
-            {
-                0: 'giant panda',
-                1: 'red panda',
-                2: 'panda',
-                3: 'oranges',
-                4: 'bamboo',
-                5: 'China',
-                6: 'rotund body'
-                },
-        'src_tags':
-            {
-                0: ['ADJ', 'NOUN'],
-                1: ['ADJ', 'NOUN'],
-                2: ['NOUN'],
-                3: ['NOUN'],
-                4: ['NOUN'],
-                5: ['PROPN'],
-                6: ['ADJ', 'NOUN']
-                },
-        'src_rank':
-            {
-                0: 0.3816,
-                1: 0.3691,
-                2: 0.4033,
-                3: 0.1098,
-                4: 0.092,
-                5: 0.139,
-                6: 0.0514
-                },
-        'trg_term':
-            {
-                0: 'panda gigante',
-                1: 'panda rojo',
-                2: 'panda',
-                3: 'naranjas',
-                4: 'bambú',
-                5: 'China',
-                6: 'cuerpo rotundo'
-                },
-        'trg_tags':
-            {
-                0: ['PROPN', 'ADJ'],
-                1: ['PROPN', 'PROPN'],
-                2: ['PROPN'],
-                3: ['NOUN'],
-                4: ['PROPN'],
-                5: ['PROPN'],
-                6: ['NOUN', 'ADJ']
-                },
-        'trg_rank':
-            {
-                0: 0.5167,
-                1: 0.4662,
-                2: 0.4657,
-                3: 0.184,
-                4: 0.1914,
-                5: 0.1794,
-                6: 0.1649
-                },
-        'similarity':
-            {
-                0: 0.9757999777793884,
-                1: 0.9807000160217285,
-                2: 1.0,
-                3: 0.9387000203132629,
-                4: 0.9236999750137329,
-                5: 1.0,
-                6: 0.9478999972343445
-                },
-        'frequency':
-            {
-                0: 1,
-                1: 1,
-                2: 1,
-                3: 1,
-                4: 1,
-                5: 1,
-                6: 1
-                },
-        'biterm_rank':
-            {
-                0: 0.5794,
-                1: 0.5743,
-                2: 0.5554,
-                3: 0.5252,
-                4: 0.5239,
-                5: 0.5204,
-                6: 0.5187
-                }
-            }
-
-    assert biterms == result
-
-
-def test_bilingual_sentences_lang_codes():
-    """Test bilingual term extraction from English/Spanish sentences passing language codes."""
-    extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE), src_lang='en', trg_lang='es')
-    biterms = extractor.extract_terms()[:10].to_dict()
-    result = {
-        'src_term':
-            {
-                0: 'giant panda',
-                1: 'red panda',
-                2: 'panda',
-                3: 'oranges',
-                4: 'bamboo',
-                5: 'China',
-                6: 'rotund body'
-                },
-        'src_tags':
-            {
-                0: ['ADJ', 'NOUN'],
-                1: ['ADJ', 'NOUN'],
-                2: ['NOUN'],
-                3: ['NOUN'],
-                4: ['NOUN'],
-                5: ['PROPN'],
-                6: ['ADJ', 'NOUN']
-                },
-        'src_rank':
-            {
-                0: 0.3816,
-                1: 0.3691,
-                2: 0.4033,
-                3: 0.1098,
-                4: 0.092,
-                5: 0.139,
-                6: 0.0514
-                },
-        'trg_term':
-            {
-                0: 'panda gigante',
-                1: 'panda rojo',
-                2: 'panda',
-                3: 'naranjas',
-                4: 'bambú',
-                5: 'China',
-                6: 'cuerpo rotundo'
-                },
-        'trg_tags':
-            {
-                0: ['PROPN', 'ADJ'],
-                1: ['PROPN', 'PROPN'],
-                2: ['PROPN'],
-                3: ['NOUN'],
-                4: ['PROPN'],
-                5: ['PROPN'],
-                6: ['NOUN', 'ADJ']
-                },
-        'trg_rank':
-            {
-                0: 0.5167,
-                1: 0.4662,
-                2: 0.4657,
-                3: 0.184,
-                4: 0.1914,
-                5: 0.1794,
-                6: 0.1649
-                },
-        'similarity':
-            {
-                0: 0.9757999777793884,
-                1: 0.9807000160217285,
-                2: 1.0,
-                3: 0.9387000203132629,
-                4: 0.9236999750137329,
-                5: 1.0,
-                6: 0.9478999972343445
-                },
-        'frequency':
-            {
-                0: 1,
-                1: 1,
-                2: 1,
-                3: 1,
-                4: 1,
-                5: 1,
-                6: 1
-                },
-        'biterm_rank':
-            {
-                0: 0.5794,
-                1: 0.5743,
-                2: 0.5554,
-                3: 0.5252,
-                4: 0.5239,
-                5: 0.5204,
-                6: 0.5187
-                }
-            }
-
-    assert biterms == result
-
-
-def test_bilingual_document():
-    """Test bilingual term extraction from English/Spanish document."""
-    path = 'data/panda_bear_english_spanish.csv'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10].to_dict()
-    result = {
-        'src_term': {
-            0: 'giant panda',
-            1: 'red panda',
-            2: 'panda',
-            3: 'prepared food',
-            4: 'family Ursidae',
-            5: 'taxonomic classification',
-            6: 'common ancestor',
-            7: 'characteristics',
-            8: 'Ursidae',
-            9: 'farming'
+        'biterm_rank': {
+            0: 1.0,
+            1: 0.9385,
+            2: 0.7008,
+            3: 0.3106,
+            4: 0.2911,
+            5: 0.255,
+            6: 0.2229
             },
-        'src_tags': {
-            0: ['ADJ', 'NOUN'],
-            1: ['ADJ', 'NOUN'],
-            2: ['NOUN'],
-            3: ['ADJ', 'NOUN'],
-            4: ['NOUN', 'PROPN'],
-            5: ['ADJ', 'NOUN'],
-            6: ['ADJ', 'NOUN'],
-            7: ['NOUN'],
-            8: ['PROPN'],
-            9: ['NOUN']
-            },
-        'src_rank': {
-            0: 0.5054,
-            1: 0.48,
-            2: 0.4348,
-            3: 0.2582,
-            4: 0.2505,
-            5: 0.2331,
-            6: 0.2074,
-            7: 0.1666,
-            8: 0.2238,
-            9: 0.1606
-            },
-        'trg_term': {
-            0: 'panda gigante',
-            1: 'panda rojo',
-            2: 'panda',
-            3: 'alimentos preparados',
-            4: 'familia Ursidae',
-            5: 'clasificación taxonómica',
-            6: 'ancestro común',
-            7: 'características',
-            8: 'Ursidae',
-            9: 'agricultura'
-            },
-        'trg_tags': {
-            0: ['PROPN', 'ADJ'],
-            1: ['PROPN', 'PROPN'],
-            2: ['PROPN'],
-            3: ['NOUN', 'ADJ'],
-            4: ['NOUN', 'PROPN'],
-            5: ['NOUN', 'ADJ'],
-            6: ['NOUN', 'ADJ'],
-            7: ['NOUN'],
-            8: ['PROPN'],
-            9: ['NOUN']
-            },
-        'trg_rank': {
-            0: 0.5943,
-            1: 0.5748,
-            2: 0.4895,
-            3: 0.4001,
-            4: 0.3433,
-            5: 0.3493,
-            6: 0.335,
-            7: 0.3002,
-            8: 0.2976,
-            9: 0.2899
+        'frequency': {
+            0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1
             },
         'similarity': {
             0: 0.9757999777793884,
             1: 0.9807000160217285,
             2: 1.0,
-            3: 0.9623000025749207,
-            4: 0.9563999772071838,
-            5: 0.9542999863624573,
-            6: 0.9477999806404114,
-            7: 0.9884999990463257,
-            8: 1.0,
-            9: 0.925599992275238
+            3: 0.9387000203132629,
+            4: 0.9236999750137329,
+            5: 1.0,
+            6: 0.9478999972343445
             },
-        'frequency': {
-            0: 8,
-            1: 1,
-            2: 8,
-            3: 1,
-            4: 1,
-            5: 1,
-            6: 1,
-            7: 1,
-            8: 2,
-            9: 1
+        'src_rank': {
+            0: 0.9462,
+            1: 0.9152,
+            2: 1.0,
+            3: 0.2723,
+            4: 0.2281,
+            5: 0.3447,
+            6: 0.1274
             },
-        'biterm_rank': {
-            0: 0.631,
-            1: 0.5934,
-            2: 0.5802,
-            3: 0.5576,
-            4: 0.5517,
-            5: 0.5506,
-            6: 0.5468,
-            7: 0.5421,
-            8: 0.5401,
-            9: 0.538
+        'src_tags': {
+            0: ['ADJ', 'NOUN'],
+            1: ['ADJ', 'NOUN'],
+            2: ['NOUN'],
+            3: ['NOUN'],
+            4: ['NOUN'],
+            5: ['PROPN'],
+            6: ['ADJ', 'NOUN']
+           },
+        'src_term': {
+            0: 'giant panda',
+            1: 'red panda',
+            2: 'panda',
+            3: 'oranges',
+            4: 'bamboo',
+            5: 'China',
+            6: 'rotund body'
+            },
+        'tgt_rank': {
+            0: 1.0,
+            1: 0.9023,
+            2: 0.9013,
+            3: 0.3561,
+            4: 0.3704,
+            5: 0.3472,
+            6: 0.3191
+            },
+        'tgt_tags': {
+            0: ['PROPN', 'ADJ'],
+            1: ['PROPN', 'PROPN'],
+            2: ['PROPN'],
+            3: ['NOUN'],
+            4: ['PROPN'],
+            5: ['PROPN'],
+            6: ['NOUN', 'ADJ']
+            },
+        'tgt_term': {
+            0: 'panda gigante',
+            1: 'panda rojo',
+            2: 'panda',
+            3: 'naranjas',
+            4: 'bambú',
+            5: 'China',
+            6: 'cuerpo rotundo'
             }
         }
     assert biterms == result
+
+
+def test_bilingual_sentences_lang_codes():
+    """Test bilingual term extraction from English/Spanish sentences passing language codes."""
+    extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE), src_lang='en', tgt_lang='es')
+    biterms = extractor.extract_terms()[:10].to_dict()
+    result = {
+        'biterm_rank': {
+            0: 1.0,
+            1: 0.9385,
+            2: 0.7008,
+            3: 0.3106,
+            4: 0.2911,
+            5: 0.255,
+            6: 0.2229
+            },
+        'frequency': {
+            0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1
+            },
+        'similarity': {
+            0: 0.9757999777793884,
+            1: 0.9807000160217285,
+            2: 1.0,
+            3: 0.9387000203132629,
+            4: 0.9236999750137329,
+            5: 1.0,
+            6: 0.9478999972343445
+            },
+        'src_rank': {
+            0: 0.9462,
+            1: 0.9152,
+            2: 1.0,
+            3: 0.2723,
+            4: 0.2281,
+            5: 0.3447,
+            6: 0.1274
+            },
+        'src_tags': {
+            0: ['ADJ', 'NOUN'],
+            1: ['ADJ', 'NOUN'],
+            2: ['NOUN'],
+            3: ['NOUN'],
+            4: ['NOUN'],
+            5: ['PROPN'],
+            6: ['ADJ', 'NOUN']
+           },
+        'src_term': {
+            0: 'giant panda',
+            1: 'red panda',
+            2: 'panda',
+            3: 'oranges',
+            4: 'bamboo',
+            5: 'China',
+            6: 'rotund body'
+            },
+        'tgt_rank': {
+            0: 1.0,
+            1: 0.9023,
+            2: 0.9013,
+            3: 0.3561,
+            4: 0.3704,
+            5: 0.3472,
+            6: 0.3191
+            },
+        'tgt_tags': {
+            0: ['PROPN', 'ADJ'],
+            1: ['PROPN', 'PROPN'],
+            2: ['PROPN'],
+            3: ['NOUN'],
+            4: ['PROPN'],
+            5: ['PROPN'],
+            6: ['NOUN', 'ADJ']
+            },
+        'tgt_term': {
+            0: 'panda gigante',
+            1: 'panda rojo',
+            2: 'panda',
+            3: 'naranjas',
+            4: 'bambú',
+            5: 'China',
+            6: 'cuerpo rotundo'
+            }
+        }
+
+    assert biterms == result
+
+
+bitext_result = {
+    'biterm_rank': {
+        0: 1.0,
+        1: 0.5966,
+        2: 0.1203,
+        3: 0.0829,
+        4: 0.0735,
+        5: 0.0648,
+        6: 0.0632,
+        7: 0.0629,
+        8: 0.0607,
+        9: 0.054
+        },
+    'frequency': {0: 8, 1: 8, 2: 1, 3: 2, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1},
+    'similarity': {
+        0: 0.9757999777793884,
+        1: 1.0,
+        2: 0.9807000160217285,
+        3: 1.0,
+        4: 0.9623000025749207,
+        5: 1.0,
+        6: 0.9563999772071838,
+        7: 0.9542999863624573,
+        8: 0.9477999806404114,
+        9: 0.9884999990463257
+        },
+    'src_rank': {
+        0: 1.0,
+        1: 0.8478,
+        2: 0.9476,
+        3: 0.427,
+        4: 0.5081,
+        5: 0.2918,
+        6: 0.4634,
+        7: 0.4419,
+        8: 0.4207,
+        9: 0.3321
+        },
+    'src_tags': {
+        0: ['ADJ', 'NOUN'],
+        1: ['NOUN'],
+        2: ['ADJ', 'NOUN'],
+        3: ['PROPN'],
+        4: ['ADJ', 'NOUN'],
+        5: ['PROPN'],
+        6: ['NOUN', 'PROPN'],
+        7: ['ADJ', 'NOUN'],
+        8: ['ADJ', 'NOUN'],
+        9: ['NOUN']
+        },
+    'src_term': {
+        0: 'giant panda',
+        1: 'panda',
+        2: 'red panda',
+        3: 'Ursidae',
+        4: 'prepared food',
+        5: 'China',
+        6: 'family Ursidae',
+        7: 'taxonomic classification',
+        8: 'common ancestor',
+        9: 'characteristics'
+        },
+    'tgt_rank': {
+        0: 1.0,
+        1: 0.8154,
+        2: 0.9668,
+        3: 0.4979,
+        4: 0.6838,
+        5: 0.4308,
+        6: 0.5687,
+        7: 0.5867,
+        8: 0.5791,
+        9: 0.5206
+        },
+    'tgt_tags': {
+        0: ['PROPN', 'ADJ'],
+        1: ['PROPN'],
+        2: ['PROPN', 'PROPN'],
+        3: ['PROPN'],
+        4: ['NOUN', 'ADJ'],
+        5: ['PROPN'],
+        6: ['NOUN', 'PROPN'],
+        7: ['NOUN', 'ADJ'],
+        8: ['NOUN', 'ADJ'],
+        9: ['NOUN']
+        },
+    'tgt_term': {
+        0: 'panda gigante',
+        1: 'panda',
+        2: 'panda rojo',
+        3: 'Ursidae',
+        4: 'alimentos preparados',
+        5: 'China',
+        6: 'familia Ursidae',
+        7: 'clasificación taxonómica',
+        8: 'ancestro común',
+        9: 'características'
+        }
+    }
+
+
+def test_bilingual_csv():
+    """Test bilingual term extraction from English/Spanish .csv file."""
+    path = 'data/test_bitext_en_es.csv'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == bitext_result
+
+
+def test_bilingual_xlsx():
+    """Test bilingual term extraction from English/Spanish .xlsx file."""
+    path = 'data/test_bitext_en_es.xlsx'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == bitext_result
+
+
+def test_bilingual_mqxliff():
+    """Test bilingual term extraction from English/Spanish .mqxliff file."""
+    path = 'data/test_bitext_en_es.mqxliff'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == bitext_result
+
+
+def test_bilingual_mxliff():
+    """Test bilingual term extraction from English/Spanish .mxliff file."""
+    path = 'data/test_bitext_en_es.mxliff'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == bitext_result
+
+
+def test_bilingual_tmx():
+    """Test bilingual term extraction from English/Spanish .tmx file."""
+    path = 'data/test_bitext_en_es.tmx'
+    bitext = BitextReader(path).read_bitext()
+    extractor = BitermExtractor(bitext)
+    biterms = extractor.extract_terms()[:10].to_dict()
+    assert biterms == bitext_result
