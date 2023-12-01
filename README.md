@@ -65,16 +65,16 @@ en_sentence = (
 >>> print(terms[:10])
 
             term        pos_tags    rank  frequency
-0    giant panda     [ADJ, NOUN]  0.7819          3
-1    bear native     [NOUN, ADJ]  0.3705          1
-2          panda          [NOUN]  0.3651          6
-3     panda bear    [NOUN, NOUN]  0.2920          1
-4   Giant pandas     [ADJ, NOUN]  0.2852          1
-5         pandas          [NOUN]  0.2606          1
-6      red panda     [ADJ, NOUN]  0.2308          1
-7  Central China  [PROPN, PROPN]  0.2298          1
-8           bear          [NOUN]  0.2198          2
-9          giant           [ADJ]  0.2159          3
+0          panda          [NOUN]  1.0000          6
+1    giant panda     [ADJ, NOUN]  0.9462          3
+2     panda bear    [NOUN, NOUN]  0.9172          1
+3      red panda     [ADJ, NOUN]  0.9152          1
+4      Carnivora         [PROPN]  0.6157          1
+5  Central China  [PROPN, PROPN]  0.5306          1
+6        bananas          [NOUN]  0.4813          1
+7        rodents          [NOUN]  0.4218          1
+8        Central         [PROPN]  0.3930          1
+9    bear native     [NOUN, ADJ]  0.3695          1
 
 ```
 
@@ -104,17 +104,17 @@ es_sentence = (
 >>> terms = extractor.extract_terms()       # Extract terms
 >>> print(terms[:10])
 
-             term        pos_tags    rank  frequency
-0   panda gigante     [NOUN, ADJ]  0.7886          3
-1           panda          [NOUN]  0.3725          5
-2  oso originario     [NOUN, ADJ]  0.3589          1
-3  pandas giga...     [NOUN, ADJ]  0.2914          1
-4        gigantes           [ADJ]  0.2815          1
-5       oso panda  [PROPN, PROPN]  0.2711          1
-6          pandas          [NOUN]  0.2657          1
-7           China         [PROPN]  0.2366          1
-8      panda rojo   [NOUN, PROPN]  0.2323          1
-9         gigante           [ADJ]  0.1757          3
+                    term        pos_tags    rank  frequency
+0          panda gigante    [PROPN, ADJ]  1.0000          3
+1             panda rojo  [PROPN, PROPN]  0.9023          1
+2                  panda         [PROPN]  0.9013          6
+3              oso panda  [PROPN, PROPN]  0.7563          1
+4                gigante           [ADJ]  0.4877          3
+5               roedores          [NOUN]  0.4641          1
+6               plátanos          [NOUN]  0.4434          1
+7          pelaje blanco     [NOUN, ADJ]  0.3851          1
+8  tubérculos silvestres     [NOUN, ADJ]  0.3722          1
+9                  bambú         [PROPN]  0.3704          1
 
 ```
 ### Extracting terms from pairs of sentences
@@ -126,19 +126,16 @@ The special thing about tm2tb is that it can extract and match the terms from bo
 
 >>> extractor = BitermExtractor((en_sentence, es_sentence)) # Instantiate extractor with sentences
 >>> biterms = extractor.extract_terms()                     # Extract biterms
->>> print(biterms[:10])
+>>> print(biterms[:7])
 
-       src_term     src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
-0   giant panda  [ADJ, NOUN]   panda gigante    [NOUN, ADJ]      0.9911          1       0.6385
-1   bear native  [NOUN, ADJ]  oso originario    [NOUN, ADJ]      0.9156          1       0.5607
-2  Giant pandas  [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5521
-3         panda       [NOUN]           panda         [NOUN]      1.0000          1       0.5470
-4     red panda  [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5420
-5         giant        [ADJ]        gigantes          [ADJ]      0.9166          1       0.5416
-6        pandas       [NOUN]          pandas         [NOUN]      1.0000          1       0.5336
-7        bamboo       [NOUN]           bambú         [NOUN]      0.9811          1       0.5269
-8         China      [PROPN]           China        [PROPN]      1.0000          1       0.5230
-9     Carnivora      [PROPN]      carnívoros         [NOUN]      0.9351          1       0.5199
+      src_term        tgt_term  similarity  frequency  biterm_rank
+0  giant panda   panda gigante      0.9758          1       1.0000
+1    red panda      panda rojo      0.9807          1       0.9385
+2        panda           panda      1.0000          1       0.7008
+3      oranges        naranjas      0.9387          1       0.3106
+4       bamboo           bambú      0.9237          1       0.2911
+5        China           China      1.0000          1       0.2550
+6  rotund body  cuerpo rotundo      0.9479          1       0.2229
 
 ```
 
@@ -172,18 +169,17 @@ tm2tb can also extract and match terms from bilingual documents. Let's take a sm
 >>> biterms = extractor.extract_terms()         # Extract terms
 >>> print(biterms[:10])
 
-
-         src_term       src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
-0     giant panda    [ADJ, NOUN]   panda gigante   [PROPN, ADJ]      0.9911          8       0.6490
-1    Giant pandas    [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5819
-2           panda         [NOUN]           panda         [NOUN]      1.0000          8       0.5665
-3       true bear    [ADJ, NOUN]   oso auténtico    [NOUN, ADJ]      0.9284          1       0.5542
-4       red panda    [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5447
-5  taxonomic c...    [ADJ, NOUN]  clasificaci...    [NOUN, ADJ]      0.9840          1       0.5412
-6       Carnivora        [PROPN]       Carnivora        [PROPN]      1.0000          1       0.5388
-7          pandas         [NOUN]          pandas         [NOUN]      1.0000          1       0.5355
-8  family Ursidae  [NOUN, PROPN]  familia Urs...  [NOUN, PROPN]      0.9952          1       0.5346
-9           China        [PROPN]           China        [PROPN]      1.0000          2       0.5340
+                   src_term                  tgt_term  similarity  frequency  biterm_rank
+0               giant panda             panda gigante      0.9758          8       1.0000
+1                     panda                     panda      1.0000          8       0.5966
+2                 red panda                panda rojo      0.9807          1       0.1203
+3                   Ursidae                   Ursidae      1.0000          2       0.0829
+4             prepared food      alimentos preparados      0.9623          1       0.0735
+5                     China                     China      1.0000          2       0.0648
+6            family Ursidae           familia Ursidae      0.9564          1       0.0632
+7  taxonomic classification  clasificación taxonómica      0.9543          1       0.0629
+8           common ancestor            ancestro común      0.9478          1       0.0607
+9           characteristics           características      0.9885          1       0.0540
 
 ```
 In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
@@ -221,7 +217,7 @@ You can pass a list of part-of-speech tags to delimit the selection of terms.
 For example, we can get only adjectives and adverbs:
 
 ```python
->>> extractor = TermExtractor(en_sentence)  
+>>> extractor = TermExtractor(en_sentence)
 >>> terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
 >>> print(terms[:10])
 
