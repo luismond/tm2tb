@@ -1,6 +1,6 @@
 # tm2tb
 
-**tm2tb** extracts terms from bilingual data. 
+**tm2tb** is a bilingual term extractor. 
 
 It identifies terms in both source and target languages.
 
@@ -28,21 +28,19 @@ However, it can also include translations from multiple languages.
 
 Bilingual term lists play a crucial role in quality assurance during translation and localization projects.
 
-Machine translation: bilingual terminology is used to fine-tune MT models
+- Machine translation: bilingual terminology is used to fine-tune MT models
 
-Foreign language teaching: bilingual term lists are used can be used as a teaching resource
+- Foreign language teaching: bilingual term lists are used can be used as a teaching resource
 
-Transcreation: creative, non-literal translations can be extracted as suggestions from bilingual data
+- Transcreation: creative, non-literal translations can be extracted as suggestions from bilingual data
 
-## What is tm2tb's recipe?
+## What is tm2tb's approach?
 
-1. Extract terms from source and target languages
+1. Extract terms from source and target sentences
 
-2. Use an AI model to convert the terms to 'vectors' (a complex number, don't worry about this)
+2. Use an AI model to convert these terms to 'vectors' (a sequence of numbers, don't worry about this)
 
-3. Use the vectors to find the closest source/target term matches
-
-4. Profit!
+3. Use this information to find the most similar source and target term matches
 
 <hr/>
 
@@ -53,10 +51,10 @@ Any language supported by spaCy
 ## Bilingual file formats supported
 
 - .tmx
-- .mqxliff
-- .mxliff
+- .mqxliff (memoQ)
+- .mxliff  (Phrase, memsource)
 - .csv
-- .xlsx
+- .xlsx    (Excel)
 
 <hr/>
 
