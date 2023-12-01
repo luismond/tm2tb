@@ -1,45 +1,68 @@
-# TM2TB
+# tm2tb
 
-**tm2tb** is a term extraction module with a focus on bilingual data.
+**tm2tb** is a bilingual term extractor. 
 
-It uses spaCy's part-of-speech tags and sentence transformer models to extract and match terms from pairs of sentences and bilingual documents.
+It identifies terms in both source and target languages.
 
-## Approach
+Given a **T**ranslation **M**emory, it extracts a **T**erm **B**ase
 
-To extract terms from a sentence, tm2tb first selects candidates using part-of-speech tags as delimiters. Then, a model language is used to embed the candidates and the sentence. Finally, the embeddings are used to find the terms that are more similar to the sentence using cosine similarity and maximal marginal relevance.
+## What is a Term Base?
 
-For pairs of sentences (which are translations of each other), the process above is carried out for each sentence. Then, the resulting term embeddings are compared using cosine similarity, which returns the most similar target term for each source term.
+In translation projects, a term base is a collection of terms relevant to a project.
 
-For bilingual documents, terms are extracted from each pair of sentences using the aforementioned process. Finally, similarity averages are calculated to produce the final selection of terms.
+It is like having a specialized bilingual dictionary.
+
+It includes terms along with their corresponding translations in the target language.
+
+## What is a Translation Memory?
+
+A Translation Memory is a file that stores translations from previously translated documents.
+
+Typically, it’s bilingual, containing pairs of sentences in the source and target languages.
+
+However, it can also include translations from multiple languages.
+
+## Where can I use tm2tb?
+
+### Translation and localization
+
+Bilingual term lists play a crucial role in quality assurance during translation and localization projects.
+
+- Machine translation: bilingual terminology is used to fine-tune MT models
+
+- Foreign language teaching: bilingual term lists are used can be used as a teaching resource
+
+- Transcreation: creative, non-literal translations can be extracted as suggestions from bilingual data
+
+## What is tm2tb's approach?
+
+1. Extract terms from source and target sentences
+
+2. Use an AI model to convert these terms to 'vectors' (a sequence of numbers, don't worry about this)
+
+3. Use this information to find the most similar source and target term matches
 
 <hr/>
 
-## Main features
-
-- Extract bilingual terms from pairs of sentences or short paragraphs.
-- Extract bilingual terms from documents such as translation memories, and other bilingual files.
-- Extract terms and keywords from single sentences.
-- Use part-of-speech tags to select different patterns of terms and phrases.
-
 ## Languages supported
 
-So far, TM2TB supports English, Spanish, German, French, Portuguese and Italian. Chinese and Russian are currently in beta testing.
+Any language supported by spaCy
 
 ## Bilingual file formats supported
 
 - .tmx
-- .mqxliff
-- .mxliff
-- .csv (with two columns for source and target)
-- .xlsx (with two columns for source and target)
+- .mqxliff (memoQ)
+- .mxliff  (Phrase, memsource)
+- .csv
+- .xlsx    (Excel)
 
 <hr/>
 
 # Basic examples
 
-### New! Run these examples directly in a [Google Colab notebook](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
+### Run these examples in a [Google Colab notebook](https://colab.research.google.com/drive/1gq0BOESfP8ok9xRP4z0DSRBsC74YKWQz?usp=sharing)
 
-### Extracting terms from a sentence
+### Extract terms from a sentence
 
 ```python
 from tm2tb import TermExtractor
@@ -119,7 +142,7 @@ es_sentence = (
 ```
 ### Extracting terms from pairs of sentences
 
-The special thing about tm2tb is that it can extract and match the terms from both sentences:
+Extract and match source & target terms:
 
 ```python
 >>> from tm2tb import BitermExtractor
@@ -142,7 +165,7 @@ The special thing about tm2tb is that it can extract and match the terms from bo
 
 ### Extracting terms from bilingual documents
 
-tm2tb can also extract and match terms from bilingual documents. Let's take a small translation file:
+Extract and match source & target terms from a bilingual document:
 
 ```
                                                  src                                                trg
@@ -182,14 +205,12 @@ tm2tb can also extract and match terms from bilingual documents. Let's take a sm
 9           characteristics           características      0.9885          1       0.0540
 
 ```
-In this way, you can get a **T**erm **B**ase from a **T**ranslation **M**emory. Hence the name, TM2TB.
-
 
 ## More examples with options
 
-### Selecting the terms length
+### Select the terms' length
 
-You can select the minimum and maximum length of the terms:
+Select the minimum and maximum length of the terms:
 
 ```python
 
@@ -211,10 +232,11 @@ You can select the minimum and maximum length of the terms:
 
 ```
 
-### Using Part-of-Speech tags
+### Use Part-of-Speech tags
 
-You can pass a list of part-of-speech tags to delimit the selection of terms.
-For example, we can get only adjectives and adverbs:
+Pass a list of part-of-speech tags to delimit the selection of terms.
+
+For example, get only adjectives and adverbs:
 
 ```python
 >>> extractor = TermExtractor(en_sentence)
@@ -234,7 +256,7 @@ For example, we can get only adjectives and adverbs:
 9      rotund       [ADJ]  0.0353          1
 ```
 
-You can pass these arguments in the same way for biterm extraction:
+Do the same for bilingual term extraction:
 
 ```python
 >>> extractor = BitermExtractor((en_sentence, es_sentence))
@@ -266,9 +288,9 @@ You can pass these arguments in the same way for biterm extraction:
 
 <hr/>
 
-## Installation
+## Installation in a linux OS
 
-1. Install pipenv and create a virtual environment.
+1. Install pipenv and create a virtual environment
 
 `pip install pipenv`
 
@@ -308,7 +330,7 @@ it_core_news_md-3.3.0
 
 ### spaCy models
 
-tm2tb includes 6 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0), [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0), and [Italian](https://github.com/explosion/spacy-models/releases/it_core_news_md-3.3.0)
+By default, tm2tb includes 6 medium spaCy language models, for [English](https://github.com/explosion/spacy-models/releases/en_core_web_md-3.3.0), [Spanish](https://github.com/explosion/spacy-models/releases/es_core_news_md-3.3.0), [German](https://github.com/explosion/spacy-models/releases/de_core_news_md-3.3.0), [French](https://github.com/explosion/spacy-models/releases/fr_core_news_md-3.3.0), [Portuguese](https://github.com/explosion/spacy-models/releases/pt_core_news_md-3.3.0), and [Italian](https://github.com/explosion/spacy-models/releases/it_core_news_md-3.3.0)
 
 If they are too large for your environment, you can download smaller models, but the Part-of-Speech tagging accuracy will be lower.
 
@@ -318,7 +340,7 @@ Check the available spaCy language models [here](https://spacy.io/models).
 
 ### Sentence transformer models
 
-TM2TB is compatible with the following multilingual sentence transformer models:
+tm2tb is compatible with the following multilingual models:
 
 - LaBSE (best model for translated phrase mining, but please note it is almost 2 GB in size)
 - setu4993/smaller-LaBSE (a smaller LaBSE model that supports only 15 languages)
@@ -327,24 +349,21 @@ TM2TB is compatible with the following multilingual sentence transformer models:
 - paraphrase-multilingual-MiniLM-L12-v2
 - paraphrase-multilingual-mpnet-base-v2
 
-These models can embed sentences or short paragraphs regardless of language. They are downloaded from [HuggingFace's model hub](https://huggingface.co/sentence-transformers/LaBSE).
-
-Please note that there is always a compromise between speed and accuracy. Smaller models will be faster, but less accurate. Larger models will be slower, but more accurate.
+Please note that there is always a compromise between speed and accuracy.
+- Smaller models will be faster, but less accurate.
+- Larger models will be slower, but more accurate.
 
 ## tm2tb.com
-The functionality of tm2tb is also available through a web app: www.tm2tb.com
-
-![](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/brave_WQMk3qISa9.png)
-![](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/brave_SzdkJmvNrL.png)
-![](https://raw.githubusercontent.com/luismond/tm2tb/main/.gitignore/NEJirEsSFa.gif)
+A tm2tb web app is available here: www.tm2tb.com
+- Extract biterms from bilingual documents and sentences (file limit size: 2 MB) 
 
 ## Maintainer
 
-[Luis Mondragon](https://www.linkedin.com/in/luismondragon/)
+[Luis Mondragón](https://www.linkedin.com/in/luismondragon/)
 
 ## License
 
-TM2TB is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
+tm2tb is released under the [GNU General Public License v3.0](github.com/luismond/tm2tb/blob/main/LICENSE)
 
 ## Credits
 
@@ -354,4 +373,6 @@ TM2TB is released under the [GNU General Public License v3.0](github.com/luismon
 - `xmltodict`: parsing of XML file formats (.mqxliff, .mxliff, .tmx, etc.)
 
 ### Other credits:
-- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes some concepts from KeyBERT, like terms-to-sentence similarity and the implementation of Maximal Marginal Relevance.
+- [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes these concepts from KeyBERT:
+- Terms-to-sentence similarity
+- Maximal Marginal Relevance
