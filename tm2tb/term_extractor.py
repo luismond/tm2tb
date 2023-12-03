@@ -51,7 +51,6 @@ class TermExtractor:
             self.lang = detect_lang(self.input_)
         else:
             self.lang = lang
-        #self.spacy_model = get_spacy_model(self.lang)
         self.docs = list(self.spacy_model.pipe(self.input_))
         self.emb_dims = trf_model.get_sentence_embedding_dimension()
 
