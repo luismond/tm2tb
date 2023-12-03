@@ -14,6 +14,7 @@ Methods
 from collections import defaultdict
 from collections import ChainMap
 from typing import Union
+from functools import cached_property
 import itertools
 import numpy as np
 import pandas as pd
@@ -50,7 +51,6 @@ class TermExtractor:
             self.lang = detect_lang(self.input_)
         else:
             self.lang = lang
-        self.spacy_model = get_spacy_model(self.lang)
         self.docs = list(self.spacy_model.pipe(self.input_))
         self.emb_dims = trf_model.get_sentence_embedding_dimension()
 
@@ -64,6 +64,11 @@ class TermExtractor:
         Span.set_extension("docs_idx", default=None, force=True)
         Span.set_extension("true_case", default=None, force=True)
         Token.set_extension("true_case", default=None, force=True)
+
+
+    @cached_property
+    def spacy_model(self):
+        return get_spacy_model(self.lang)
 
     def extract_terms(self,
                       return_as_table=True,
