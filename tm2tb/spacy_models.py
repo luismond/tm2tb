@@ -18,12 +18,12 @@ import it_core_news_md
 disabled_comps = ['lemmatizer', 'ner', 'entity_linker', 'trf_data', 'textcat']
 
 spacy_models = {
-    'en': en_core_web_md.load(),
-    'es': es_core_news_md.load(),
-    'de': de_core_news_md.load(),
-    'fr': fr_core_news_md.load(),
-    'pt': pt_core_news_md.load(),
-    'it': it_core_news_md.load()
+    'en': en_core_web_md.load(disable=disabled_comps),
+    'es': es_core_news_md.load(disable=disabled_comps),
+    'de': de_core_news_md.load(disable=disabled_comps),
+    'fr': fr_core_news_md.load(disable=disabled_comps),
+    'pt': pt_core_news_md.load(disable=disabled_comps),
+    'it': it_core_news_md.load(disable=disabled_comps)
     }
 
 print('Loading spacy models...')
