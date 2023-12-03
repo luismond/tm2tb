@@ -26,13 +26,18 @@ However, it can also include translations from multiple languages.
 
 ### Translation and localization
 
-Bilingual term lists play a crucial role in quality assurance during translation and localization projects.
+- Bilingual term lists play a crucial role in quality assurance during translation and localization projects.
 
-- Machine translation: bilingual terminology is used to fine-tune MT models
+### Machine translation
 
-- Foreign language teaching: bilingual term lists are used can be used as a teaching resource
+- Bilingual terminology is used to fine-tune MT models
 
-- Transcreation: creative, non-literal translations can be extracted as suggestions from bilingual data
+### Foreign language teaching
+
+- Bilingual term lists are used can be used as a teaching resource
+
+### Transcreation
+- Creative, non-literal translations can be extracted from bilingual data
 
 ## What is tm2tb's approach?
 
@@ -218,42 +223,41 @@ Select the minimum and maximum length of the terms:
 >>> terms = extractor.extract_terms(span_range=(2,3))
 >>> print(terms[:10])
 
-             term        pos_tags    rank  frequency
-0     giant panda     [ADJ, NOUN]  0.7819          3
-1     bear native     [NOUN, ADJ]  0.3705          1
-2      panda bear    [NOUN, NOUN]  0.2920          1
-3    Giant pandas     [ADJ, NOUN]  0.2852          1
-4       red panda     [ADJ, NOUN]  0.2308          1
-5  order Carni...   [NOUN, PROPN]  0.1472          1
-6  South Centr...  [PROPN, PRO...  0.1196          1
-7   Central China  [PROPN, PROPN]  0.1149          1
-8      bold black      [ADJ, ADJ]  0.0929          1
-9      white coat     [ADJ, NOUN]  0.0792          1
-
+                  term               pos_tags    rank  frequency
+0          giant panda            [ADJ, NOUN]  1.0000          3
+1           panda bear           [NOUN, NOUN]  0.9693          1
+2            red panda            [ADJ, NOUN]  0.9672          1
+3  South Central China  [PROPN, PROPN, PROPN]  0.5647          1
+4          bear native            [NOUN, ADJ]  0.3905          1
+5        South Central         [PROPN, PROPN]  0.3902          1
+6      order Carnivora          [NOUN, PROPN]  0.3504          1
+7          wild tubers            [ADJ, NOUN]  0.3053          1
+8        other grasses            [ADJ, NOUN]  0.2503          1
+9           bold black             [ADJ, ADJ]  0.1845          1
 ```
 
 ### Use Part-of-Speech tags
 
 Pass a list of part-of-speech tags to delimit the selection of terms.
 
-For example, get only adjectives and adverbs:
+For example, get only adjectives and nouns:
 
 ```python
 >>> extractor = TermExtractor(en_sentence)
->>> terms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+>>> terms = extractor.extract_terms(incl_pos=['ADJ', 'NOUN'])
 >>> print(terms[:10])
 
-         term    pos_tags    rank  frequency
-0       giant       [ADJ]  0.4319          3
-1       Giant       [ADJ]  0.1653          1
-2        wild       [ADJ]  0.1091          1
-3  bold black  [ADJ, ADJ]  0.0929          1
-4      simply       [ADV]  0.0550          1
-5        also       [ADV]  0.0468          1
-6         red       [ADJ]  0.0452          1
-7      native       [ADJ]  0.0437          1
-8       other       [ADJ]  0.0383          1
-9      rotund       [ADJ]  0.0353          1
+            term      pos_tags    rank  frequency
+0          panda        [NOUN]  1.0000          6
+1    giant panda   [ADJ, NOUN]  0.9462          3
+2     panda bear  [NOUN, NOUN]  0.9172          1
+3      red panda   [ADJ, NOUN]  0.9152          1
+4        bananas        [NOUN]  0.4813          1
+5        rodents        [NOUN]  0.4218          1
+6    bear native   [NOUN, ADJ]  0.3695          1
+7    wild tubers   [ADJ, NOUN]  0.2889          1
+8        oranges        [NOUN]  0.2723          1
+9  other grasses   [ADJ, NOUN]  0.2368          1
 ```
 
 Do the same for bilingual term extraction:
@@ -263,26 +267,23 @@ Do the same for bilingual term extraction:
 >>> biterms = extractor.extract_terms(span_range=(2,3))
 >>> print(biterms[:10])
 
-       src_term     src_tags        trg_term       trg_tags  similarity  frequency  biterm_rank
-0   giant panda  [ADJ, NOUN]   panda gigante    [NOUN, ADJ]      0.9911          1       0.6385
-1   bear native  [NOUN, ADJ]  oso originario    [NOUN, ADJ]      0.9156          1       0.5607
-2  Giant pandas  [ADJ, NOUN]  pandas giga...    [NOUN, ADJ]      0.9918          1       0.5521
-3     red panda  [ADJ, NOUN]      panda rojo  [NOUN, PROPN]      0.9939          1       0.5420
+      src_term     src_tags  src_rank  ... similarity frequency  biterm_rank
+0  giant panda  [ADJ, NOUN]    1.0000  ...     0.9758         1       1.0000
+1    red panda  [ADJ, NOUN]    0.9672  ...     0.9807         1       0.9394
+2  rotund body  [ADJ, NOUN]    0.1347  ...     0.9479         1       0.2204
 
 ```
 
 ```python
 >>> extractor = BitermExtractor((en_sentence, es_sentence))
->>> biterms = extractor.extract_terms(incl_pos=['ADJ', 'ADV'])
+>>> biterms = extractor.extract_terms(incl_pos=['ADJ', 'NOUN'])
 >>> print(biterms[:10])
 
-       src_term src_tags        trg_term trg_tags  similarity  frequency  biterm_rank
-0         giant    [ADJ]        gigantes    [ADJ]      0.9166          1       0.5595
-1         black    [ADJ]           negro    [ADJ]      0.9051          1       0.5057
-2        rotund    [ADJ]         rotundo    [ADJ]      0.9466          1       0.5053
-3          more    [ADJ]             más    [ADV]      0.9293          1       0.5033
-4         white    [ADJ]          blanco    [ADJ]      0.9480          1       0.5027
-5  occasionally    [ADV]  ocasionalmente    [ADV]      0.9909          1       0.5013
+      src_term     src_tags  src_rank  ... similarity frequency  biterm_rank
+0  giant panda  [ADJ, NOUN]    0.9462  ...     0.9140         1       1.0000
+1        panda       [NOUN]    1.0000  ...     1.0000         1       0.7588
+2      oranges       [NOUN]    0.2723  ...     0.9387         1       0.3372
+3  rotund body  [ADJ, NOUN]    0.1274  ...     0.9479         1       0.2431
 
 ```
 
