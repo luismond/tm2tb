@@ -1,5 +1,5 @@
 """
-Load transformer model
+Load sentence transformer model
 """
 import os
 from sentence_transformers import SentenceTransformer
@@ -12,8 +12,7 @@ class TransformerModel:
     These models were trained on multilingual parallel data.
 
     They can be used to map different languages to a shared vector space,
-    and are suited for tasks such as bitext extraction,
-    paraphrase extraction, clustering and semantic search.
+    and are suited for bitext extraction, paraphrase extraction, clustering and semantic search.
 
     They are hosted on the HuggingFace Model Hub.
     https://huggingface.co/sentence-transformers
