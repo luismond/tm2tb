@@ -3,7 +3,7 @@ import json
 from tm2tb import TermExtractor
 from tm2tb import BitermExtractor
 from tm2tb import BitextReader
-from tm2tb_api import app
+from app import app
 
 app.testing = True
 
@@ -39,19 +39,22 @@ def test_api():
     """Send a bitext request and test the biterm response."""
     with app.test_client() as client:
         data = {
-            "src":
+            "src_text":
                 [
                     "The giant panda also known as the panda bear (or simply the panda),"
                     " is a bear native to South Central China.",
                     "It is characterised by its bold black-and-white coat and rotund body."
                     ],
 
-            "tgt":
+            "tgt_text":
                 [
                     "El panda gigante, tambien conocido como oso panda (o simplemente panda),"
                     " es un oso nativo del centro sur de China.",
                     "Se caracteriza por su llamativo pelaje blanco y negro, y su cuerpo robusto."
-                    ]
+                    ],
+            "src_lang": "en",
+            "tgt_lang": "es",
+            "similarity_min": 0.8
             }
 
         response = client.post(
@@ -59,7 +62,89 @@ def test_api():
             json=json.dumps(data),
             )
 
-        expected_response = "{\"src_term\":{\"0\":\"giant panda\",\"1\":\"panda\",\"2\":\"China\"},\"src_tags\":{\"0\":[\"ADJ\",\"NOUN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"src_rank\":{\"0\":0.8615,\"1\":0.8255,\"2\":0.6299},\"tgt_term\":{\"0\":\"panda gigante\",\"1\":\"panda\",\"2\":\"China\"},\"tgt_tags\":{\"0\":[\"PROPN\",\"PROPN\"],\"1\":[\"NOUN\"],\"2\":[\"PROPN\"]},\"tgt_rank\":{\"0\":0.9052,\"1\":0.7282,\"2\":0.6174},\"similarity\":{\"0\":0.9757999778,\"1\":1.0,\"2\":1.0},\"frequency\":{\"0\":1,\"1\":1,\"2\":1},\"biterm_rank\":{\"0\":1.0,\"1\":0.6309,\"2\":0.5065}}"
+        expected_response = {
+            "src_term":
+                {
+                    "0": "giant panda",
+                    "1": "white coat",
+                    "2": "South Central",
+                    "3": "panda",
+                    "4": "bear native",
+                    "5": "China"
+                    },
+            "src_tags":
+                {
+                    "0": ["ADJ", "NOUN"],
+                    "1": ["ADJ", "NOUN"],
+                    "2": ["PROPN", "PROPN"],
+                    "3": ["NOUN"],
+                    "4": ["NOUN", "ADJ"],
+                    "5": ["PROPN"]
+                 },
+            "src_rank":
+                {
+                    "0": 0.8615,
+                    "1": 0.9208,
+                    "2": 0.7161,
+                    "3": 0.8255,
+                    "4": 0.5889,
+                    "5": 0.6299
+                },
+            "tgt_term":
+                {
+                    "0": "panda gigante",
+                    "1": "pelaje blanco",
+                    "2": "centro sur",
+                    "3": "panda",
+                    "4": "oso nativo",
+                    "5": "China"
+                    },
+            "tgt_tags":
+                {
+                    "0": ["PROPN", "PROPN"],
+                    "1": ["NOUN", "ADJ"],
+                    "2": ["NOUN", "ADJ"],
+                    "3": ["NOUN"],
+                    "4": ["NOUN", "ADJ"],
+                    "5": ["PROPN"]
+                    },
+            "tgt_rank":
+                {
+                    "0": 0.9933,
+                    "1": 0.9273,
+                    "2": 0.8228,
+                    "3": 0.7991,
+                    "4": 0.7778,
+                    "5": 0.6775
+                    },
+            "similarity":
+                {
+                    "0": 0.9757999778,
+                    "1": 0.8659999967,
+                    "2": 0.8604999781,
+                    "3": 1.0,
+                    "4": 0.8320000172,
+                    "5": 1.0
+                    },
+            "frequency":
+                {
+                    "0": 1,
+                    "1": 1,
+                    "2": 1,
+                    "3": 1,
+                    "4": 1,
+                    "5": 1
+                    },
+            "biterm_rank":
+                {
+                    "0": 1.0,
+                    "1": 0.8843,
+                    "2": 0.7317,
+                    "3": 0.6283,
+                    "4": 0.6283,
+                    "5": 0.5057
+                    }
+                }
 
         assert json.loads(response.text) == expected_response
 
