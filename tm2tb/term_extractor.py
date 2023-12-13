@@ -202,10 +202,13 @@ class TermExtractor:
         spans_texts_dict = defaultdict(set)  # All spans and their string representation
 
         for doc in self.docs:
-            span_ranges = list((i, i+n) for i in range(len(doc))
-                               for n in range(span_range[0], span_range[1]+1))
+            spans = []
+            for i in range(len(doc)):
+                for n in range(span_range[0], span_range[1]+1):
+                    if i+n <= len(doc):
+                        span = doc[i:i+n]
+                        spans.append(span)
 
-            spans = (doc[n:n_] for (n, n_) in span_ranges)
             for span in spans:
                 if all((span._.incl_pos_edges, span._.excl_pos_any, span._.alpha_edges)):
                     if len(span.text) > 1:
