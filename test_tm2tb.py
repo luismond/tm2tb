@@ -600,3 +600,87 @@ def test_bilingual_tmx():
     extractor = BitermExtractor(bitext)
     biterms = extractor.extract_terms()[:10].to_dict()
     assert biterms == bitext_result
+
+def test_en_test():
+    """Test monolingual extraction from English text."""
+    path = 'data/test_text_en.txt'
+    with open(path, 'r', encoding='utf8') as fr:
+        text = fr.read().split('\n')
+    extractor = TermExtractor(text)
+    terms = extractor.extract_terms()[:10].to_dict()
+    expected_terms = {
+        'frequency': {0: 1, 1: 111, 2: 1, 3: 4, 4: 2, 5: 2, 6: 18, 7: 1, 8: 1, 9: 6},
+        'pos_tags': {0: ['NOUN', 'NOUN'],
+                     1: ['NOUN'],
+                     2: ['NOUN', 'NOUN'],
+                     3: ['PROPN', 'PROPN'],
+                     4: ['PROPN', 'NOUN'],
+                     5: ['NOUN', 'NOUN'],
+                     6: ['ADJ', 'NOUN'],
+                     7: ['ADJ', 'NOUN'],
+                     8: ['ADJ', 'NOUN'],
+                     9: ['NOUN', 'NOUN']},
+        'rank': {0: 1.0,
+                 1: 0.9933,
+                 2: 0.9502,
+                 3: 0.9473,
+                 4: 0.9466,
+                 5: 0.9382,
+                 6: 0.8944,
+                 7: 0.8891,
+                 8: 0.8791,
+                 9: 0.8774},
+        'term': {0: 'panda species',
+                 1: 'panda',
+                 2: 'panda conservation',
+                 3: 'Giant Panda',
+                 4: 'Qinling panda',
+                 5: 'panda cub',
+                 6: 'giant pandas',
+                 7: 'wild panda',
+                 8: 'common panda',
+                 9: 'panda population'}
+        }
+    assert terms == expected_terms
+
+
+def test_es_test():
+    """Test monolingual extraction from English text."""
+    path = 'data/test_text_es.txt'
+    with open(path, 'r', encoding='utf8') as fr:
+        text = fr.read().split('\n')
+    extractor = TermExtractor(text)
+    terms = extractor.extract_terms()[:10].to_dict()
+    expected_terms = {
+        'frequency': {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 3, 7: 1, 8: 2, 9: 1},
+        'pos_tags': {0: ['NOUN', 'ADJ'],
+                     1: ['PROPN', 'PROPN'],
+                     2: ['NOUN', 'ADJ'],
+                     3: ['NOUN', 'ADJ'],
+                     4: ['ADJ', 'NOUN'],
+                     5: ['NOUN', 'ADJ'],
+                     6: ['PROPN', 'PROPN'],
+                     7: ['NOUN', 'ADJ'],
+                     8: ['PROPN', 'ADJ'],
+                     9: ['PROPN', 'PROPN']},
+        'rank': {0: 1.0,
+                 1: 0.9767,
+                 2: 0.9703,
+                 3: 0.9623,
+                 4: 0.9501,
+                 5: 0.9446,
+                 6: 0.9414,
+                 7: 0.9414,
+                 8: 0.9336,
+                 9: 0.9182},
+        'term': {0: 'pandas salvajes',
+                 1: 'Zoológico Nacional',
+                 2: 'pandas gigantes',
+                 3: 'jardín zoológico',
+                 4: 'único panda',
+                 5: 'zoológicos norteamericanos',
+                 6: 'panda rojo',
+                 7: 'animal nacional',
+                 8: 'Panda gigante',
+                 9: 'Parque Zoológico'}}
+    assert terms == expected_terms
