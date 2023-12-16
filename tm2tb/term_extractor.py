@@ -131,11 +131,7 @@ class TermExtractor:
                 span._.embedding = emb
                 top_spans.append(span)
 
-        # Ranking
-        similarities = [s._.similarity for s in top_spans]
-        ranks = [sim/max(similarities) for sim in similarities]
-        for n, span in enumerate(top_spans):
-            span._.rank = ranks[n]
+        top_spans = self._rank_spans(top_spans)
 
         if collapse_similarity is True:
             top_spans = self._collapse_similarity(top_spans)
@@ -147,6 +143,31 @@ class TermExtractor:
         if return_as_table is True:
             top_spans = self._return_as_table(top_spans)
         return top_spans
+
+    @staticmethod
+    def _rank_spans(spans):
+        """
+        Calculate the terms ranking.
+
+        1. Normalize similarity and frequency to values between 0 and 1
+        2. Sum normalized similarity and frequency
+        3. Normalize the resulting sums to values between 0 and 1 (1 being the top-ranked term)
+        """
+        spans_ = []
+
+        similarities = [s._.similarity for s in spans]
+        sims_norm = [sim/max(similarities) for sim in similarities]
+
+        frequencies = [s._.frequency for s in spans]
+        freqs_norm = [freq/max(frequencies) for freq in frequencies]
+
+        ranks = [(a+b) for a, b in zip(sims_norm, freqs_norm)]
+        ranks_norm = [rank/max(ranks) for rank in ranks]
+
+        for n, span in enumerate(spans):
+            span._.rank = ranks_norm[n]
+            spans_.append(span)
+        return spans_
 
     @staticmethod
     def _set_span_rules(incl_pos=None, excl_pos=None):
