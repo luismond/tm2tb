@@ -377,3 +377,11 @@ tm2tb is released under the [GNU General Public License v3.0](github.com/luismon
 - [KeyBERT](https://github.com/MaartenGr/KeyBERT): tm2tb takes these concepts from KeyBERT:
 - Terms-to-sentence similarity
 - Maximal Marginal Relevance
+
+### Academic mentions of TM2TB
+
+TM2TB has been referenced in multiple NLP research works focusing on terminology extraction, multilingual translation, and cross-lingual evaluation:
+
+- Ke Wang, Jun Xie, Yuqi Zhang, Yu Zhao (2023). Improving Neural Machine Translation by Multi-Knowledge Integration with Prompting. arXiv:2312.04807.
+- Moslem (2024). Language Modelling Approaches to Adaptive Machine Translation. arXiv:2401.14559.
+- Sorato, Zavala-Rojas, (2025). “Evaluating the Feasibility of Using ChatGPT for Cross-cultural Survey Translation". KONVENS : 21th Conference on Natural Language Processing. In Proceedings of the 21st Conference on Natural Language Processing (KONVENS 2025)
