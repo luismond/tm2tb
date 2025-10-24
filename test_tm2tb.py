@@ -13,7 +13,7 @@ EN_SENTENCE = sentences['en']
 ES_SENTENCE = sentences['es']
 
 with open('data/test_results.jsonl', 'r', encoding='utf8') as fr:
-    RESULTS = [json.loads(line) for line in fr.read().split('\n')[:-1]]
+    RESULTS = [json.loads(line) for line in fr.read().split('\n')]
 
 def test_api():
     """Test bilingual term extraction through the API."""
