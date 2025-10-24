@@ -289,7 +289,22 @@ Do the same for bilingual term extraction:
 
 <hr/>
 
-## Installation in a linux OS
+## 🐳 Run with Docker
+
+```bash
+docker build -t tm2tb .
+docker run -p 5000:5000 tm2tb
+```
+
+or
+
+```bash
+docker compose up --build
+```
+
+for live development
+
+## Install it in Linux with pipenv
 
 1. Install pipenv and create a virtual environment
 
@@ -305,29 +320,6 @@ Do the same for bilingual term extraction:
 
 `pipenv install`
 
-This will install the following libraries:
-```
-pip==22.1.2
-setuptools==62.6.0
-wheel==0.37.1
-langdetect==1.0.9
-pandas==1.4.3
-xmltodict==0.12.0
-openpyxl==3.0.9
-sentence-transformers==2.2.2
-tokenizers==0.12.1
-spacy==3.3.0
-```
-
-Also, the following spaCy models will be downloaded and installed:
-```
-en_core_web_md-3.3.0
-es_core_news_md-3.3.0
-fr_core_news_md-3.3.0
-de_core_news_md-3.3.0
-pt_core_news_md-3.3.0
-it_core_news_md-3.3.0
-```
 
 ### spaCy models
 
