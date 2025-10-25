@@ -15,21 +15,17 @@ ENV PIP_NO_CACHE_DIR=1 \
 WORKDIR /app
 
 # Copy only dependency files first to leverage Docker layer caching
-# (adjust if you use pyproject.toml/poetry)
 COPY requirements*.txt /app/
-# If you don't have a requirements lock yet, create a quick one:
-# echo -e "flask\nspacy\nsentence-transformers\npandas\n" > requirements.txt
 
 # Install Python deps
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# Now copy the rest of the code
+# Copy the rest of the code
 COPY . /app
 
 # Expose Flask port (adjust if different)
 EXPOSE 5000
 
-# Default start command (adjust if your entrypoint differs)
-# If your app is "app.py" running a Flask server:
+# Default start command
 CMD ["python", "app.py"]

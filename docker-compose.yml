@@ -5,7 +5,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./:/app             # live-reload your code
-      - ./data:/data        # mount corpora/TMX here if you want
+      - ./:/app             # live-reload the code
+      - ./data:/data
     environment:
       - FLASK_ENV=development
