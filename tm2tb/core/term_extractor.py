@@ -22,7 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from spacy.tokens import Token, Span
 from tm2tb import trf_model
 from tm2tb import get_spacy_model
-from tm2tb.utils import detect_lang
+from tm2tb.core.utils import detect_lang
 
 
 class TermExtractor:

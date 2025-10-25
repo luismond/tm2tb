@@ -1,5 +1,5 @@
 """
-spaCy model selection.
+spacy and transformer models and paths
 
 TM2TB comes with 6 spaCy language models (English, Spanish, German, French, Portuguese and Italian).
 
@@ -7,12 +7,15 @@ In order to support additional languages, the corresponding spaCy model must be 
 Check the available spaCy language models here: https://spacy.io/models
 """
 
+import os
 import en_core_web_md
 import es_core_news_md
 import de_core_news_md
 import fr_core_news_md
 import pt_core_news_md
 import it_core_news_md
+from sentence_transformers import SentenceTransformer
+
 
 # Disable unneeded pipeline components
 disabled_comps = ['lemmatizer', 'ner', 'entity_linker', 'trf_data', 'textcat']
@@ -59,3 +62,54 @@ def get_spacy_model(lang):
         raise ValueError(f"{lang} model has not been installed!")
     spacy_model = spacy_models[lang]
     return spacy_model
+
+
+class TransformerModel:
+    """
+    Load a multilingual sentence-transformer model.
+
+    These models were trained on multilingual parallel data.
+
+    They can be used to map different languages to a shared vector space,
+    and are suited for bitext extraction, paraphrase extraction, clustering and semantic search.
+
+    They are hosted on the HuggingFace Model Hub.
+    https://huggingface.co/sentence-transformers
+
+    Models compatible with TM2TB:
+
+        LaBSE (best performance, specifically suited for bitext extraction).
+
+        setu4993/smaller-LaBSE (a smaller LaBSE model that supports only 15 languages)
+
+        distiluse-base-multilingual-cased-v1
+
+        distiluse-base-multilingual-cased-v2
+
+        paraphrase-multilingual-MiniLM-L12-v2
+
+        paraphrase-multilingual-mpnet-base-v2
+
+    """
+
+    def __init__(self, model_name):
+        self.path = 'sbert_models'
+        self.model_name = model_name
+        self.model_path = os.path.join(self.path, self.model_name)
+        if self.path not in os.listdir():
+            os.mkdir(self.path)
+
+    def load(self):
+        """Load model from path or download it from HuggingFace Model Hub."""
+        if self.model_name in os.listdir(self.path):
+            print(f'Loading sentence transformer model:\n{self.model_name}')
+            model = SentenceTransformer(self.model_path)
+        else:
+            print(f'Downloading sentence transformer model:\n{self.model_name}')
+            model = SentenceTransformer(self.model_name)
+            model.save(self.model_path)
+        return model
+
+
+trf_model_name = "LaBSE"
+trf_model = TransformerModel(trf_model_name).load()

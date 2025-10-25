@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tm2tb"
+version = "2.5.0"
+description = "Bilingual terminology extraction and alignment"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.setuptools]
+include-package-data = true
+
+# Tell setuptools how to discover the package
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tm2tb*"]
+
+[project.scripts]
+tm2tb = "tm2tb.cli.main:main"

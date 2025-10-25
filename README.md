@@ -320,6 +320,28 @@ for live development
 
 `pipenv install`
 
+#### Common Docker commands
+
+docker compose run --rm tm2tb tm2tb --help
+docker compose run --rm tm2tb python -m tm2tb.cli.main --help
+docker compose run --rm tm2tb pytest -q
+
+- Start the web app
+`docker compose up --build web`
+
+- Get CLI help
+`docker compose run --rm tm2tb tm2tb --help`
+
+- Extract biterms from a CSV file
+
+`docker compose run --rm tm2tb tm2tb --in data/sample.csv --out out/glossary.csv --src en --tgt es`
+
+- Run tests
+
+`docker compose run --rm test`
+
+
+
 
 ### spaCy models
 
