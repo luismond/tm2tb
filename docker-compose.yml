@@ -1,5 +1,13 @@
+x-cache-env: &cache-env
+  HF_HOME: /cache/hf                  # Hugging Face hub (models/datasets)
+  TRANSFORMERS_CACHE: /cache/hf       # transformers also respects this
+  SENTENCE_TRANSFORMERS_HOME: /cache/st
+  XDG_CACHE_HOME: /cache/xdg          # default cache root for many libs
+  TORCH_HOME: /cache/torch            # torch.hub, etc.
+  PYTHONUNBUFFERED: "1"
+
 services:
-  # Web app (Flask UI)
+  # API service
   web:
     build: .
     working_dir: /app
@@ -10,7 +18,6 @@ services:
       - FLASK_ENV=development
       - PYTHONUNBUFFERED=1
       - FLASK_APP=tm2tb/api/app.py
-      # optional: host/port if your app uses them
       - FLASK_RUN_HOST=0.0.0.0
       - FLASK_RUN_PORT=5000
     command: flask run
@@ -29,8 +36,9 @@ services:
     volumes:
       - ./:/app
       - ./data:/data
+      - ./cache:/cache
     environment:
-      - PYTHONUNBUFFERED=1
+      <<: *cache-env
 
   # Test runner
   test:
@@ -38,6 +46,7 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
+      - ./cache:/cache
     command: pytest -q
     environment:
-      - PYTHONUNBUFFERED=1
+      <<: *cache-env
