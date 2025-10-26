@@ -1,11 +1,13 @@
+"""
+Build a dataset of silver seq2seq pairs for T5.
+"""
 from __future__ import annotations
 import json, random
 from pathlib import Path
 from typing import Iterable, Dict, List, Tuple
 
-from tm2tb.core.io_utils import iter_bitext_segments
-from tm2tb.core.term_extractor import extract_terms
-from tm2tb.core.biterm_extractor import align_candidates 
+from tm2tb.core.io_utils import BitextReader
+from tm2tb.core.biterm_extractor import BitermExtractor 
 
 Example = Dict[str, str]
 
@@ -13,23 +15,23 @@ def build_examples(
     tmx_path: Path,
     src_lang: str,
     tgt_lang: str,
-    max_terms_per_seg: int = 5,
+    max_terms_per_seg: int = 2,
 ) -> List[Example]:
     """
     Produce silver seq2seq pairs for T5:
     {"src": "...", "tgt": "...", "term_src": "...", "label_tgt": "...", "lang_pair": "en-es"}
     """
     examples: List[Example] = []
-    for src, tgt in iter_bitext_segments(tmx_path, src_lang, tgt_lang):
-        terms = extract_terms(src, lang=src_lang)[:max_terms_per_seg]
-        # For each source term, pick best target candidate using existing heuristic
-        for term in terms:
-            best = align_candidates(term, src, tgt)  # returns best matching target span or None
-            label = best if best else "NONE"
+    bitext = BitextReader(tmx_path).read_bitext()
+    for src, tgt in bitext:
+        extractor = BitermExtractor((src, tgt))
+        biterms = extractor.extract_terms(similarity_min=.6, return_as_table=False)[:max_terms_per_seg]
+        for biterm in biterms:
+            label = biterm.tgt_term if biterm.similarity > .8 else "NONE"
             examples.append({
                 "src": src,
                 "tgt": tgt,
-                "term_src": term,
+                "term_src": biterm.src_term,
                 "label_tgt": label,
                 "lang_pair": f"{src_lang}-{tgt_lang}",
             })
@@ -57,6 +59,16 @@ def write_jsonl(examples: Iterable[Example], path: Path):
             f.write(json.dumps(ex, ensure_ascii=False) + "\n")
 
 def main():
+    """
+    Main function to build a dataset of silver seq2seq pairs for T5.
+    
+    Usage: 
+    python dataset_builder.py \
+        --tmx tests/data/test_bitext_en_es.tmx \
+        --src en \
+        --tgt es \
+        --out tests/data/test_bitext_en_es_silver.jsonl
+    """
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--tmx", type=Path, required=True)
