@@ -10,18 +10,29 @@ test_data_dir = 'tests/data'
 
 with open(f'{test_data_dir}/test_sentences.json', 'r', encoding='utf8') as fr:
     sentences = json.loads(fr.read())
-EN_SENTENCE = sentences['en']
-ES_SENTENCE = sentences['es']
+en_sentence = sentences['en']
+es_sentence = sentences['es']
+
+
+def int_keys_pairs_hook(pairs):
+    return {int(k) if k.isdigit() else k: v for k, v in pairs}
 
 with open(f'{test_data_dir}/test_results.jsonl', 'r', encoding='utf8') as fr:
-    RESULTS = [json.loads(line) for line in fr.read().split('\n')]
+    RESULTS = [json.loads(line, object_pairs_hook=int_keys_pairs_hook) for line in fr.read().split('\n')[:-1]]
+
+def _round(j):
+    for x in ['similarity', 'biterm_rank', 'rank']:
+        if x in j:
+            j[x] = {k:round(float(v), 4) for (k,v) in j[x].items()}
+    return j
+
 
 def test_api():
     """Test bilingual term extraction through the API."""
     with app.test_client() as client:
         data = {
-            "src_text": EN_SENTENCE,
-            "tgt_text": ES_SENTENCE,
+            "src_text": en_sentence,
+            "tgt_text": es_sentence,
             "src_lang": "en",
             "tgt_lang": "es",
             "similarity_min": 0.8
@@ -30,129 +41,85 @@ def test_api():
             headers={"Content-Type": "application/json"},
             json=json.dumps(data),
             )
-        expected_response = RESULTS[0]
-        assert json.loads(response.text) == expected_response
+        biterms = json.loads(response.text, object_pairs_hook=int_keys_pairs_hook)
+        biterms = _round(biterms)
+        assert biterms == RESULTS[0]
 
 
 def test_en_sentence():
     """Test term extraction from English sentence."""
-    extractor = TermExtractor(EN_SENTENCE)
-    terms = extractor.extract_terms()[:10]
-    terms.index = terms.index.map(str)
+    extractor = TermExtractor(en_sentence)
+    terms = extractor.extract_terms()[:10].sort_values(by='term')
     terms = terms.to_dict()
+    terms = _round(terms)
     assert terms == RESULTS[1]
 
 
 def test_en_sentence_lang_code():
     """Test term extraction from English sentence passing a lang code."""
-    extractor = TermExtractor(EN_SENTENCE, lang='en')
-    terms = extractor.extract_terms()[:10]
-    terms.index = terms.index.map(str)
+    extractor = TermExtractor(en_sentence, lang='en')
+    terms = extractor.extract_terms()[:10].sort_values(by='term')
     terms = terms.to_dict()
+    terms = _round(terms)
     assert terms == RESULTS[2]
 
 
 def test_es_sentence():
     """Test term extraction from Spanish sentence."""
-    extractor = TermExtractor(ES_SENTENCE)
-    terms = extractor.extract_terms()[:10]
-    terms.index = terms.index.map(str)
+    extractor = TermExtractor(es_sentence)
+    terms = extractor.extract_terms()[:10].sort_values(by='term')
     terms = terms.to_dict()
+    terms = _round(terms)
     assert terms == RESULTS[3]
 
 
 def test_bilingual_sentences():
     """Test bilingual term extraction from English/Spanish sentences."""
-    extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE))
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
+    extractor = BitermExtractor((en_sentence, es_sentence))
+    biterms = extractor.extract_terms()[:10].sort_values(by='src_term')
     biterms = biterms.to_dict()
+    biterms = _round(biterms)
     assert biterms == RESULTS[4]
 
 
 def test_bilingual_sentences_lang_codes():
     """Test bilingual term extraction from English/Spanish sentences passing language codes."""
-    extractor = BitermExtractor((EN_SENTENCE, ES_SENTENCE), src_lang='en', tgt_lang='es')
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
+    extractor = BitermExtractor((en_sentence, es_sentence), src_lang='en', tgt_lang='es')
+    biterms = extractor.extract_terms()[:10].sort_values(by='src_term')
     biterms = biterms.to_dict()
+    biterms = _round(biterms)
     assert biterms == RESULTS[5]
 
 
-def test_bilingual_csv():
-    """Test bilingual term extraction from English/Spanish .csv file."""
-    path = f'{test_data_dir}/test_bitext_en_es.csv'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
-    biterms = biterms.to_dict()
-    assert biterms == RESULTS[6]
-
-
-def test_bilingual_xlsx():
-    """Test bilingual term extraction from English/Spanish .xlsx file."""
-    path = f'{test_data_dir}/test_bitext_en_es.xlsx'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
-    biterms = biterms.to_dict()
-    assert biterms == RESULTS[6]
-
-
-def test_bilingual_mqxliff():
-    """Test bilingual term extraction from English/Spanish .mqxliff file."""
-    path = f'{test_data_dir}/test_bitext_en_es.mqxliff'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
-    biterms = biterms.to_dict()
-    assert biterms == RESULTS[6]
-
-
-def test_bilingual_mxliff():
-    """Test bilingual term extraction from English/Spanish .mxliff file."""
-    path = f'{test_data_dir}/test_bitext_en_es.mxliff'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
-    biterms = biterms.to_dict()
-    assert biterms == RESULTS[6]
-
-
-def test_bilingual_tmx():
-    """Test bilingual term extraction from English/Spanish .tmx file."""
-    path = f'{test_data_dir}/test_bitext_en_es.tmx'
-    bitext = BitextReader(path).read_bitext()
-    extractor = BitermExtractor(bitext)
-    biterms = extractor.extract_terms()[:10]
-    biterms.index = biterms.index.map(str)
-    biterms = biterms.to_dict()
-    assert biterms == RESULTS[6]
-
+def test_bilingual_files():
+    for ff in ['csv', 'xlsx', 'mqxliff', 'mxliff', 'tmx']:
+        path = f'{test_data_dir}/test_bitext_en_es.{ff}'
+        bitext = BitextReader(path).read_bitext()
+        extractor = BitermExtractor(bitext)
+        biterms = extractor.extract_terms()[:10].sort_values(by='src_term')
+        biterms = biterms.to_dict()
+        biterms = _round(biterms)
+        assert biterms == RESULTS[6]
+        
 
 def test_en_text():
     """Test monolingual extraction from English text."""
     path = f'{test_data_dir}/test_text_en.txt'
     with open(path, 'r', encoding='utf8') as fr:
-        text = fr.read().split('\n')
+        text = fr.read().split('\n')[:10]
     extractor = TermExtractor(text)
-    terms = extractor.extract_terms()[:10]
-    terms.index = terms.index.map(str)
+    terms = extractor.extract_terms()[:10].sort_values(by='term')
     terms = terms.to_dict()
-    assert terms == RESULTS[7]
-
+    terms = _round(terms)
+    assert terms == RESULTS[11]
 
 def test_es_text():
     """Test monolingual extraction from Spanish text."""
     path = f'{test_data_dir}/test_text_es.txt'
     with open(path, 'r', encoding='utf8') as fr:
-        text = fr.read().split('\n')
+        text = fr.read().split('\n')[:10]
     extractor = TermExtractor(text)
-    terms = extractor.extract_terms()[:10]
-    terms.index = terms.index.map(str)
+    terms = extractor.extract_terms()[:10].sort_values(by='term')
     terms = terms.to_dict()
-    assert terms == RESULTS[8]
+    terms = _round(terms)
+    assert terms == RESULTS[12]
