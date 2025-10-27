@@ -369,7 +369,7 @@ Please note that there is always a compromise between speed and accuracy.
 - Larger models will be slower, but more accurate.
 
 ## tm2tb.com
-A tm2tb web app is available here: www.tm2tb.com
+A tm2tb web app is available here: www.tm2tb.com [October 2025: under maintenance]
 - Extract biterms from bilingual documents and sentences (file limit size: 2 MB) 
 
 ## Maintainer
