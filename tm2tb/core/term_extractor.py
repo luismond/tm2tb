@@ -110,6 +110,10 @@ class TermExtractor:
         spans_docs_dict = spans_dicts.maps[1]
         spans_texts_dict = spans_dicts.maps[2]
 
+        # If no spans are found, return an empty list
+        if len(spans_dicts) == 0:
+            return []
+
         # Embeddings & similarities
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
@@ -255,8 +259,8 @@ class TermExtractor:
             if freq < freq_min:
                 spans_docs_dict.pop(span)
                 spans_texts_dict.pop(span)
-        if len(spans_texts_dict) == 0:
-            raise ValueError(f"No terms left with frequency {freq_min}")
+        #if len(spans_texts_dict) == 0:
+        #    raise ValueError(f"No terms left with frequency {freq_min}")
 
         spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
         return spans_dicts
