@@ -37,7 +37,7 @@ def detect_lang(input_: Union[str, list]):
     if isinstance(input_, str):
         lang = detect(input_)
         if lang not in supported_languages:
-            raise ValueError('Language not supported!')
+            raise ValueError(f'Identified language as "{lang}", but it is not supported. Please install the corresponding spaCy model.')
     if isinstance(input_, list):
         text = input_
         if len(text) <= 50:
@@ -56,7 +56,7 @@ def detect_lang(input_: Union[str, list]):
             raise ValueError('Insufficient data to detect language')
         lang = cnt(detections).most_common(1)[0][0]
         if lang not in supported_languages:
-            raise ValueError('Language not supported!')
+            raise ValueError(f'Language {lang} not supported! Please install the corresponding spaCy model.')
     return lang
 
 
