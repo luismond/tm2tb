@@ -27,8 +27,11 @@ def build_examples(
     """
     examples: List[Example] = []
     bitext = BitextReader(input_file).read_bitext()
+    n = 0
     for src_segment, tgt_segment in bitext:
-        extractor = BitermExtractor((src_segment, tgt_segment))
+        print(f"Processing {n} of {len(bitext)}")
+        n += 1
+        extractor = BitermExtractor((src_segment, tgt_segment), src_lang=src_lang, tgt_lang=tgt_lang)
         biterms = extractor.extract_terms(similarity_min=similarity_min, return_as_table=False)[:max_terms_per_seg]
         for biterm in biterms:
             label = biterm.tgt_term if biterm.similarity > .8 else "NONE"
