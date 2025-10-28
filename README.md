@@ -322,9 +322,6 @@ for live development
 
 #### Common Docker commands
 
-docker compose run --rm tm2tb tm2tb --help
-docker compose run --rm tm2tb python -m tm2tb.cli.main --help
-docker compose run --rm tm2tb pytest -q
 
 - Start the web app
 `docker compose up --build web`
@@ -333,13 +330,14 @@ docker compose run --rm tm2tb pytest -q
 `docker compose run --rm tm2tb tm2tb --help`
 
 - Extract biterms from a CSV file
-
 `docker compose run --rm tm2tb tm2tb --in data/sample.csv --out out/glossary.csv --src en --tgt es`
 
-- Run tests
-
+- Run the unit tests
 `docker compose run --rm test`
 
+- Open an interactive Bash shell inside the running tm2tb container (for debugging or manual operations):
+
+- `docker compose exec tm2tb bash` 
 
 
 
