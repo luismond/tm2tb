@@ -134,6 +134,9 @@ class BitermExtractor:
         tgt_terms = tgt_extractor.extract_terms(return_as_table=False, **kwargs)
         tgt_terms = sorted(tgt_terms, key=lambda span: span._.span_id)
 
+        if len(src_terms) == 0 or len(tgt_terms) == 0:
+            return []
+
         similarity_matrix = self._get_similarity_matrix(src_terms, tgt_terms)
 
         biterms_freqs_dict = defaultdict(int)
@@ -380,8 +383,9 @@ class BitermExtractor:
                             similarity, frequency, biterm_rank)
             biterms.append(biterm)
 
+        # If no biterms are found, return an empty list
         if len(biterms) == 0:
-            raise ValueError('No biterms found.')
+            return []
         return biterms
 
     @staticmethod

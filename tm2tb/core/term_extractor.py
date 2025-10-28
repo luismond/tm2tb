@@ -133,6 +133,10 @@ class TermExtractor:
 
         top_spans = self._rank_spans(top_spans)
 
+        # If no spans are found, return an empty list
+        if len(top_spans) == 0:
+            return []
+         
         if collapse_similarity is True:
             top_spans = self._collapse_similarity(top_spans)
 
