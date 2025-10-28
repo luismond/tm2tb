@@ -1,4 +1,5 @@
 __pycache__
 sbert_models/
 tm2tb-env/
+data/
 
