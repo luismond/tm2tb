@@ -320,6 +320,26 @@ for live development
 
 `pipenv install`
 
+#### Common Docker commands
+
+
+- Start the web app
+`docker compose up --build web`
+
+- Get CLI help
+`docker compose run --rm tm2tb tm2tb --help`
+
+- Extract biterms from a CSV file
+`docker compose run --rm tm2tb tm2tb --in data/sample.csv --out out/glossary.csv --src en --tgt es`
+
+- Run the unit tests
+`docker compose run --rm test`
+
+- Open an interactive Bash shell inside the running tm2tb container (for debugging or manual operations):
+
+- `docker compose exec tm2tb bash` 
+
+
 
 ### spaCy models
 
@@ -347,7 +367,7 @@ Please note that there is always a compromise between speed and accuracy.
 - Larger models will be slower, but more accurate.
 
 ## tm2tb.com
-A tm2tb web app is available here: www.tm2tb.com
+A tm2tb web app is available here: www.tm2tb.com [October 2025: under maintenance]
 - Extract biterms from bilingual documents and sentences (file limit size: 2 MB) 
 
 ## Maintainer

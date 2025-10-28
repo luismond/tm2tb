@@ -22,7 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from spacy.tokens import Token, Span
 from tm2tb import trf_model
 from tm2tb import get_spacy_model
-from tm2tb.utils import detect_lang
+from tm2tb.core.utils import detect_lang
 
 
 class TermExtractor:
@@ -110,6 +110,10 @@ class TermExtractor:
         spans_docs_dict = spans_dicts.maps[1]
         spans_texts_dict = spans_dicts.maps[2]
 
+        # If no spans are found, return an empty list
+        if len(spans_dicts) == 0:
+            return []
+
         # Embeddings & similarities
         docs_embeddings_avg = self._get_docs_embeddings_avg(spans_dicts)
         spans_embeddings = trf_model.encode(list(spans_texts_dict.keys()))
@@ -133,6 +137,10 @@ class TermExtractor:
 
         top_spans = self._rank_spans(top_spans)
 
+        # If no spans are found, return an empty list
+        if len(top_spans) == 0:
+            return []
+         
         if collapse_similarity is True:
             top_spans = self._collapse_similarity(top_spans)
 
@@ -251,8 +259,8 @@ class TermExtractor:
             if freq < freq_min:
                 spans_docs_dict.pop(span)
                 spans_texts_dict.pop(span)
-        if len(spans_texts_dict) == 0:
-            raise ValueError(f"No terms left with frequency {freq_min}")
+        #if len(spans_texts_dict) == 0:
+        #    raise ValueError(f"No terms left with frequency {freq_min}")
 
         spans_dicts = ChainMap(spans_freqs_dict, spans_docs_dict, spans_texts_dict)
         return spans_dicts

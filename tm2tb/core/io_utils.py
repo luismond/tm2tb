@@ -4,6 +4,7 @@ from collections import OrderedDict
 import xmltodict
 import openpyxl
 import pandas as pd
+from pandas.errors import ParserError
 
 
 class BitextReader:
@@ -60,6 +61,9 @@ class CsvReader:
             content = pd.read_csv(self.file_path, encoding='utf-8')
         except UnicodeError:
             content = pd.read_csv(self.file_path, encoding='uft-16')
+        except ParserError:
+            content = pd.read_csv(self.file_path, sep='\t')
+
         content = self.validate_csv_content(content)
         return content
 

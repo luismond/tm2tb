@@ -24,8 +24,12 @@ RUN pip install --upgrade pip && \
 # Copy the rest of the code
 COPY . /app
 
+# Editable install (now that setuptools can find tm2tb)
+RUN pip install -e .
+
+
 # Expose Flask port (adjust if different)
 EXPOSE 5000
 
 # Default start command
-CMD ["python", "app.py"]
+CMD ["python", "tm2tb/api/app.py"]

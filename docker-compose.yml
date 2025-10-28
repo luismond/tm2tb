@@ -1,10 +1,64 @@
+# docker-compose.yml
+
+x-cache-env: &cache-env
+  HF_HOME: /cache/hf
+  TRANSFORMERS_CACHE: /cache/hf
+  SENTENCE_TRANSFORMERS_HOME: /cache/st
+  XDG_CACHE_HOME: /cache/xdg
+  TORCH_HOME: /cache/torch
+  PYTHONUNBUFFERED: "1"
+
 services:
-  tm2tb:
+  # Dev web app (Flask) with hot reload
+  web:
     build: .
+    working_dir: /app
+    command: flask run
     ports:
       - "5000:5000"
-    volumes:
-      - ./:/app             # live-reload the code
-      - ./data:/data
     environment:
-      - FLASK_ENV=development
+      <<: *cache-env
+      FLASK_ENV: development
+      FLASK_APP: tm2tb/api/app.py
+      FLASK_RUN_HOST: 0.0.0.0
+      FLASK_RUN_PORT: "5000"
+    volumes:
+      - ./:/app
+      - model_cache:/cache
+
+  # General-purpose toolbox container (CLI, scripts, notebooks)
+  tm2tb:
+    build: .
+    working_dir: /app
+    environment:
+      <<: *cache-env
+    volumes:
+      - ./:/app
+      - model_cache:/cache
+
+  # Test runner (fast: reuses cache volume)
+  test:
+    build: .
+    working_dir: /app
+    command: pytest -q -vv
+    environment:
+      <<: *cache-env
+    volumes:
+      - ./:/app
+      - model_cache:/cache
+
+  # One-shot cache warmer to preload models into the shared volume
+  warm_cache:
+    build: .
+    working_dir: /app
+    environment:
+      <<: *cache-env
+    volumes:
+      - model_cache:/cache
+      - ./:/app
+
+    command: python scripts/warm_cache.py
+
+
+volumes:
+  model_cache:
