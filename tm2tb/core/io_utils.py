@@ -12,11 +12,11 @@ class BitextReader:
 
     extensions = ['.csv', '.mqxliff', '.mxliff', '.tmx', '.xlsx']
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, max_size=100000000):
         self.file_path = file_path
         self.file_extension = os.path.splitext(self.file_path)[1]
         self.file_size = os.path.getsize(self.file_path)
-        self.file_max_size = 100000000
+        self.file_max_size = max_size
 
     def read_bitext(self):
         """Get bitext from file content."""
