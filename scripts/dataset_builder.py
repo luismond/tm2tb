@@ -26,7 +26,7 @@ def build_examples(
     Set similarity_min to 0.6 to retrieve candidates with no target match, which will be labeled as "NONE". This is useful for hard negative sampling.
     """
     examples: List[Example] = []
-    bitext = BitextReader(input_file, max_size=200000000).read_bitext()
+    bitext = BitextReader(input_file, max_size=200000000).read_bitext()[:200000]
     n = 0
     for src_segment, tgt_segment in tqdm.tqdm(bitext):
         print(f"Processing {n} of {len(bitext)}")
@@ -74,11 +74,11 @@ def main():
     
     Usage: 
     python scripts/dataset_builder.py \
-        --input-file tests/data/test_bitext_en_es.tmx \
+        --input-file data/EN_ES.csv \
         --src-lang en \
         --tgt-lang es \
-        --max-terms-per-seg 5 \
-        --output-file tests/data/test_biterms_en_es_silver.jsonl
+        --max-terms-per-seg 4 \
+        --output-file data/EN_ES_silver_train_0_200000.jsonl
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("--input-file", type=Path, required=True)
@@ -98,6 +98,7 @@ def main():
     )
     examples = add_hard_negatives(examples, rate=args.negative_rate)
     write_jsonl(examples, output_file=args.output_file)
+    print(f"Wrote {len(examples)} examples to {args.output_file}")
 
 if __name__ == "__main__":
     main()
