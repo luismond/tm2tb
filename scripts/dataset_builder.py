@@ -6,7 +6,7 @@ import json, random
 from pathlib import Path
 from typing import Iterable, Dict, List, Tuple
 import argparse
-
+import tqdm
 from tm2tb.core.io_utils import BitextReader
 from tm2tb.core.biterm_extractor import BitermExtractor 
 
@@ -26,9 +26,9 @@ def build_examples(
     Set similarity_min to 0.6 to retrieve candidates with no target match, which will be labeled as "NONE". This is useful for hard negative sampling.
     """
     examples: List[Example] = []
-    bitext = BitextReader(input_file).read_bitext()
+    bitext = BitextReader(input_file, max_size=200000000).read_bitext()
     n = 0
-    for src_segment, tgt_segment in bitext:
+    for src_segment, tgt_segment in tqdm.tqdm(bitext):
         print(f"Processing {n} of {len(bitext)}")
         n += 1
         extractor = BitermExtractor((src_segment, tgt_segment), src_lang=src_lang, tgt_lang=tgt_lang)
@@ -77,7 +77,7 @@ def main():
         --input-file tests/data/test_bitext_en_es.tmx \
         --src-lang en \
         --tgt-lang es \
-        --max-terms-per-seg 2 \
+        --max-terms-per-seg 5 \
         --output-file tests/data/test_biterms_en_es_silver.jsonl
     """
     ap = argparse.ArgumentParser()
