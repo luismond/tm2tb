@@ -23,6 +23,11 @@ class BitextReader:
         bitext = self.get_file_content()
         bitext.columns = ['src', 'trg']
         bitext = bitext.fillna('')
+        print(len(bitext))
+        bitext['src_lower'] = bitext['src'].str.lower()
+        bitext = bitext.drop_duplicates(subset='src_lower')
+        bitext = bitext.drop(columns=['src_lower'])
+        print(len(bitext))
         if len(bitext) == 0:
             raise ValueError('The document appears to be empty.')
         bitext = bitext.astype(str)
