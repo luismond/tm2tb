@@ -14,6 +14,7 @@ import json, random
 from pathlib import Path
 from typing import Iterable, Dict, List, Tuple
 import argparse
+import ast
 from tqdm import tqdm
 from tm2tb.core.io_utils import BitextReader
 from tm2tb.core.biterm_extractor import BitermExtractor 
@@ -25,6 +26,7 @@ def build_examples(
     src_lang: str,
     tgt_lang: str,
     similarity_min: float = 0.85,
+    span_range: tuple = (1, 2)
 ) -> List[Example]:
     """
     Produce silver seq2seq pairs for T5 model:
@@ -36,7 +38,11 @@ def build_examples(
     for src_segment, tgt_segment in tqdm(bitext):
         n += 1
         extractor = BitermExtractor((src_segment, tgt_segment), src_lang=src_lang, tgt_lang=tgt_lang)
-        biterms = extractor.extract_terms(similarity_min=similarity_min, return_as_table=False)
+        biterms = extractor.extract_terms(
+            similarity_min=similarity_min,
+            return_as_table=False,
+            span_range=span_range
+            )
         for biterm in biterms:
             examples.append({
                 "src_segment": src_segment,
@@ -56,22 +62,24 @@ def main():
     
     Usage: 
     python scripts/dataset_builder.py \
-        --input-file tests/data/test_bitext_en_es.tmx \
+        --input-file en_de.csv \
         --src-lang en \
-        --tgt-lang es \
-        --output-file tests/data/biterms_en_es_silver.jsonl
+        --tgt-lang de \
+        --output-file en_de_terms.jsonl
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("--input-file", type=Path, required=True)
     ap.add_argument("--src-lang", required=True)
     ap. add_argument("--tgt-lang", required=True)
     ap.add_argument("--output-file", type=Path, required=True)
+    ap.add_argument("--span_range", type=ast.literal_eval)
     args = ap.parse_args()
 
     examples = build_examples(
         input_file=args.input_file,
         src_lang=args.src_lang,
         tgt_lang=args.tgt_lang,
+        span_range=args.span_range
     )
     #examples = add_hard_negatives(examples, rate=args.negative_rate)
     args.output_file.parent.mkdir(parents=True, exist_ok=True)  
